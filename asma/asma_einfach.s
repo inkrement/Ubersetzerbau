@@ -1,3 +1,14 @@
+#
+# Result asma.c
+#
+# i = rax (eax)
+# rsi = erste Argument (s)
+# rdi = zweite Argument (t)
+# rdx = zweites Rückgaberegister (u)
+#
+# cl enthält immer das neue u (entweder ts[i] oder s[i])
+# 
+
 	.section	__TEXT,__text,regular,pure_instructions
 	.globl	_asma
 	.align	4, 0x90
@@ -19,7 +30,7 @@ LBB0_1:                                 ## =>This Inner Loop Header: Depth=1
 ## ModR/M-Adressierung Dsiplacement(Base, Index, Scale)
 ## (%rsi, %rax) = %rsi + %rax
 	movb	(%rsi,%rax), %r8b			## move byte from (%rsi, %rax) to %r8b 
-	movb	(%rdi,%rax), %cmpl 			## move from (%rdi,%rax) to %cmpl
+	movb	(%rdi,%rax), %cl 			## move from (%rdi,%rax) to %cmpl
 
 ## Vergleiche untere 8 Bit von rcx (cl) mit unteren 8 bit von r8 (r8b)
 	cmpb	%r8b, %cl
@@ -28,6 +39,8 @@ LBB0_1:                                 ## =>This Inner Loop Header: Depth=1
 ## http://stackoverflow.com/questions/9617877/assembly-jg-jnle-jl-jnge-after-cmp
 	ja	LBB0_3
 ## BB#2:                                ##   in Loop: Header=BB0_1 Depth=1
+
+## u[i] = (s[i]>t[i]) ? s[i] : t[i];
 	movb	%r8b, %cl 					## schiebe r8b -> cl
 LBB0_3:                                 ##   in Loop: Header=BB0_1 Depth=1
 	movb	%cl, (%rdx,%rax)
