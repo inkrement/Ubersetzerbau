@@ -22,16 +22,16 @@ Ltmp4:
 	.align	4, 0x90						
 
 ## copy rsi to xmm0
-movdqa %rsi, %xmm0
+movdqa (%rsi), %xmm0
 
 ## copy rdi to xmm1
-movdqa %rdi, %xmm1
+movdqa (%rdi), %xmm1
 
 ## compare bytewise
 pminub %xmm0, %xmm1
 
 ## first operand xmm0 is result of smallest values (return it)
-movdqa %xmm0, %rdx
+movdqa %xmm0, (%rdx)
 
 LBB0_3:
 	popq	%rbp
