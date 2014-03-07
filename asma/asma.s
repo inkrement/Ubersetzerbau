@@ -12,7 +12,7 @@ Ltmp3:
 	movq	%rsp, %rbp					# set new frame pointer
 
 Ltmp4:
-	.cfi_def_cfa_register %rbp			## set new CFA
+	.cfi_def_cfa_register %rbp			# set new CFA
 
 	## 16 byte alignment. with nop (no operation) as padding
 	#
