@@ -8,7 +8,7 @@ extern void asmb(unsigned char *s, unsigned char *t, unsigned char *u);
 
 int main(){
 
-	unsigned char *first = (unsigned char*) malloc(STR_LEN * sizeof(unsigned char));
+	unsigned char *first = (unsigned char*)malloc(STR_LEN * sizeof(unsigned char));
 	unsigned char *second = (unsigned char*)malloc(STR_LEN*sizeof(unsigned char));
 	unsigned char *result = (unsigned char*)malloc(STR_LEN*sizeof(unsigned char));
 
@@ -26,7 +26,25 @@ int main(){
 
 	asmb(first, second, result);
 
-	fwrite(result, sizeof(unsigned char), STR_LEN, stdout);
+	//fwrite(result, sizeof(unsigned char), STR_LEN, stdout);
+
+	printf("s: ");
+	for (int i = 0; i < STR_LEN; i++)
+    	printf("%02x ", first[i]);
+
+	printf("\n");
+
+	printf("t: ");
+	for (int i = 0; i < STR_LEN; i++)
+    	printf("%02x ", second[i]);
+
+	printf("\n");
+
+	printf("result: ");
+	for (int i = 0; i < STR_LEN; i++)
+    	printf("%02x ", result[i]);
+
+	printf("\n");
 	//printf("%.*s\n", STR_LEN, result);
 
 	return 0;

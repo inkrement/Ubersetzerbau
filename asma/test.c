@@ -20,9 +20,9 @@ int main(){
 	//strcpy(second, "haha");
 	//strcpy(result, "result");
 
-	memcpy(first, str_operand1, strlen(str_operand1));
-	memcpy(second, str_operand2, strlen(str_operand2));
-	memcpy(result, str_result, strlen(str_result));
+	memcpy(first, str_operand1, strlen(str_operand1) + 1);
+	memcpy(second, str_operand2, strlen(str_operand2) + 1);
+	memcpy(result, str_result, strlen(str_result) + 1);
 
 	asma(first, second, result);
 
