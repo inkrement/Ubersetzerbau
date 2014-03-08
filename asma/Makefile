@@ -2,22 +2,23 @@
 ## Makefile <prototype>
 ##
 
+.PHONY: clean
+
 CC=gcc-4.4
 
-all:
+all: clean
 	$(CC) -c asma.s -o asma.o
-
-c_prog:
-	$(CC) -O -S asma.c -o asma_einfach.s
 
 upload:
 	scp ./* u0929002@g0.complang.tuwien.ac.at:abgabe/asma
 
 #build for mac OSX with gcc 4.4
-mac:
-	$(CC) -c asma.s
-	$(CC) -c test.c
+test: clean
+	$(CC) -c asma.s -o asma.o
+	$(CC) -c test.c -o test.o
 	$(CC) asma.o test.o -o test
+	./test
 
 clean:
-	rm asma.o test.o test
+	rm *.o
+	rm -f test

@@ -19,4 +19,6 @@ int main(){
 	asma(first, second, result);
 
 	printf("%s\n", result);
+
+	return 0;
 }
