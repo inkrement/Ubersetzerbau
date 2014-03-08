@@ -7,15 +7,21 @@
 #CC=gcc-4.4
 
 all: clean
-	$(CC) -c asma.s -o asma.o
+	$(CC) -c asmb.s -o asmb.o
 
 upload:
 	scp ./* u0929002@g0.complang.tuwien.ac.at:abgabe/asma
 
-test: clean
-	$(CC) -c asma.s -o asma.o
+c: clean
+	$(CC) -c asmb.c -o asmb.o
 	$(CC) -c test.c -o test.o
-	$(CC) asma.o test.o -o test
+	$(CC) asmb.o test.o -o test
+	./test
+
+test: clean
+	$(CC) -c asmb.s -o asmb.o
+	$(CC) -c test.c -o test.o
+	$(CC) asmb.o test.o -o test
 	./test
 
 clean:
