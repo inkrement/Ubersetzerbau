@@ -18,6 +18,14 @@ test: clean
 	$(CC) asma.o test.o -o test
 	./test
 
+c: clean
+	$(CC) -c asma.c -o asma_c.o
+	$(CC) -c test.c -o test.o
+	$(CC) asma_c.o test.o -o test_c
+	./test_c
+
+compare: clean c test
+
 clean:
 	rm -f *.o
 	rm -f test
