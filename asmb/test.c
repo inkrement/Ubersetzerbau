@@ -31,13 +31,13 @@ int main(){
 	//fwrite(result, sizeof(unsigned char), STR_LEN, stdout);
 
 	printf("s: ");
-	for (int i = 0; i < STR_LEN; i++)
+	for ( i = 0; i < STR_LEN; i++)
     	printf("%02x ", first[i]);
 
 	printf("\n");
 
 	printf("t: ");
-	for (int i = 0; i < STR_LEN; i++)
+	for ( i = 0; i < STR_LEN; i++)
     	printf("%02x ", second[i]);
 
 	printf("\n");
