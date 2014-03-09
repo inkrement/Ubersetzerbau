@@ -17,11 +17,33 @@ Ltmp4:
 	## 2. copy rdi to xmm1
 	movdqa (%rdi), %xmm1
 
-	## 3. compare bytewise
+	## 3. copy u to xmm2
+	movdqa (%rdx), %xmm2
+
+	## 4. compare bytewise
 	pminub %xmm0, %xmm1
 
-	## 4. first operand xmm0 is result of smallest values (return it)
-	movdqa %xmm1, (%rdx)
+	## 5. copy xmm1->xmm2 until xmm2[i] == 0
+
+
+	xor %ecx, %ecx //auf null setzen
+
+copy:
+	cmp $0,  /* xmm1 byte an stelle %ecx */
+	jmp end
+
+	## 6. copy byte
+	mov ()()
+
+	inc %ecx
+	jmp copy
+
+end:
+
+
+
+	## 6. first operand xmm0 is result of smallest values (return it)
+	movdqa %xmm2, (%rdx)
 
 LBB0_3:
 	xorl %eax, %eax  					# zero function return
