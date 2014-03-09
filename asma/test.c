@@ -8,6 +8,8 @@ extern void asma(unsigned char *s, unsigned char *t, unsigned char *u);
 
 int main(){
 
+	int i;
+
 	unsigned char *first = (unsigned char*) malloc(STR_LEN * sizeof(unsigned char));
 	unsigned char *second = (unsigned char*)malloc(STR_LEN*sizeof(unsigned char));
 	unsigned char *result = (unsigned char*)malloc(STR_LEN*sizeof(unsigned char));
@@ -39,7 +41,7 @@ int main(){
 	printf("\n");
 
 	printf("result: ");
-	for (int i = 0; i < STR_LEN; i++)
+	for (i = 0; i < STR_LEN; i++)
     	printf("%02x ", result[i]);
 
 	printf("\n");
