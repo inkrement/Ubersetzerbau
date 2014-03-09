@@ -28,4 +28,4 @@ compare: clean c test
 
 clean:
 	rm -f *.o
-	rm -f test
+	rm -f test test_c

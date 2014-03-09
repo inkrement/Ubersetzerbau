@@ -18,7 +18,7 @@ Ltmp4:
 	movdqa (%rdi), %xmm1
 
 	## 3. compare bytewise
-	pminub %xmm0, %xmm1
+	pmaxub %xmm0, %xmm1
 
 	## 4. first operand xmm0 is result of smallest values (return it)
 	movdqa %xmm1, (%rdx)
