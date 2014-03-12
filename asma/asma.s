@@ -19,7 +19,6 @@ Ltmp4:
 	movdqa (%rdi), %xmm1
 
 	# create mask
-    movdqa %xmm0, %xmm2
     PCMPEQD %xmm2, %xmm2
 
     #invert operands
