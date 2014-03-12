@@ -1,7 +1,7 @@
 	.text
-	.globl _asma
-#	.type asma, @function
-_asma:
+	.globl asma
+	.type asma, @function
+asma:
 
 # Funktions-Prolog
 .LFB0:
