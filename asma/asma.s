@@ -2,12 +2,6 @@
 	.globl asma
 	.type asma, @function
 
-	.data
-mask: 
-         .align
-         .size mask, 16
-         .fill 16, 1, 0xFF
-
 asma:
 
 # Funktions-Prolog
@@ -24,16 +18,16 @@ Ltmp4:
 	## 2. copy rdi to xmm1
 	movdqa (%rdi), %xmm1
 
+	# create mask
     movdqa %xmm0, %xmm2
-
     PCMPEQD %xmm2, %xmm2
 
+    #invert operands
     PXOR %xmm2, %xmm0
-
     PXOR %xmm2, %xmm1
 
 	## 6. take minimal 
-	pminub %xmm0, %xmm1
+	pminub %xmm1, %xmm0
 
 	PXOR %xmm2, %xmm0
 
