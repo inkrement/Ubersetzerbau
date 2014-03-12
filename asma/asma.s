@@ -1,6 +1,13 @@
 	.text
 	.globl asma
 	.type asma, @function
+
+	.data
+mask: 
+         .align
+         .size mask, 16
+         .fill 16, 1, 0xFF
+
 asma:
 
 # Funktions-Prolog
@@ -17,23 +24,21 @@ Ltmp4:
 	## 2. copy rdi to xmm1
 	movdqa (%rdi), %xmm1
 
-	## 3. create mask
-	movdqa $0xFFFFFFFF , %xmm2
+    movdqa %xmm0, %xmm2
 
-	## 4. s xmm0 invertieren
-    andps %xmm0, %xmm2
+    PCMPEQD %xmm2, %xmm2
 
-	## 5. t xmm1 invertieren
-	andps %xmm1, %xmm2
+    PXOR %xmm2, %xmm0
+
+    PXOR %xmm2, %xmm1
 
 	## 6. take minimal 
 	pminub %xmm0, %xmm1
 
-	## 7. invert result
-	andps %xmm1, %xmm2
+	PXOR %xmm2, %xmm0
 
 	## 8. first operand xmm0 is result of smallest values (return it)
-	movdqa %xmm1, (%rdx)
+	movdqa %xmm0, (%rdx)
 
 LBB0_3:
 	xorl %eax, %eax  					# zero function return
