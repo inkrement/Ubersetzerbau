@@ -1,39 +1,20 @@
-	.text
-	.globl asma
-	.type asma, @function
+        .text
+        .globl asma
+        .type asma, @function
 
 asma:
+	movdqu (%rsi), %xmm8
+	movdqu (%rdi), %xmm9
 
-# Funktions-Prolog
-.LFB0:
-	pushq	%rbp						# frame pointer backup
-	movq	%rsp, %rbp					# set new frame pointer
+	PCMPEQD %xmm10, %xmm10
 
-Ltmp4:
-	.align	4, 0x90						
+	PXOR %xmm10, %xmm8
+	PXOR %xmm10, %xmm9
 
-	## 1. copy rsi to xmm0
-	movdqa (%rsi), %xmm0
+	pminub %xmm9, %xmm8
 
-	## 2. copy rdi to xmm1
-	movdqa (%rdi), %xmm1
+	PXOR %xmm10, %xmm8
 
-	# create mask
-    PCMPEQD %xmm2, %xmm2
+	movdqu %xmm8, (%rdx)
 
-    #invert operands
-    PXOR %xmm2, %xmm0
-    PXOR %xmm2, %xmm1
-
-	## 6. take minimal 
-	pminub %xmm1, %xmm0
-
-	PXOR %xmm2, %xmm0
-
-	## 8. first operand xmm0 is result of smallest values (return it)
-	movdqa %xmm0, (%rdx)
-
-LBB0_3:
-	xorl %eax, %eax  					# zero function return
-	popq	%rbp						# pop frame pointer
 	ret
