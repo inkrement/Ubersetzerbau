@@ -9,27 +9,24 @@ asma:
 	movdqu (%rsi), %xmm8
 	movdqu (%rdi), %xmm9
 
-	xor %ecx, %ecx #auf null setzen
+	xor %eax, %eax #auf null setzen
 
-	copy:
+copy:
 
-		pextrb imm8, xmm, m8
+	pextrb $1, %xmm8, %eax
 
-		cmp $0,  # xmm1 byte an stelle %ecx
-		jmp end
+	#cmp $0 %AH,  # xmm1 byte an stelle %ecx
+	# end
 
-		## 6. copy byte
-		mov ()()
+	## 6. copy byte
 
-		inc %ecx
-		jmp copy
+	inc %AH
+	jmp copy
 
-	end:
+	#end:
 
 
 
 	pminub %xmm9, %xmm8
-
 	movdqu %xmm8, (%rdx)
-
 	ret
