@@ -9,19 +9,31 @@ asma:
 	movdqu (%rsi), %xmm8
 	movdqu (%rdi), %xmm9
 
+	movdqu %xmm8, %xmm10
+
 	xor %eax, %eax #auf null setzen
 
-copy:
 
-	pextrb $1, %xmm8, %eax
+# 1. generate mask xmm10 (set all bytes to 1 until zero termination '\0')
+
+
+# 1.1 compare two input strings
+PCMPEQB %xmm8, %xmm10
+
+# 1.2 create 8bitmask in eax
+PMOVMSKB %xmm10, %eax
+
+#copy:
+
+#	pextrb $1, %xmm8, %eax
 
 	#cmp $0 %AH,  # xmm1 byte an stelle %ecx
 	# end
 
 	## 6. copy byte
 
-	inc %AH
-	jmp copy
+#	inc %AH
+#	jmp copy
 
 	#end:
 
