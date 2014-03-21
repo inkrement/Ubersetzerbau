@@ -1,51 +1,35 @@
-	.text
-	.globl _asmb
-#	.type asma, @function
-_asmb:
+# http://de.wikibooks.org/wiki/Assembler-Programmierung_f%C3%BCr_x86-Prozessoren/_Befehlsreferenz
+# http://cs.stanford.edu/people/eschkufz/x64/x64.html
 
-# Funktions-Prolog
-.LFB0:
-	pushq	%rbp						# frame pointer backup
-	movq	%rsp, %rbp					# set new frame pointer
+        .text
+        .globl asma
+        .type asma, @function
 
-Ltmp4:
-	.align	4, 0x90						
+asma:
+	movdqu (%rsi), %xmm8
+	movdqu (%rdi), %xmm9
 
-	## 1. copy rsi to xmm0
-	movdqa (%rsi), %xmm0
+	xor %ecx, %ecx #auf null setzen
 
-	## 2. copy rdi to xmm1
-	movdqa (%rdi), %xmm1
+	copy:
 
-	## 3. copy u to xmm2
-	movdqa (%rdx), %xmm2
+		pextrb imm8, xmm, m8
 
-	## 4. compare bytewise
-	pminub %xmm0, %xmm1
+		cmp $0,  # xmm1 byte an stelle %ecx
+		jmp end
 
-	## 5. copy xmm1->xmm2 until xmm2[i] == 0
+		## 6. copy byte
+		mov ()()
 
+		inc %ecx
+		jmp copy
 
-	xor %ecx, %ecx //auf null setzen
-
-copy:
-	cmp $0,  /* xmm1 byte an stelle %ecx */
-	jmp end
-
-	## 6. copy byte
-	mov ()()
-
-	inc %ecx
-	jmp copy
-
-end:
+	end:
 
 
 
-	## 6. first operand xmm0 is result of smallest values (return it)
-	movdqa %xmm2, (%rdx)
+	pminub %xmm9, %xmm8
 
-LBB0_3:
-	xorl %eax, %eax  					# zero function return
-	popq	%rbp						# pop frame pointer
+	movdqu %xmm8, (%rdx)
+
 	ret
