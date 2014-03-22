@@ -2,43 +2,32 @@
 # http://cs.stanford.edu/people/eschkufz/x64/x64.html
 
         .text
-        .globl asma
-        .type asma, @function
+        .globl _asmb
+#        .type asmb, @function
 
-asma:
-	movdqu (%rsi), %xmm8
-	movdqu (%rdi), %xmm9
+_asmb:
 
-	movdqu %xmm8, %xmm10
+	# STEP 1
+	movdqu (%rdi), %xmm1
+	movdqu (%rsi), %xmm2
 
-	xor %eax, %eax #auf null setzen
+	movdqa %xmm1, %xmm3
 
+	# STEP 2
+	pminub %xmm2, %xmm3
 
-# 1. generate mask xmm10 (set all bytes to 1 until zero termination '\0')
-
-
-# 1.1 compare two input strings
-PCMPEQB %xmm8, %xmm10
-
-# 1.2 create 8bitmask in eax
-PMOVMSKB %xmm10, %eax
-
-#copy:
-
-#	pextrb $1, %xmm8, %eax
-
-	#cmp $0 %AH,  # xmm1 byte an stelle %ecx
-	# end
-
-	## 6. copy byte
-
-#	inc %AH
-#	jmp copy
-
-	#end:
+	#pcmpistrm $0x00, %xmm1, %xmm1
 
 
+	# STEP 3
+	pxor %xmm0, %xmm0      # set xmm0 zeromask
+	PCMPEQB %xmm3, %xmm0   # compare with 0 and store in xmm0
 
-	pminub %xmm9, %xmm8
-	movdqu %xmm8, (%rdx)
+
+	# STEP 4
+	pblendvb %xmm1, %xmm3
+
+
+	movdqu %xmm3, (%rdx)
+
 	ret
