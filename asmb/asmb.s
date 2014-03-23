@@ -18,15 +18,17 @@ xor %rbx, %rbx
 _asmb:
 
 loop:
-	cmp $0, %r10b
 
-	je exit
-
-
-	# STEP 2 copy param byte-wise
 	movb (%rdi, %rbx), %r8b
 	movb (%rsi, %rbx), %r9b
-	movb (%rdx, %rbx), %r10b
+	
+	cmp $0, %r8b
+	je exit
+	cmp $0, %r9b
+	je exit
+
+	# STEP 2 copy param byte-wise
+
 
 	# 1 byte insertn und extrahieren
 	PINSRB $0x00, %r8d, %xmm1
