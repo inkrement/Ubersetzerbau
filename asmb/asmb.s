@@ -1,6 +1,6 @@
 	.text
-	.globl _asmb
-#	.type asmb, @function
+	.globl asmb
+	.type asmb, @function
 
 ####
 # rdi erstes argument
@@ -15,7 +15,7 @@
 
 xor %rbx, %rbx
 
-_asmb:
+asmb:
 
 loop:
 
@@ -47,4 +47,7 @@ loop:
 	# Step 4 conditional loop
 
 exit:
+	movb $0, %r8b
+	PINSRB $0x00, %r8d, %xmm1
+	PEXTRB $0x00 , %xmm1, (%rdx, %rbx)
 	ret
