@@ -1,10 +1,8 @@
 	.text
-	.globl _asmb
-#	.type asmb, @function
+	.globl asmb
+	.type asmb, @function
 
-
-
-_asmb:
+asmb:
 
 xor %rcx, %rcx
 
