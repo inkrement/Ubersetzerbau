@@ -2,9 +2,11 @@
 	.globl _asmb
 #	.type asmb, @function
 
-xor %rcx, %rcx
+
 
 _asmb:
+
+xor %rcx, %rcx
 
 loop:
 
