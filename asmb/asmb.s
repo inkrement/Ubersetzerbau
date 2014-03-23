@@ -1,6 +1,6 @@
-        .text
-        .globl _asmb
-#        .type asmb, @function
+	.text
+	.globl asmb
+	.type asmb, @function
 
 ####
 # rdi erstes argument
@@ -15,7 +15,7 @@
 
 xor %rax, %rax
 
-_asmb:
+asmb:
 
 loop:
 
@@ -38,6 +38,8 @@ loop:
 
 	# Step 3: increment
 	inc %rax
+
+	jmp loop
 
 	# Step 4 conditional loop
 
