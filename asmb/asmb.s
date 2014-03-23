@@ -1,31 +1,45 @@
-# http://de.wikibooks.org/wiki/Assembler-Programmierung_f%C3%BCr_x86-Prozessoren/_Befehlsreferenz
-# http://cs.stanford.edu/people/eschkufz/x64/x64.html
-
         .text
         .globl _asmb
 #        .type asmb, @function
 
+####
+# rdi erstes argument
+# rsi zweites argument
+# rdx orinaler string
+# rcx zählregister
+#
+# rbx pminub.. oder bl
+####
+
+# STEP 1 reset zählregister
+
+xor %rax, %rax
+
 _asmb:
 
-	# STEP 1
-	movdqu (%rdi), %xmm1 #first
-	movdqu (%rsi), %xmm2 #second
-	movdqu (%rdx), %xmm4 #result (original)
+loop:
+	# STEP 2 copy param byte-wise
 
-	movdqa %xmm1, %xmm3
+	movb (%rdi, %rax, 1), %r8b
+	movb (%rdi, %rax, 1), %r9b
+	movb (%rdx, %rax, 1), %r10b
 
-	# STEP 2
-	pminub %xmm2, %xmm3
+	PINSRB $0x01, %r8d, %xmm1
+	PINSRB $0x01, %r9d, %xmm2
 
-	# STEP 3
-	pxor %xmm0, %xmm0		# set xmm0 zeromask
-	PCMPEQB %xmm3, %xmm0	# compare with 0 and store in xmm0
-	pslldq $0x01, %xmm0		# shift mask
+	# Step 3: calculate and write to result
+	pminub %xmm1, %xmm2
+
+	PEXTRB $0x01 , %xmm2, (%rdi, %rax,1)
+
+	# Step 3: increment
+	incl %eax
+
+	# Step 4 conditional loop
+
+	cmp $0, %r10b
+	jne loop
 
 
-	# STEP 4
-	pblendvb %xmm4, %xmm3
-
-	movdqu %xmm3, (%rdx)
-
+exit:
 	ret
