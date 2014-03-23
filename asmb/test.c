@@ -16,7 +16,7 @@ int main(){
 
 	const char *str_operand1= "\x8c\x18\xa4\x30\xbc\x48\xd4\x60\xec\x78\x04\x90\x1c\xa8\x34\xc0\x4c\xd8\x64\xf0\x7c\x08\x94\x20\xac\x38";
 	const char *str_operand2= "\xfb\xec\xdd\xce\xbf\xb0\xa1\x92\x83\x74\x65\x56\x47\x38\x29\x1a\x0b\xfc\xed\xde\xcf\xc0\xb1\xa2\x93\x00";
-	const char *str_result= "abcdefghiju";
+	const char *str_result= "abcdefghijughhhghghghghghghghhghghghhgsfdsfdsfdsfjdskahjfkldskfhjdslfhdjslfjkdsklfkdsfdsfjklsdfhdsjkfhjdskfhdsjkafhjdsfghggh";
 	
 	//strcpy(first, "abcdefghikl");
 	//strcpy(second, "haha");
