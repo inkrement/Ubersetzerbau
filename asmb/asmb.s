@@ -37,10 +37,9 @@ loop:
 	PEXTRB $0x00 , %xmm2, (%rdi, %rax,1)
 
 	# Step 3: increment
-	incl %rax
+	inc %rax
 
 	# Step 4 conditional loop
-
 
 exit:
 	ret
