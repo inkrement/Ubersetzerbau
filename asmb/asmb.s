@@ -18,6 +18,10 @@ xor %rax, %rax
 _asmb:
 
 loop:
+
+	cmp $0, %r10b
+	je exit
+
 	# STEP 2 copy param byte-wise
 	movb (%rdi, %rax, 1), %r8b
 	movb (%rsi, %rax, 1), %r9b
@@ -36,9 +40,6 @@ loop:
 	incl %rax
 
 	# Step 4 conditional loop
-
-	cmp $0, %r10b
-	jne loop
 
 
 exit:
