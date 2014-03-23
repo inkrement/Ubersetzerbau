@@ -2,7 +2,7 @@
 #include "stdlib.h"
 #include "string.h"
 
-#define STR_LEN 16
+#define STR_LEN 26
 
 extern void asmb(unsigned char *s, unsigned char *t, unsigned char *u);
 
@@ -14,9 +14,9 @@ int main(){
 	unsigned char *second = (unsigned char*)malloc(STR_LEN*sizeof(unsigned char));
 	unsigned char *result = (unsigned char*)malloc(STR_LEN*sizeof(unsigned char));
 
-	const char *str_operand1= "abcdefghijklm";
-	const char *str_operand2= "haha";
-	const char *str_result= "abcdefghijklm";
+	const char *str_operand1= "\x8c\x18\xa4\x30\xbc\x48\xd4\x60\xec\x78\x04\x90\x1c\xa8\x34\xc0\x4c\xd8\x64\xf0\x7c\x08\x94\x20\xac\x38";
+	const char *str_operand2= "\xfb\xec\xdd\xce\xbf\xb0\xa1\x92\x83\x74\x65\x56\x47\x38\x29\x1a\x0b\xfc\xed\xde\xcf\xc0\xb1\xa2\x93\x00";
+	const char *str_result= "abcdefghij";
 	
 	//strcpy(first, "abcdefghikl");
 	//strcpy(second, "haha");
@@ -42,9 +42,13 @@ int main(){
 
 	printf("\n");
 
-	printf("result: ");
+	printf("r: ");
 	for (i = 0; i < STR_LEN; i++)
     	printf("%02x ", result[i]);
+    printf("\n");
+
+    printf("p: ");
+    printf("%s\n", result);
 
 	printf("\n");
 	//printf("%.*s\n", STR_LEN, result);
