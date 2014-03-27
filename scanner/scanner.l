@@ -10,9 +10,6 @@ DIGIT  [0-9]
 %x C_COMMENT
 
 %%
-
-
-
 "struct"	printf("struct");
 "end"		printf("end");
 "func"		printf("func");
@@ -30,12 +27,14 @@ DIGIT  [0-9]
 ")"			printf(")");
 ":"			printf(":");
 ";"			printf(";");
+"="			printf("=");
 "."			printf(".");
 "-"			printf("_");
 "+"			printf("+");
 "*"			printf("*");
 ">"			printf(">");
 "<>"		printf("<>");
+","		printf(",");
 
 
 {WHITESPACE}+ {}
