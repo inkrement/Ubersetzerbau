@@ -36,7 +36,12 @@ DIGIT  [0-9]
 "<>"		printf("<>\n");
 ","			printf(",\n");
 
-[0-9]+	printf("num %s\n", yytext);
+[0-9]+	{
+	int res = (int) strtol(yytext, NULL, 10);
+
+	printf("num %d\n", res);
+}
+
 [0-9][A-Fa-f0-9]*H 	{
 	yytext[strlen(yytext)-1] = 0;
 
