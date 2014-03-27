@@ -41,7 +41,7 @@ DIGIT  [0-9]
 
 "/*"            { BEGIN(C_COMMENT); }
 <C_COMMENT>"*/" { BEGIN(INITIAL); }
-<C_COMMENT>.    { }
+<C_COMMENT>.    { printf("");}
 
 [A-Za-z][A-Za-z0-9_]*		printf("id %s\n", yytext);
 
