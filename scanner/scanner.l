@@ -43,9 +43,9 @@ DIGIT  [0-9]
 <C_COMMENT>"*/" { BEGIN(INITIAL); }
 <C_COMMENT>.    { }
 
-[A-Za-z][A-Za-z0-9_]*		printf("id %s", yytext);
+[A-Za-z][A-Za-z0-9_]*		printf("id %s\n", yytext);
 
-.		printf("Unrecognized character %s", yytext);
+.		printf("Unrecognized character %s\n", yytext);
 
 %%
 
