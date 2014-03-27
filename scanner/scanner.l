@@ -7,7 +7,7 @@ DIGIT  [0-9]
 
 /* define additional states */
 
-%x C_COMMENT
+%x BLOCK_COMMENT
 
 %%
 "struct"	printf("struct\n");
@@ -39,9 +39,17 @@ DIGIT  [0-9]
 
 {WHITESPACE}+ {}
 
-"/*"            { BEGIN(C_COMMENT); }
-<C_COMMENT>"*/" { BEGIN(INITIAL); }
-<C_COMMENT>.    { printf("");}
+
+<INITIAL>{
+     "/*"              BEGIN(BLOCK_COMMENT);
+}
+<BLOCK_COMMENT>{
+	"*/"      BEGIN(INITIAL);
+	[^*\n]+   // eat comment in chunks
+	"*"       // eat the lone star
+	\n        yylineno++;
+}
+
 
 [A-Za-z][A-Za-z0-9_]*		printf("id %s\n", yytext);
 
