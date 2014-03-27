@@ -34,7 +34,18 @@ DIGIT  [0-9]
 "*"			printf("*\n");
 ">"			printf(">\n");
 "<>"		printf("<>\n");
-","		printf(",\n");
+","			printf(",\n");
+
+[0-9]+	printf("num %s\n", yytext);
+[0-9][A-Fa-f0-9]*H 	{
+
+	int hex;
+	sscanf("%hH", yytext, &hex);
+	
+
+	printf("num %d\n", hex);
+}
+
 
 
 {WHITESPACE}+ {}
