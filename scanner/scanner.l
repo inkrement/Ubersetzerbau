@@ -38,12 +38,11 @@ DIGIT  [0-9]
 
 [0-9]+	printf("num %s\n", yytext);
 [0-9][A-Fa-f0-9]*H 	{
+	yytext[strlen(yytext)-1] = 0;
 
-	int hex;
-	sscanf("%hH", yytext, &hex);
-	
+	int res = (int) strtol(yytext, NULL, 16);
 
-	printf("num %d\n", hex);
+	printf("num %d\n", res);
 }
 
 
