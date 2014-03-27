@@ -923,12 +923,12 @@ YY_RULE_SETUP
 case 29:
 YY_RULE_SETUP
 #line 46 "scanner.l"
-printf("id %s", yytext);
+printf("id %s\n", yytext);
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 48 "scanner.l"
-printf("Unrecognized character %s", yytext);
+printf("Unrecognized character %s\n", yytext);
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
