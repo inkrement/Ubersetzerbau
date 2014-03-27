@@ -11,7 +11,7 @@ DIGIT  [0-9]
 
 %%
 
-[A-Za-z]+[A-Za-Z0-9_]*		printf("id %s", yytext);
+
 
 "struct"	printf("struct");
 "end"		printf("end");
@@ -44,6 +44,7 @@ DIGIT  [0-9]
 <C_COMMENT>"*/" { BEGIN(INITIAL); }
 <C_COMMENT>.    { }
 
+[A-Za-z][A-Za-z0-9_]*		printf("id %s", yytext);
 
 .		printf("Unrecognized character %s", yytext);
 
