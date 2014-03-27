@@ -10,31 +10,31 @@ DIGIT  [0-9]
 %x C_COMMENT
 
 %%
-"struct"	printf("struct");
-"end"		printf("end");
-"func"		printf("func");
-"return"	printf("return");
-"with"		printf("with");
-"do"		printf("do");
-"let"		printf("let");
-"in"		printf("in");
-"cond"		printf("cond");
-"then"		printf("then");
-"not"		printf("not");
-"or"		printf("or");
+"struct"	printf("struct\n");
+"end"		printf("end\n");
+"func"		printf("func\n");
+"return"	printf("return\n");
+"with"		printf("with\n");
+"do"		printf("do\n");
+"let"		printf("let\n");
+"in"		printf("in\n");
+"cond"		printf("cond\n");
+"then"		printf("then\n");
+"not"		printf("not\n");
+"or"		printf("or\n");
 
-"("			printf("(");
-")"			printf(")");
-":"			printf(":");
-";"			printf(";");
-"="			printf("=");
-"."			printf(".");
-"-"			printf("_");
-"+"			printf("+");
-"*"			printf("*");
-">"			printf(">");
-"<>"		printf("<>");
-","		printf(",");
+"("			printf("(\n");
+")"			printf(")\n");
+":"			printf(":\n");
+";"			printf(";\n");
+"="			printf("=\n");
+"."			printf(".\n");
+"-"			printf("_\n");
+"+"			printf("+\n");
+"*"			printf("*\n");
+">"			printf(">\n");
+"<>"		printf("<>\n");
+","		printf(",\n");
 
 
 {WHITESPACE}+ {}
