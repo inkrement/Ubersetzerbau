@@ -38,17 +38,26 @@ Def: Funcdef
 
 /***** stand *****/
 
+// { id } in EBNF
+id_rec: /*null*/
+	| id
+	| id id_rec
+	;
+
 Structdef: struct id ':' /* Strukturname */
-	{ id } /* Felddefinition */
+	id_rec /* beliebig viele ids */
 	end
 	;
 
 Funcdef: func id /* Funktionsname */
-	'(' { id } ')' /* Parameterdefinition */
+	'(' id_rec ')' /* Parameterdefinition */
 	Stats end
 	;
 
-Stats: { Stat ';' }
+//EBNF: { Stat ';' }
+Stats: /*null*/
+	| Stat ';'
+	| Stat ';' Stats
 	;
 
 Stat: return Expr
