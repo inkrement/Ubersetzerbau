@@ -14,7 +14,7 @@ extern FILE* yyin;
  * end with 2 on syntax error
  */
 void yyerror(const char* s) {
-	printf("%s\n", s)
+	printf("%s\n", s);
 	exit(2);
 }
 
@@ -22,7 +22,7 @@ void yyerror(const char* s) {
 %}
 
 /* BISON Declarations */
-%token with struct return num cond end id let in func
+%token with struct return num cond end id let in func or not do then
 
 /* Grammar follows */
 %%
@@ -87,7 +87,7 @@ NotRec: /*empty*/
 
 RecCompSym: /*empty*/
 	| '>' RecCompSym
-	| '<>' RecCompSym
+	| "<>" RecCompSym
 	;
 
 Expr: Term
