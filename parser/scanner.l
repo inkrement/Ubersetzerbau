@@ -24,32 +24,22 @@ DIGIT  [0-9]
 "not"		return T_NOT;
 "or"		return T_OR;
 
-"("			printf("(\n");
-")"			printf(")\n");
-":"			printf(":\n");
-";"			printf(";\n");
-"="			printf("=\n");
-"."			printf(".\n");
-"-"			printf("-\n");
-"+"			printf("+\n");
-"*"			printf("*\n");
-">"			printf(">\n");
-"<>"		printf("<>\n");
-","			printf(",\n");
+"("			return T_BRACKET_LEFT;
+")"			return T_BRACKET_RIGHT;
+":"			return T_DOUBBLE_POINT;
+";"			return T_SEMICOLON;
+"="			return T_EQUAL;
+"."			return T_POINT;
+"-"			return T_MINUS;
+"+"			return T_PLUS;
+"*"			return T_MUL;
+">"			return T_GREATER;
+"<>"		return T_NOT_EQUAL;
+","			return T_COLON;
 
-[0-9]+	{
-	int res = (int) strtol(yytext, NULL, 10);
+[0-9]+		return T_NUM;
 
-	printf("T_NUM\n");
-}
-
-[0-9][A-Fa-f0-9]*H 	{
-	yytext[strlen(yytext)-1] = 0;
-
-	int res = (int) strtol(yytext, NULL, 16);
-
-	printf("T_NUM\n");
-}
+[0-9][A-Fa-f0-9]*H 	return T_NUM;
 
 
 
@@ -67,7 +57,7 @@ DIGIT  [0-9]
 }
 
 
-[A-Za-z][A-Za-z0-9_]*		printf("T_ID\n");
+[A-Za-z][A-Za-z0-9_]*		return T_ID;
 
 .		exit(1);
 

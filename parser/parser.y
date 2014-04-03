@@ -27,8 +27,6 @@ void yyerror(const char* s) {
 /* Grammar follows */
 %%
 
-Shit: T_END;
-
 Program: /* empty program */
 	| Def ';' Program
 	;
