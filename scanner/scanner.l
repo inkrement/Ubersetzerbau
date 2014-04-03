@@ -68,10 +68,7 @@ DIGIT  [0-9]
 
 [A-Za-z][A-Za-z0-9_]*		printf("id %s\n", yytext);
 
-.		printf("Unrecognized character %s\n", yytext);
+.		{exit(1);}
 
 %%
 
-main() {
-	yylex();
-}
