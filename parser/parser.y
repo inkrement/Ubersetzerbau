@@ -14,6 +14,7 @@ extern FILE* yyin;
  * end with 2 on syntax error
  */
 void yyerror(const char* s) {
+	printf("%s\n", s)
 	exit(2);
 }
 
@@ -26,57 +27,87 @@ void yyerror(const char* s) {
 /* Grammar follows */
 %%
 
-Program: Def ';'
+Program: /* empty program */
+	| Def ';'
 	| Def ';' Program
 	;
-
 
 Def: Funcdef
 	| Structdef
 	;
 
+Rec_id: /* empty */
+	| id 
+	| id Rec_id
+	;
 
-/***** stand *****/
-
-Structdef: struct id ':' /* Strukturname */
-	{ id } /* Felddefinition */
+Structdef: struct id ':'
+	Rec_id
 	end
 	;
 
-Funcdef: func id /* Funktionsname */
-	'(' { id } ')' /* Parameterdefinition */
+Funcdef: func id 
+	'(' Rec_id ')'
 	Stats end
 	;
 
-Stats: { Stat ';' }
+Stats: /*empty Statement*/
+	| Stat ';'
+	| Stat ';' Stats
+	;
+
+
+LetRec: /*empty*/
+	| id '=' Expr ';'
+	| id '=' Expr ';' LetRec
+	;
+
+CondRec: /*empty*/
+	| Expr then Stats end ';'
+	| Expr then Stats end ';' CondRec
 	;
 
 Stat: return Expr
-	| cond { Expr then Stats end ';' } end
-	| let { id '=' Expr ';' } in Stats end
+	| cond CondRec end
+	| let LetRec in Stats end
 	| with Expr ':' id do Stats end
-	| Lexpr '=' Expr /* Zuweisung */
+	| Lexpr '=' Expr 
 	| Term
 	;
 
-Lexpr: id /* Schreibender Variablenzugriff */
-	| Term '.' id /* Schreibender Feldzugriff */
+Lexpr: id 
+	| Term '.' id 
 	;
 
-Expr: { not | '-' } Term
-	| Term { '+' Term }
-	| Term { '*' Term }
-	| Term { or Term }
-	| Term { '>' | '<>' } Term
+NotRec: /*empty*/
+	| not
+	| '-'
+	| NotRec NotRec
 	;
+
+RecCompSym: /*empty*/
+	| '>' RecCompSym
+	| '<>' RecCompSym
+	;
+
+Expr: Term
+	| Expr '+' Term
+	| Expr '*' Term
+	| Expr or Term
+	| Term RecCompSym Term
+	;
+
+ExprList: /*empty*/
+	| Expr ','
+	| Expr
+	| Expr ',' ExprList
 
 Term: '(' Expr ')'
 	| num
-	| Term '.' id /* Lesender Feldzugriff */
-	| id /* Lesender Variablenzugriff */
-	| id '(' { Expr ',' } [ Expr ] ')' /* Funktionsaufruf */
+	| Term '.' id 
+	| id
+	| id '(' ExprList ')'
 	;
-
 
 
 
