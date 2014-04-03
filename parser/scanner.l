@@ -4,7 +4,6 @@
 %}
 
 WHITESPACE   [ \t\n]
-DIGIT  [0-9]
 
 /* define additional states */
 
