@@ -10,18 +10,18 @@ DIGIT  [0-9]
 %x BLOCK_COMMENT
 
 %%
-"struct"	printf("struct\n");
-"end"		printf("end\n");
-"func"		printf("func\n");
-"return"	printf("return\n");
-"with"		printf("with\n");
-"do"		printf("do\n");
-"let"		printf("let\n");
-"in"		printf("in\n");
-"cond"		printf("cond\n");
-"then"		printf("then\n");
-"not"		printf("not\n");
-"or"		printf("or\n");
+"struct"	printf("T_STRUCT\n");
+"end"		printf("T_END\n");
+"func"		printf("T_FUNC\n");
+"return"	printf("T_RETURN\n");
+"with"		printf("T_WITH\n");
+"do"		printf("T_DO\n");
+"let"		printf("T_LET\n");
+"in"		printf("T_IN\n");
+"cond"		printf("T_COND\n");
+"then"		printf("T_THEN\n");
+"not"		printf("T_NOT\n");
+"or"		printf("T_OR\n");
 
 "("			printf("(\n");
 ")"			printf(")\n");
@@ -39,7 +39,7 @@ DIGIT  [0-9]
 [0-9]+	{
 	int res = (int) strtol(yytext, NULL, 10);
 
-	printf("num %d\n", res);
+	printf("T_NUM\n");
 }
 
 [0-9][A-Fa-f0-9]*H 	{
@@ -47,7 +47,7 @@ DIGIT  [0-9]
 
 	int res = (int) strtol(yytext, NULL, 16);
 
-	printf("num %d\n", res);
+	printf("T_NUM\n");
 }
 
 
@@ -66,7 +66,7 @@ DIGIT  [0-9]
 }
 
 
-[A-Za-z][A-Za-z0-9_]*		printf("id %s\n", yytext);
+[A-Za-z][A-Za-z0-9_]*		printf("T_ID\n");
 
 .		printf("Unrecognized character %s\n", yytext);
 
