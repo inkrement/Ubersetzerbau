@@ -90,7 +90,7 @@ RecCompSym: /*empty*/
 	| "<>" RecCompSym
 	;
 
-Expr: Term
+Expr: NotRec Term
 	| Expr '+' Term
 	| Expr '*' Term
 	| Expr or Term
