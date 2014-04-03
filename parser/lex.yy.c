@@ -849,135 +849,125 @@ return T_OR;
 case 13:
 YY_RULE_SETUP
 #line 27 "scanner.l"
-printf("(\n");
+return T_BRACKET_LEFT;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 28 "scanner.l"
-printf(")\n");
+return T_BRACKET_RIGHT;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 29 "scanner.l"
-printf(":\n");
+return T_DOUBLE_POINT;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 30 "scanner.l"
-printf(";\n");
+return T_SEMICOLON;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 31 "scanner.l"
-printf("=\n");
+return T_EQUAL;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 32 "scanner.l"
-printf(".\n");
+return T_POINT;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 33 "scanner.l"
-printf("-\n");
+return T_MINUS;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 34 "scanner.l"
-printf("+\n");
+return T_PLUS;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 35 "scanner.l"
-printf("*\n");
+return T_MUL;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 36 "scanner.l"
-printf(">\n");
+return T_GREATER;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 37 "scanner.l"
-printf("<>\n");
+return T_NOT_EQUAL;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 38 "scanner.l"
-printf(",\n");
+return T_COLON;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 40 "scanner.l"
-{
-	int res = (int) strtol(yytext, NULL, 10);
-
-	printf("T_NUM\n");
-}
+return T_NUM;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 46 "scanner.l"
-{
-	yytext[strlen(yytext)-1] = 0;
-
-	int res = (int) strtol(yytext, NULL, 16);
-
-	printf("T_NUM\n");
-}
+#line 42 "scanner.l"
+return T_NUM;
 	YY_BREAK
 case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
-#line 56 "scanner.l"
+#line 46 "scanner.l"
 {}
 	YY_BREAK
 
 case 28:
 YY_RULE_SETUP
-#line 60 "scanner.l"
+#line 50 "scanner.l"
 BEGIN(BLOCK_COMMENT);
 	YY_BREAK
 
 
 case 29:
 YY_RULE_SETUP
-#line 63 "scanner.l"
+#line 53 "scanner.l"
 BEGIN(INITIAL);
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 64 "scanner.l"
+#line 54 "scanner.l"
 // eat comment in chunks
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 65 "scanner.l"
+#line 55 "scanner.l"
 // eat the lone star
 	YY_BREAK
 case 32:
 /* rule 32 can match eol */
 YY_RULE_SETUP
-#line 66 "scanner.l"
+#line 56 "scanner.l"
 yylineno++;
 	YY_BREAK
 
 case 33:
 YY_RULE_SETUP
-#line 70 "scanner.l"
-printf("T_ID\n");
+#line 60 "scanner.l"
+return T_ID;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 72 "scanner.l"
+#line 62 "scanner.l"
 exit(1);
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 74 "scanner.l"
+#line 64 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 981 "lex.yy.c"
+#line 971 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(BLOCK_COMMENT):
 	yyterminate();
@@ -1976,7 +1966,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 74 "scanner.l"
+#line 64 "scanner.l"
 
 
 

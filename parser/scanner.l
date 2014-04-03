@@ -26,7 +26,7 @@ DIGIT  [0-9]
 
 "("			return T_BRACKET_LEFT;
 ")"			return T_BRACKET_RIGHT;
-":"			return T_DOUBBLE_POINT;
+":"			return T_DOUBLE_POINT;
 ";"			return T_SEMICOLON;
 "="			return T_EQUAL;
 "."			return T_POINT;
