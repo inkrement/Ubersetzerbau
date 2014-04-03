@@ -14,7 +14,7 @@ extern FILE* yyin;
  * end with 2 on syntax error
  */
 void yyerror(const char* s) {
-	printf("%s\n", s);
+	//printf("%s\n", s);
 	exit(2);
 }
 
@@ -26,6 +26,8 @@ void yyerror(const char* s) {
 
 /* Grammar follows */
 %%
+
+Shit: T_END;
 
 Program: /* empty program */
 	| Def ';' Program

@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include "parser.tab.h"
 %}
 
 WHITESPACE   [ \t\n]
@@ -10,18 +11,18 @@ DIGIT  [0-9]
 %x BLOCK_COMMENT
 
 %%
-"struct"	printf("T_STRUCT\n");
-"end"		printf("T_END\n");
-"func"		printf("T_FUNC\n");
-"return"	printf("T_RETURN\n");
-"with"		printf("T_WITH\n");
-"do"		printf("T_DO\n");
-"let"		printf("T_LET\n");
-"in"		printf("T_IN\n");
-"cond"		printf("T_COND\n");
-"then"		printf("T_THEN\n");
-"not"		printf("T_NOT\n");
-"or"		printf("T_OR\n");
+"struct"	return T_STRUCT;
+"end"		return T_END;
+"func"		return T_FUNC;
+"return"	return T_RETURN;
+"with"		return T_WITH;
+"do"		return T_DO;
+"let"		return T_LET;
+"in"		return T_IN;
+"cond"		return T_COND;
+"then"		return T_THEN;
+"not"		return T_NOT;
+"or"		return T_OR;
 
 "("			printf("(\n");
 ")"			printf(")\n");
@@ -29,7 +30,7 @@ DIGIT  [0-9]
 ";"			printf(";\n");
 "="			printf("=\n");
 "."			printf(".\n");
-"-"			printf("_\n");
+"-"			printf("-\n");
 "+"			printf("+\n");
 "*"			printf("*\n");
 ">"			printf(">\n");
@@ -68,10 +69,6 @@ DIGIT  [0-9]
 
 [A-Za-z][A-Za-z0-9_]*		printf("T_ID\n");
 
-.		printf("Unrecognized character %s\n", yytext);
+.		exit(1);
 
 %%
-
-main() {
-	yylex();
-}

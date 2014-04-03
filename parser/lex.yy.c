@@ -510,9 +510,10 @@ char *yytext;
 #line 1 "scanner.l"
 #line 2 "scanner.l"
 #include <stdio.h>
+#include "parser.tab.h"
 /* define additional states */
 
-#line 516 "lex.yy.c"
+#line 517 "lex.yy.c"
 
 #define INITIAL 0
 #define BLOCK_COMMENT 1
@@ -700,9 +701,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 12 "scanner.l"
+#line 13 "scanner.l"
 
-#line 706 "lex.yy.c"
+#line 707 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -787,196 +788,196 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 13 "scanner.l"
-printf("struct\n");
+#line 14 "scanner.l"
+return T_STRUCT;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 14 "scanner.l"
-printf("end\n");
+#line 15 "scanner.l"
+return T_END;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 15 "scanner.l"
-printf("func\n");
+#line 16 "scanner.l"
+return T_FUNC;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 16 "scanner.l"
-printf("return\n");
+#line 17 "scanner.l"
+return T_RETURN;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 17 "scanner.l"
-printf("with\n");
+#line 18 "scanner.l"
+return T_WITH;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 18 "scanner.l"
-printf("do\n");
+#line 19 "scanner.l"
+return T_DO;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 19 "scanner.l"
-printf("let\n");
+#line 20 "scanner.l"
+return T_LET;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 20 "scanner.l"
-printf("in\n");
+#line 21 "scanner.l"
+return T_IN;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 21 "scanner.l"
-printf("cond\n");
+#line 22 "scanner.l"
+return T_COND;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 22 "scanner.l"
-printf("then\n");
+#line 23 "scanner.l"
+return T_THEN;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 23 "scanner.l"
-printf("not\n");
+#line 24 "scanner.l"
+return T_NOT;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 24 "scanner.l"
-printf("or\n");
+#line 25 "scanner.l"
+return T_OR;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 26 "scanner.l"
+#line 27 "scanner.l"
 printf("(\n");
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 27 "scanner.l"
+#line 28 "scanner.l"
 printf(")\n");
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 28 "scanner.l"
+#line 29 "scanner.l"
 printf(":\n");
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 29 "scanner.l"
+#line 30 "scanner.l"
 printf(";\n");
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 30 "scanner.l"
+#line 31 "scanner.l"
 printf("=\n");
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 31 "scanner.l"
+#line 32 "scanner.l"
 printf(".\n");
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 32 "scanner.l"
-printf("_\n");
+#line 33 "scanner.l"
+printf("-\n");
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 33 "scanner.l"
+#line 34 "scanner.l"
 printf("+\n");
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 34 "scanner.l"
+#line 35 "scanner.l"
 printf("*\n");
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 35 "scanner.l"
+#line 36 "scanner.l"
 printf(">\n");
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 36 "scanner.l"
+#line 37 "scanner.l"
 printf("<>\n");
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 37 "scanner.l"
+#line 38 "scanner.l"
 printf(",\n");
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 39 "scanner.l"
+#line 40 "scanner.l"
 {
 	int res = (int) strtol(yytext, NULL, 10);
 
-	printf("num %d\n", res);
+	printf("T_NUM\n");
 }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 45 "scanner.l"
+#line 46 "scanner.l"
 {
 	yytext[strlen(yytext)-1] = 0;
 
 	int res = (int) strtol(yytext, NULL, 16);
 
-	printf("num %d\n", res);
+	printf("T_NUM\n");
 }
 	YY_BREAK
 case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
-#line 55 "scanner.l"
+#line 56 "scanner.l"
 {}
 	YY_BREAK
 
 case 28:
 YY_RULE_SETUP
-#line 59 "scanner.l"
+#line 60 "scanner.l"
 BEGIN(BLOCK_COMMENT);
 	YY_BREAK
 
 
 case 29:
 YY_RULE_SETUP
-#line 62 "scanner.l"
+#line 63 "scanner.l"
 BEGIN(INITIAL);
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 63 "scanner.l"
+#line 64 "scanner.l"
 // eat comment in chunks
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 64 "scanner.l"
+#line 65 "scanner.l"
 // eat the lone star
 	YY_BREAK
 case 32:
 /* rule 32 can match eol */
 YY_RULE_SETUP
-#line 65 "scanner.l"
+#line 66 "scanner.l"
 yylineno++;
 	YY_BREAK
 
 case 33:
 YY_RULE_SETUP
-#line 69 "scanner.l"
-printf("id %s\n", yytext);
+#line 70 "scanner.l"
+printf("T_ID\n");
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 71 "scanner.l"
-{exit(1);}
+#line 72 "scanner.l"
+exit(1);
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 73 "scanner.l"
+#line 74 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 980 "lex.yy.c"
+#line 981 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(BLOCK_COMMENT):
 	yyterminate();
@@ -1975,8 +1976,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 73 "scanner.l"
-
+#line 74 "scanner.l"
 
 
 
