@@ -22,13 +22,12 @@ void yyerror(const char* s) {
 %}
 
 /* BISON Declarations */
-%token with struct return num cond end id let in func or not do then
+%token T_WITH T_STRUCT T_RETURN T_NUM T_COND T_END T_ID T_LET T_IN T_FUNC T_OR T_NOT T_DO T_THEN
 
 /* Grammar follows */
 %%
 
 Program: /* empty program */
-	| Def ';'
 	| Def ';' Program
 	;
 
@@ -37,50 +36,46 @@ Def: Funcdef
 	;
 
 Rec_id: /* empty */
-	| id 
-	| id Rec_id
+	| T_ID Rec_id
 	;
 
-Structdef: struct id ':'
+Structdef: T_STRUCT T_ID ':'
 	Rec_id
-	end
+	T_END
 	;
 
-Funcdef: func id 
+Funcdef: T_FUNC T_ID 
 	'(' Rec_id ')'
-	Stats end
+	Stats T_END
 	;
 
 Stats: /*empty Statement*/
-	| Stat ';'
 	| Stat ';' Stats
 	;
 
 
 LetRec: /*empty*/
-	| id '=' Expr ';'
-	| id '=' Expr ';' LetRec
+	| T_ID '=' Expr ';' LetRec
 	;
 
 CondRec: /*empty*/
-	| Expr then Stats end ';'
-	| Expr then Stats end ';' CondRec
+	| Expr T_THEN Stats T_END ';' CondRec
 	;
 
-Stat: return Expr
-	| cond CondRec end
-	| let LetRec in Stats end
-	| with Expr ':' id do Stats end
+Stat: T_RETURN Expr
+	| T_COND CondRec T_END
+	| T_LET LetRec T_IN Stats T_END
+	| T_WITH Expr ':' T_ID T_DO Stats T_END
 	| Lexpr '=' Expr 
 	| Term
 	;
 
-Lexpr: id 
-	| Term '.' id 
+Lexpr: T_ID 
+	| Term '.' T_ID 
 	;
 
 NotRec: /*empty*/
-	| not
+	| T_NOT
 	| '-'
 	| NotRec NotRec
 	;
@@ -93,20 +88,19 @@ RecCompSym: /*empty*/
 Expr: NotRec Term
 	| Expr '+' Term
 	| Expr '*' Term
-	| Expr or Term
+	| Expr T_OR Term
 	| Term RecCompSym Term
 	;
 
 ExprList: /*empty*/
-	| Expr ','
 	| Expr
 	| Expr ',' ExprList
 
 Term: '(' Expr ')'
-	| num
-	| Term '.' id 
-	| id
-	| id '(' ExprList ')'
+	| T_NUM
+	| Term '.' T_ID 
+	| T_ID
+	| T_ID '(' ExprList ')'
 	;
 
 
