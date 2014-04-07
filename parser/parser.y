@@ -1,9 +1,3 @@
-/*  TODO
- * Wenn moeglich Links?! Rekursion bevorzugen
- * let in klausel scheint nicht zu funktionieren
-
- */
-
 %{
 #define YYSTYPE double
 
@@ -56,7 +50,7 @@ Funcdef: T_FUNC T_ID
 	;
 
 Stats: /*empty Statement*/
-	| Stat T_SEMICOLON Stats
+	| Stats Stat T_SEMICOLON 
 	;
 
 
@@ -88,8 +82,8 @@ Vorzeichen: T_NOT
 	;
 
 RecCompSym: /*empty*/
-	| T_GREATER RecCompSym
-	| T_NOT_EQUAL RecCompSym
+	| RecCompSym T_GREATER 
+	| RecCompSym T_NOT_EQUAL 
 	;
 
 Expr:
@@ -111,13 +105,9 @@ Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
 	| T_ID T_BRACKET_LEFT ExprList T_BRACKET_RIGHT
 	;
 
-
-
 %%
 
 main() {
-	//do { 
 		yyparse();
-	//} while(!feof(yyin));
 }
 
