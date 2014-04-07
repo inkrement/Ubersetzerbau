@@ -1,0 +1,32 @@
+
+func OmmiSchwitztBeimKacken ( gewicht erwarteter_wasserverlust )
+	return true;
+end;
+
+
+func aBerHallo ( param1 param2 ) 
+
+return not not -- 1;
+
+return 5 + 5 ;
+
+let a = 4; in 
+	return a;
+end;
+
+cond end;
+
+cond 5 then 
+	return 2; 
+	let a = 4; b = 2; c = 2*2; in 
+		return 2; 
+	end;
+end; end;
+
+with 3 : abc do return 2; end;
+
+abc = 5;
+
+adn.add = abc;
+
+end ;

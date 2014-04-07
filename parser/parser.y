@@ -1,4 +1,8 @@
-/* Infix notation calculator--calc */
+/*  TODO
+ * Wenn moeglich Links?! Rekursion bevorzugen
+ * let in klausel scheint nicht zu funktionieren
+
+ */
 
 %{
 #define YYSTYPE double
@@ -38,7 +42,7 @@ Def: Funcdef
 	;
 
 Rec_id: /* empty */
-	| T_ID Rec_id
+	| Rec_id T_ID 
 	;
 
 Structdef: T_STRUCT T_ID T_DOUBLE_POINT
@@ -52,18 +56,16 @@ Funcdef: T_FUNC T_ID
 	;
 
 Stats: /*empty Statement*/
-/*	| T_RETURN T_ID T_SEMICOLON */
-	| Stat T_SEMICOLON
-/*	| Stat T_SEMICOLON Stats */
+	| Stat T_SEMICOLON Stats
 	;
 
 
 LetRec: /*empty*/
-	| T_ID T_EQUAL Expr T_SEMICOLON LetRec
+	| LetRec T_ID T_EQUAL Expr T_SEMICOLON 
 	;
 
 CondRec: /*empty*/
-	| Expr T_THEN Stats T_END T_SEMICOLON CondRec
+	| CondRec Expr T_THEN Stats T_END T_SEMICOLON
 	;
 
 Stat: T_RETURN Expr
@@ -78,9 +80,11 @@ Lexpr: T_ID
 	| Term T_POINT T_ID 
 	;
 
-NotRec: /*empty*/
-	| NotRec T_NOT
-	| NotRec T_MINUS
+/* one or more not/minus*/
+Vorzeichen: T_NOT
+	| T_MINUS
+	| Vorzeichen T_NOT
+	| Vorzeichen T_MINUS
 	;
 
 RecCompSym: /*empty*/
@@ -90,15 +94,14 @@ RecCompSym: /*empty*/
 
 Expr:
 	| Term /* sollte eigentlich úeberfluessig sein da bei der unteren regel notrec auch null sein kann. is es aber nicht */
-	| NotRec Term
+	| Vorzeichen Term
 	| Expr T_PLUS Term
 	| Expr T_MUL Term
 	| Expr T_OR Term
 	| Term RecCompSym Term
 	;
 
-ExprList: /*empty*/
-	| Expr
+ExprList: Expr
 	| Expr T_COLON ExprList
 
 Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
