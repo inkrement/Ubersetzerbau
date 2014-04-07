@@ -60,4 +60,6 @@ WHITESPACE   [ \t\n]
 
 .		exit(1);
 
+<BLOCK_COMMENT><<EOF>> exit(1);
+
 %%

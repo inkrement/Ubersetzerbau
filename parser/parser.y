@@ -27,8 +27,8 @@ void yyerror(const char* s) {
 /* Grammar follows */
 %%
 
-Program: /* empty program */
-	| Def ';' Program
+Program: /* empty program */ 
+	| Program Def T_SEMICOLON
 	;
 
 Def: Funcdef
@@ -39,68 +39,68 @@ Rec_id: /* empty */
 	| T_ID Rec_id
 	;
 
-Structdef: T_STRUCT T_ID ':'
+Structdef: T_STRUCT T_ID T_DOUBLE_POINT
 	Rec_id
 	T_END
 	;
 
 Funcdef: T_FUNC T_ID 
-	'(' Rec_id ')'
+	T_BRACKET_LEFT Rec_id T_BRACKET_RIGHT
 	Stats T_END
 	;
 
 Stats: /*empty Statement*/
-	| Stat ';' Stats
+	| Stat T_SEMICOLON Stats
 	;
 
 
 LetRec: /*empty*/
-	| T_ID '=' Expr ';' LetRec
+	| T_ID T_EQUAL Expr T_SEMICOLON LetRec
 	;
 
 CondRec: /*empty*/
-	| Expr T_THEN Stats T_END ';' CondRec
+	| Expr T_THEN Stats T_END T_SEMICOLON CondRec
 	;
 
 Stat: T_RETURN Expr
 	| T_COND CondRec T_END
 	| T_LET LetRec T_IN Stats T_END
-	| T_WITH Expr ':' T_ID T_DO Stats T_END
-	| Lexpr '=' Expr 
+	| T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
+	| Lexpr T_EQUAL Expr 
 	| Term
 	;
 
 Lexpr: T_ID 
-	| Term '.' T_ID 
+	| Term T_POINT T_ID 
 	;
 
 NotRec: /*empty*/
 	| T_NOT
-	| '-'
+	| T_MINUS
 	| NotRec NotRec
 	;
 
 RecCompSym: /*empty*/
-	| '>' RecCompSym
-	| "<>" RecCompSym
+	| T_GREATER RecCompSym
+	| T_NOT_EQUAL RecCompSym
 	;
 
 Expr: NotRec Term
-	| Expr '+' Term
-	| Expr '*' Term
+	| Expr T_PLUS Term
+	| Expr T_MUL Term
 	| Expr T_OR Term
 	| Term RecCompSym Term
 	;
 
 ExprList: /*empty*/
 	| Expr
-	| Expr ',' ExprList
+	| Expr T_COLON ExprList
 
-Term: '(' Expr ')'
+Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
 	| T_NUM
-	| Term '.' T_ID 
+	| Term T_POINT T_ID 
 	| T_ID
-	| T_ID '(' ExprList ')'
+	| T_ID T_BRACKET_LEFT ExprList T_BRACKET_RIGHT
 	;
 
 
