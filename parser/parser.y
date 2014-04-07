@@ -10,6 +10,8 @@ extern int yylex();
 extern int yyparse();
 extern FILE* yyin;
 
+int yydebug=1;
+
 /**
  * end with 2 on syntax error
  */
@@ -50,7 +52,9 @@ Funcdef: T_FUNC T_ID
 	;
 
 Stats: /*empty Statement*/
-	| Stat T_SEMICOLON Stats
+/*	| T_RETURN T_ID T_SEMICOLON */
+	| Stat T_SEMICOLON
+/*	| Stat T_SEMICOLON Stats */
 	;
 
 
@@ -75,9 +79,8 @@ Lexpr: T_ID
 	;
 
 NotRec: /*empty*/
-	| T_NOT
-	| T_MINUS
-	| NotRec NotRec
+	| NotRec T_NOT
+	| NotRec T_MINUS
 	;
 
 RecCompSym: /*empty*/
@@ -85,7 +88,9 @@ RecCompSym: /*empty*/
 	| T_NOT_EQUAL RecCompSym
 	;
 
-Expr: NotRec Term
+Expr:
+	| Term /* sollte eigentlich úeberfluessig sein da bei der unteren regel notrec auch null sein kann. is es aber nicht */
+	| NotRec Term
 	| Expr T_PLUS Term
 	| Expr T_MUL Term
 	| Expr T_OR Term
