@@ -1,6 +1,6 @@
 %{
 #include <stdio.h>
-#include "parser.tab.h"
+#include "oxout.tab.h"
 %}
 
 WHITESPACE   [ \t\n]
