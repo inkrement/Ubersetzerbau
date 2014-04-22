@@ -62,7 +62,7 @@ WHITESPACE   [ \t\n]
 }
 
 
-[A-Za-z][A-Za-z0-9_]*		return T_ID;
+[A-Za-z][A-Za-z0-9_]*		return T_ID; @{ @ID.name@=strdup(yytext); @}
 
 .		exit(1);
 

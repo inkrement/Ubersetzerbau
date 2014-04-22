@@ -4,7 +4,13 @@
 @attributes	{ struct symbol_t *functions; struct symbol_t *structs; struct symbol_t *fields;} Program
 
 /*Sichtbare Symbole*/
-@attributes	{ struct symbol_t *symbols;} Funcdef Stats
+@attributes	{ struct symbol_t *symbols;} Funcdef Stats Params
+
+/*Parameter innerhalb einer Funktion*/
+@attributes { struct symbol_t *params;} Params
+
+/*Namen der IDs werden im scanner mitgeliefert*/
+@attributes { char *name; } T_ID
 
 
 %{
@@ -37,7 +43,6 @@ void yyerror(const char* s) {
 	Statt leeren Programmgen/Ausdrücken, gibt es als Blattknoten das Attribut T_LEAF
 */
 
-/*Neue */
 Program:
 	@{
 		@i @Program.functions@ = NULL;
@@ -57,8 +62,17 @@ Def: Funcdef
 	| Structdef
 	;
 
-Rec_id: Rec_id T_ID
-	| T_LEAF
+/*Parameter sind nur innerhalb einer Funktion sichtbar. Daher
+eigene Regel. */
+Params: Params T_ID
+	/*Zum inneren Param neuen hinzufuegen in aeusseren speichern*/
+	@{
+		@i @Params.0.params@ = table_add(@Params.1.params@, @T_ID.name@, PARAMETER_SYMBOL);
+	@}
+	;
+
+Rec_id: 
+	| Rec_id T_ID
 	;
 
 Structdef: T_STRUCT T_ID T_DOUBLE_POINT
@@ -66,26 +80,15 @@ Structdef: T_STRUCT T_ID T_DOUBLE_POINT
 	T_END
 	;
 
-/*
-Funcdef: T_FUNC T_ID 
-	T_BRACKET_LEFT Rec_id T_BRACKET_RIGHT
-	Stats T_END
-	;
-*/
-
-/*
-	Funktion mit und ohne Parameter. Rec_id gibt, falls es aufgerufen wird
-	immer was zurueck -> empty wurde entfernt
-*/
 Funcdef: T_FUNC T_ID T_BRACKET_LEFT T_BRACKET_RIGHT Stats T_END
 	@{
-		@i @Stats.symbols@ = NULL;
+		@i @Stats.symbols@ = table_merge(@Funcdef.symbols@, new_table());
 	@}	
 
-	| T_FUNC T_ID T_BRACKET_LEFT Rec_id T_BRACKET_RIGHT Stats T_END
+	| T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 
 	@{
-		@i @Stats.symbols@ = NULL;
+		@i @Stats.symbols@ = table_merge(@Funcdef.symbols@, @Params.symbols@);
 	@}
 
 Stats: Stats Stat T_SEMICOLON
