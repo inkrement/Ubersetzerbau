@@ -2,10 +2,11 @@
 #define SYMBOL_TABLE_H
 
 #define PARAMETER_SYMBOL 1
+#define EMPTY_TABLE (struct symbol_t *) NULL
 
 struct symbol_t {
 	char *name;
-	struct symbol_t *next_elem;
+	struct symbol_t *next;
 	short type;
 };
 
