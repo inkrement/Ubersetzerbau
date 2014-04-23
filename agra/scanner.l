@@ -3,7 +3,6 @@
 #include "oxout.tab.h"
 #include <string.h>
 
-#define lexeme strcpy((char*) malloc(yyleng + 1), yytext)
 %}
 
 WHITESPACE   [ \t\n]
@@ -11,9 +10,6 @@ WHITESPACE   [ \t\n]
 /* define additional states */
 
 %x BLOCK_COMMENT
-
-/*	@{ Attribut Definition. @}	*/
-/* String Attribut der einzelnen Tokens/Konstanten zeigt auf das zugehoerige Lexem */
 
 %%
 "struct"	return T_STRUCT;

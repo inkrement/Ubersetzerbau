@@ -1,16 +1,19 @@
 /********Symboltabelle*********/
 
+/*Namen der IDs werden im scanner mitgeliefert*/
+@attributes { char *name; } T_ID
+
 /*Ein Programm hat Funktionen, Strukturen und Felder*/
 @attributes	{ struct symbol_t *functions; struct symbol_t *structs; struct symbol_t *fields;} Program
 
 /*Sichtbare Symbole*/
-@attributes	{ struct symbol_t *symbols;} Funcdef Stats Params
+@attributes	{ struct symbol_t *symbols;} Funcdef Stats Expr
 
 /*Parameter innerhalb einer Funktion*/
-@attributes { struct symbol_t *params;} Params
+@attributes { struct symbol_t *vars;} Params LetRec
 
-/*Namen der IDs werden im scanner mitgeliefert*/
-@attributes { char *name; } T_ID
+/*Strukturnamen*/
+@attributes { struct symbol_t *strukturname} Structdef
 
 
 %{
@@ -39,35 +42,31 @@ void yyerror(const char* s) {
 /* Grammar follows */
 %%
 
-/*
-	Statt leeren Programmgen/Ausdrücken, gibt es als Blattknoten das Attribut T_LEAF
-*/
-
-Program:
-	@{
-		@i @Program.functions@ = NULL;
-		@i @Program.structs@ = NULL;
-		@i @Program.fields@ = NULL;
-	@}
-
-	| Def T_SEMICOLON Program
-	@{
-		@i @Program.functions@ = NULL;
-		@i @Program.structs@ = NULL;
-		@i @Program.fields@ = NULL;
-	@}
+Program: /*empty Program*/
+	| Program Def T_SEMICOLON
 	;
 
 Def: Funcdef
 	| Structdef
 	;
 
-/*Parameter sind nur innerhalb einer Funktion sichtbar. Daher
-eigene Regel. */
-Params: Params T_ID
-	/*Zum inneren Param neuen hinzufuegen in aeusseren speichern*/
+Funcdef: T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 	@{
-		@i @Params.0.params@ = table_add(@Params.1.params@, @T_ID.name@, PARAMETER_SYMBOL);
+		@i @Stats.symbols@ = table_merge(@Funcdef.symbols@, @Params.vars@);
+	@}
+	;
+
+Params: /*no params*/
+	@{
+		@i @Params.vars@ = new_table();
+	@}
+	| T_ID
+	@{
+		@i @Params.vars@ = table_add_symbol(new_table, @T_ID.name@, PARAMETER_SYMBOL);
+	@}
+	| T_ID Params
+	@{
+		@i @Params.0.vars@ = table_add_symbol(@Params.1.vars@, @T_ID.name@, PARAMETER_SYMBOL);
 	@}
 	;
 
@@ -80,24 +79,19 @@ Structdef: T_STRUCT T_ID T_DOUBLE_POINT
 	T_END
 	;
 
-Funcdef: T_FUNC T_ID T_BRACKET_LEFT T_BRACKET_RIGHT Stats T_END
-	@{
-		@i @Stats.symbols@ = table_merge(@Funcdef.symbols@, new_table());
-	@}	
-
-	| T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
-
-	@{
-		@i @Stats.symbols@ = table_merge(@Funcdef.symbols@, @Params.symbols@);
-	@}
-
 Stats: 
 	| Stats Stat T_SEMICOLON
 	;
 
 
 LetRec:
+	@{
+		@i @LetRec.vars@ = new_table();
+	@}
 	| LetRec T_ID T_EQUAL Expr T_SEMICOLON
+	@{
+		@i @Expr.symbols@ = table_merge(@LetRec.0.vars@, @LetRec.1.vars@);
+	@}
 	;
 
 CondRec:
@@ -107,7 +101,13 @@ CondRec:
 Stat: T_RETURN Expr
 	| T_COND CondRec T_END
 	| T_LET LetRec T_IN Stats T_END
+	@{
+		@i @Stats.symbols@ = @LetRec.vars@;
+	@}
 	| T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
+	@{
+		is_struct(T_ID);
+	@}
 	| Lexpr T_EQUAL Expr 
 	| Term
 	;
