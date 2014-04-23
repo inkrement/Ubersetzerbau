@@ -34,7 +34,7 @@ void yyerror(const char* s) {
 %}
 
 /* BISON Declarations */
-%token T_WITH T_STRUCT T_RETURN T_NUM T_COND T_END T_ID T_LET T_IN T_FUNC T_OR T_NOT T_DO T_THEN T_BRACKET_LEFT T_BRACKET_RIGHT T_DOUBLE_POINT T_SEMICOLON T_EQUAL T_POINT T_MINUS T_PLUS T_MUL T_GREATER T_NOT_EQUAL T_COLON T_LEAF
+%token T_WITH T_STRUCT T_RETURN T_NUM T_COND T_END T_ID T_LET T_IN T_FUNC T_OR T_NOT T_DO T_THEN T_BRACKET_LEFT T_BRACKET_RIGHT T_DOUBLE_POINT T_SEMICOLON T_EQUAL T_POINT T_MINUS T_PLUS T_MUL T_GREATER T_NOT_EQUAL T_COLON
 
 /* Grammar follows */
 %%
@@ -91,16 +91,17 @@ Funcdef: T_FUNC T_ID T_BRACKET_LEFT T_BRACKET_RIGHT Stats T_END
 		@i @Stats.symbols@ = table_merge(@Funcdef.symbols@, @Params.symbols@);
 	@}
 
-Stats: Stats Stat T_SEMICOLON
+Stats: 
+	| Stats Stat T_SEMICOLON
 	;
 
 
-LetRec: LetRec T_ID T_EQUAL Expr T_SEMICOLON
-	| T_LEAF
+LetRec:
+	| LetRec T_ID T_EQUAL Expr T_SEMICOLON
 	;
 
-CondRec: CondRec Expr T_THEN Stats T_END T_SEMICOLON
-	| T_LEAF
+CondRec:
+	| CondRec Expr T_THEN Stats T_END T_SEMICOLON
 	;
 
 Stat: T_RETURN Expr
@@ -120,21 +121,20 @@ Vorzeichen: T_NOT
 	| T_MINUS
 	| Vorzeichen T_NOT
 	| Vorzeichen T_MINUS
-	| T_LEAF
 	;
 
-RecCompSym: RecCompSym T_GREATER 
+RecCompSym:
+	| RecCompSym T_GREATER 
 	| RecCompSym T_NOT_EQUAL
-	| T_LEAF
 	;
 
-Expr: Term /* sollte eigentlich úeberfluessig sein da bei der unteren regel notrec auch null sein kann. is es aber nicht */
+Expr: 
+	| Term /* sollte eigentlich úeberfluessig sein da bei der unteren regel notrec auch null sein kann. is es aber nicht */
 	| Vorzeichen Term
 	| Expr T_PLUS Term
 	| Expr T_MUL Term
 	| Expr T_OR Term
 	| Term RecCompSym Term
-	| T_LEAF
 	;
 
 ExprList: Expr
