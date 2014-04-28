@@ -4,6 +4,11 @@
 #define PARAMETER_SYMBOL 1
 #define EMPTY_TABLE (struct symbol_t *) NULL
 #define TYPE_STRUCT 1
+#define TYPE_FELDNAME 2
+#define TYPE_STRUKTURNAME 3
+#define TYPE_FUNKTIONSNAME 4
+#define UNIQUE 1
+#define NOT_UNIQUE 0
 
 struct symbol_t {
 	char *name;
@@ -16,6 +21,7 @@ struct symbol_t *new_table(void);
 struct symbol_t *lookup(struct symbol_t *table, char *name);
 struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_two);
 struct symbol_t *table_add_symbol(struct symbol_t *table, char *identifier, short type);
+void is_struct(struct symbol_t *table, char *identifier);
 
 #endif
 

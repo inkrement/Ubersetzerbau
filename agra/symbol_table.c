@@ -50,7 +50,7 @@ struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_
  *
  * bei unique = 1 check! wenn nicht einfach hinzufügen
  */
-void add_symbol(struct symbol_t *table, char *name, short type, short unique) {
+struct symbol_t* add_symbol(struct symbol_t *table, char *name, short type, short unique) {
 	struct symbol_t* item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
 
 	//fehler wenn schon vorkommt
@@ -59,6 +59,8 @@ void add_symbol(struct symbol_t *table, char *name, short type, short unique) {
 	item->next = table;
 	item->name = name;
 	item->type = type;
+
+	return item;
 }
 
 

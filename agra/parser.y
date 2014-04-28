@@ -16,6 +16,11 @@
 @attributes { struct symbol_t *strukturname;} Structdef
 
 
+/*Feldnamen*/
+@attributes { struct symbol_t *feldname;} Rec_id
+
+@attributes { char* strukturname; } WITH
+
 %{
 #define YYSTYPE double
 
@@ -43,16 +48,29 @@ void yyerror(const char* s) {
 %%
 
 Program: /*empty Program*/
-	| Program Def T_SEMICOLON
-	;
-
-Def: Funcdef
-	| Structdef
+	@{
+		@i @Program.functions@ = new_table();
+		@i @Program.structs@ = new_table();
+		@i @Program.fields@ = new_table();
+	@}
+	| Program Structdef T_SEMICOLON
+	@{
+		@i @Program.0.functions@ = @Program.1.functions@;
+		@i @Program.0.fields@ = @Program.1.fields@;
+		@i @Program.0.structs@ = add_symbol(@Program.1.structs@, @Structdef.strukturname@, TYPE_STRUKTURNAME, UNIQUE);
+	@}
+	| Program Funcdef T_SEMICOLON
+	@{
+		@i @Program.0.fields@ = @Program.1.fields@;
+		@i @Program.0.functions@ = add_symbol(@Program.1.functions@, @Structdef.strukturname@, TYPE_FUNKTIONSNAME, NOT_UNIQUE);
+		@i @Program.0.structs@ = @Program.1.structs@;
+	@}
 	;
 
 Funcdef: T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 	@{
 		@i @Stats.symbols@ = table_merge(@Funcdef.symbols@, @Params.vars@);
+		@i @Funcdef.symbols@ = table_merge(@Funcdef.symbols@, @Params.vars@);
 	@}
 	;
 
@@ -71,12 +89,21 @@ Params: /*no params*/
 	;
 
 Rec_id: 
+	@{
+		@i @Rec_id.feldname@ = NULL;
+	@}
 	| Rec_id T_ID
+	@{
+		@i @Rec_id.0.feldname@ = add_symbol(@Rec_id.1.feldname@, @T_ID.name@, TYPE_FELDNAME, UNIQUE);
+	@}
 	;
 
 Structdef: T_STRUCT T_ID T_DOUBLE_POINT
 	Rec_id
 	T_END
+	@{
+		@i @Structdef.strukturname@ = @T_ID.name@;
+	@}
 	;
 
 Stats: 
@@ -91,6 +118,7 @@ LetRec:
 	| LetRec T_ID T_EQUAL Expr T_SEMICOLON
 	@{
 		@i @Expr.symbols@ = table_merge(@LetRec.0.vars@, @LetRec.1.vars@);
+		@i @LetRec.vars@ = new_table();
 	@}
 	;
 
@@ -104,12 +132,15 @@ Stat: T_RETURN Expr
 	@{
 		@i @Stats.symbols@ = @LetRec.vars@;
 	@}
-	| T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
-	@{
-		is_struct(T_ID);
-	@}
+	| WITH
 	| Lexpr T_EQUAL Expr 
 	| Term
+	;
+
+WITH: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
+	@{
+		@i @WITH.strukturname@ = is_struct(T_ID);
+	@}
 	;
 
 Lexpr: T_ID 
