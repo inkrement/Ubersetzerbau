@@ -4,7 +4,7 @@
 @attributes { char *name; } T_ID
 
 /*Ein Programm hat Funktionen, Strukturen und Felder*/
-@attributes	{ struct symbol_t *functions; struct symbol_t *structs; struct symbol_t *fields;} Program
+@attributes	{ struct symbol_t *structs; struct symbol_t *fields;} Program
 
 /*Sichtbare Symbole*/
 @attributes	{ struct symbol_t *symbols;} Funcdef Stats Expr
@@ -49,28 +49,28 @@ void yyerror(const char* s) {
 
 Program: /*empty Program*/
 	@{
-		@i @Program.functions@ = new_table();
 		@i @Program.structs@ = new_table();
 		@i @Program.fields@ = new_table();
 	@}
 	| Program Structdef T_SEMICOLON
 	@{
-		@i @Program.0.functions@ = @Program.1.functions@;
 		@i @Program.0.fields@ = @Program.1.fields@;
 		@i @Program.0.structs@ = add_symbol(@Program.1.structs@, @Structdef.strukturname@, TYPE_STRUKTURNAME, UNIQUE);
 	@}
 	| Program Funcdef T_SEMICOLON
 	@{
 		@i @Program.0.fields@ = @Program.1.fields@;
-		@i @Program.0.functions@ = add_symbol(@Program.1.functions@, @Structdef.strukturname@, TYPE_FUNKTIONSNAME, NOT_UNIQUE);
 		@i @Program.0.structs@ = @Program.1.structs@;
+
+		//inherit
+		@i @Funcdef.symbols@ = table_merge(@Program.structs@, @Program.fields@);
 	@}
 	;
 
 Funcdef: T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 	@{
+		//inherit
 		@i @Stats.symbols@ = table_merge(@Funcdef.symbols@, @Params.vars@);
-		@i @Funcdef.symbols@ = table_merge(@Funcdef.symbols@, @Params.vars@);
 	@}
 	;
 
@@ -78,11 +78,7 @@ Params: /*no params*/
 	@{
 		@i @Params.vars@ = new_table();
 	@}
-	| T_ID
-	@{
-		@i @Params.vars@ = table_add_symbol(new_table, @T_ID.name@, PARAMETER_SYMBOL);
-	@}
-	| T_ID Params
+	| Params T_ID
 	@{
 		@i @Params.0.vars@ = table_add_symbol(@Params.1.vars@, @T_ID.name@, PARAMETER_SYMBOL);
 	@}
