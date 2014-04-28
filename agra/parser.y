@@ -13,7 +13,7 @@
 @attributes { struct symbol_t *vars;} Params LetRec
 
 /*Strukturnamen*/
-@attributes { struct symbol_t *strukturname} Structdef
+@attributes { struct symbol_t *strukturname;} Structdef
 
 
 %{

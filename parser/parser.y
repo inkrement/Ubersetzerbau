@@ -1,20 +1,14 @@
 %{
-#define YYSTYPE double
 
 #include <stdio.h>
 #include <stdlib.h>
 
-extern int yylex();
 extern int yyparse();
-extern FILE* yyin;
-
-int yydebug=1;
 
 /**
  * end with 2 on syntax error
  */
 void yyerror(const char* s) {
-	//printf("%s\n", s);
 	exit(2);
 }
 
@@ -31,9 +25,7 @@ Program: /* empty program */
 	| Program Def T_SEMICOLON
 	;
 
-Def: Funcdef
-	| Structdef
-	;
+Def: Funcdef | Structdef;
 
 Rec_id: /* empty */
 	| Rec_id T_ID 
@@ -75,27 +67,24 @@ Lexpr: T_ID
 	;
 
 /* one or more not/minus*/
-Vorzeichen: T_NOT
-	| T_MINUS
+Vorzeichen:
 	| Vorzeichen T_NOT
 	| Vorzeichen T_MINUS
 	;
 
-RecCompSym: /*empty*/
-	| RecCompSym T_GREATER 
-	| RecCompSym T_NOT_EQUAL 
-	;
+CompSym: T_GREATER | T_NOT_EQUAL;
 
 Expr:
-	| Term /* sollte eigentlich úeberfluessig sein da bei der unteren regel notrec auch null sein kann. is es aber nicht */
+	Term
 	| Vorzeichen Term
 	| Expr T_PLUS Term
 	| Expr T_MUL Term
 	| Expr T_OR Term
-	| Term RecCompSym Term
+	| Term CompSym Term
 	;
 
-ExprList: Expr
+ExprList: /* empty */
+	| Expr
 	| Expr T_COLON ExprList
 
 Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
