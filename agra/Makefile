@@ -22,5 +22,5 @@ oxout.y oxout.l: parser.y scanner.l
 	ox parser.y scanner.l
 
 clean:
-	rm -f ag scanner.o scanner.c parser.h parser.c parser.o oxout.y oxout.l symbol_table.o
+	rm -f ag *.o scanner.c parser.h parser.c oxout.y oxout.l
 

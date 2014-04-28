@@ -1,1 +1,4 @@
 oxout.h
+lex.yy.c
+oxout.tab.c
+oxout.tab.h
