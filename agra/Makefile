@@ -1,24 +1,26 @@
 .PHONY: clean
 
-all: parser
+ag: scanner.o parser.o symbol_table.o
+	gcc -o ag symbol_table.o scanner.o parser.o -lfl
 
-#parser.tab.c parser.tab.h:	parser.y
-#	bison -d parser.y
+scanner.c: oxout.l
+	flex -oscanner.c oxout.l
 
-#lex.yy.c: scanner.l parser.tab.h
-#	flex scanner.l
+scanner.o: scanner.c parser.h symbol_table.h
+	gcc -c -ansi -pedantic scanner.c -D_GNU_SOURCE
+
+symbol_table.o: symbol_table.c symbol_table.h
+	gcc -c -ansi -pedantic -Wall symbol_table.c -D_GNU_SOURCE
+
+parser.o: parser.c symbol_table.h
+	gcc -c -ansi -pedantic parser.c
+
+parser.c parser.h: oxout.y
+	yacc -d oxout.y -o parser.c
 
 oxout.y oxout.l: parser.y scanner.l
 	ox parser.y scanner.l
 
-oxout.tab.c parser.tab.h: oxout.y
-	bison -d oxout.y
-
-lex.yy.c: oxout.l
-	lex oxout.l
-
-parser: lex.yy.c oxout.tab.c oxout.tab.h
-	gcc oxout.tab.c lex.yy.c -lfl -o parser
-
 clean:
-	rm oxout.tab.c oxout.y oxout.l oxout.tab.h lex.yy.c parser
+	rm -f ag scanner.o scanner.c parser.h parser.c parser.o oxout.y oxout.l symbol_table.o
+

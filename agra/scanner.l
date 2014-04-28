@@ -52,14 +52,17 @@ WHITESPACE   [ \t\n]
 }
 <BLOCK_COMMENT>{
 	"*/"      BEGIN(INITIAL);
-	[^*\n]+   // eat comment in chunks
-	"*"       // eat the lone star
+	[^*\n]+   {}
+	"*"       {}
 	\n        yylineno++;
 }
 
 
-[A-Za-z][A-Za-z0-9_]*		return T_ID; @{ @ID.name@=strdup(yytext); @}
+[A-Za-z][A-Za-z0-9_]*		{ 
+	return T_ID;
+	@{ @T_ID.name@=strdup(yytext); @}
 
+}
 .		exit(1);
 
 <BLOCK_COMMENT><<EOF>> exit(1);

@@ -7,7 +7,7 @@
 @attributes	{ struct symbol_t *structs; struct symbol_t *fields;} Program
 
 /*Sichtbare Symbole*/
-@attributes	{ struct symbol_t *symbols;} Funcdef Stats Expr Stat CondRec
+@attributes	{ struct symbol_t *symbols;} Lexpr Funcdef Stats Expr Stat CondRec ExprList Term
 
 /*Parameter innerhalb einer Funktion*/
 @attributes { struct symbol_t *vars;} Params LetRec
@@ -19,7 +19,7 @@
 /*Feldnamen*/
 @attributes { struct symbol_t *feldname;} Rec_id
 
-@attributes { char* strukturname; struct symbol_t *symbols; } WITH
+@attributes { char* strukturname; struct symbol_t *symbols; } With
 
 @traversal @postorder t
 
@@ -64,14 +64,12 @@ Program: /*empty Program*/
 		@i @Program.0.fields@ = @Program.1.fields@;
 		@i @Program.0.structs@ = @Program.1.structs@;
 
-		//inherit
 		@i @Funcdef.symbols@ = table_merge(@Program.structs@, @Program.fields@);
 	@}
 	;
 
 Funcdef: T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 	@{
-		//inherit
 		@i @Stats.symbols@ = table_merge(@Funcdef.symbols@, @Params.vars@);
 	@}
 	;
@@ -127,10 +125,18 @@ LetRec:
 CondRec:
 	| CondRec Expr T_THEN Stats T_END T_SEMICOLON
 	@{
-		//inherit
 		@i @Expr.symbols@ = @CondRec.symbols@;
 		@i @CondRec.1.symbols@ = @CondRec.0.symbols@;
 		@i @Stats.symbols@ = @CondRec.0.symbols@;
+	@}
+	;
+
+
+With: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
+	@{
+		@i @With.strukturname@ = is_struct(With.symbols, @T_ID.name@);
+		@i @Stats.symbols@ = @With.symbols@;
+		@i @Expr.symbols@ = @With.symbols@;
 	@}
 	;
 
@@ -146,27 +152,28 @@ Stat: T_RETURN Expr
 	@{
 		@i @Stats.symbols@ = @LetRec.vars@;
 	@}
-	| WITH
+	| With
 	@{
-		@i @WITH.symbols@ = @Stat.symbols@;
+		@i @With.symbols@ = @Stat.symbols@;
 	@}
 	| Lexpr T_EQUAL Expr 
 	@{
 		@i @Expr.symbols@ = @Stat.symbols@;
+		@i @Lexpr.symbols@ = @Stat.symbols@;
 	@}
 	| Term
-	;
-
-WITH: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 	@{
-		@i @WITH.strukturname@ = is_struct(T_ID);
-		@i @Stats.symbols@ = @WITH.symbols@;
-		@i @Expr.symbols@ = @WITH.symbols@;
+		@i @Term.symbols@ = @Stat.symbols@;
 	@}
 	;
 
+
 Lexpr: T_ID 
-	| Term T_POINT T_ID 
+
+	| Term T_POINT T_ID
+	@{
+		@i @Term.symbols@ = @Lexpr.symbols@;
+	@}
 	;
 
 /* one or more not/minus*/
@@ -183,22 +190,60 @@ RecCompSym:
 
 Expr: 
 	| Term /* sollte eigentlich úeberfluessig sein da bei der unteren regel notrec auch null sein kann. is es aber nicht */
+	@{
+		@i @Term.symbols@ = @Expr.symbols@;
+	@}
 	| Vorzeichen Term
+	@{
+		@i @Term.symbols@ = @Expr.symbols@;
+	@}
 	| Expr T_PLUS Term
+	@{
+		@i @Expr.1.symbols@ = @Expr.0.symbols@;
+		@i @Term.symbols@ = @Expr.symbols@;
+	@}
 	| Expr T_MUL Term
+	@{
+		@i @Expr.1.symbols@ = @Expr.0.symbols@;
+		@i @Term.symbols@ = @Expr.symbols@;
+	@}
 	| Expr T_OR Term
+	@{
+		@i @Expr.1.symbols@ = @Expr.0.symbols@;
+		@i @Term.symbols@ = @Expr.symbols@;
+	@}
 	| Term RecCompSym Term
+	@{
+		@i @Term.0.symbols@ = @Expr.symbols@;
+		@i @Term.1.symbols@ = @Expr.symbols@;
+	@}
 	;
 
 ExprList: Expr
+	@{
+		@i @Expr.symbols@ = @ExprList.symbols@;
+	@}
 	| Expr T_COLON ExprList
+	@{
+		@i @Expr.symbols@ = @ExprList.symbols@;
+		@i @ExprList.1.symbols@ = @ExprList.0.symbols@;
+	@}
 	;
 
 Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
+	@{
+		@i @Expr.symbols@ = @Term.symbols@;
+	@}
 	| T_NUM
-	| Term T_POINT T_ID 
+	| Term T_POINT T_ID
+	@{
+		@i @Term.1.symbols@ = @Term.0.symbols@;
+	@}
 	| T_ID
 	| T_ID T_BRACKET_LEFT ExprList T_BRACKET_RIGHT
+	@{
+		@i @ExprList.symbols@ = @Term.symbols@;
+	@}
 	;
 
 %%
