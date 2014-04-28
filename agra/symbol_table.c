@@ -64,6 +64,14 @@ void add_symbol(struct symbol_t *table, char *name, short type, short unique) {
 
 
 
+void is_struct(struct symbol_t *table, char *identifier){
+	struct symbol_t* item = table_lookup(table, identifier);
+
+	if(item != EMPTY_TABLE && item->type != TYPE_STRUCT) exit(3);
+}
+
+
+
 main(){
 	struct symbol_t* test = new_table();
 

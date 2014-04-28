@@ -3,6 +3,7 @@
 
 #define PARAMETER_SYMBOL 1
 #define EMPTY_TABLE (struct symbol_t *) NULL
+#define TYPE_STRUCT 1
 
 struct symbol_t {
 	char *name;
