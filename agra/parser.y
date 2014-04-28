@@ -7,7 +7,7 @@
 @attributes	{ struct symbol_t *structs; struct symbol_t *fields;} Program
 
 /*Sichtbare Symbole*/
-@attributes	{ struct symbol_t *symbols;} Funcdef Stats Expr
+@attributes	{ struct symbol_t *symbols;} Funcdef Stats Expr Stat CondRec
 
 /*Parameter innerhalb einer Funktion*/
 @attributes { struct symbol_t *vars;} Params LetRec
@@ -19,7 +19,9 @@
 /*Feldnamen*/
 @attributes { struct symbol_t *feldname;} Rec_id
 
-@attributes { char* strukturname; } WITH
+@attributes { char* strukturname; struct symbol_t *symbols; } WITH
+
+@traversal @postorder t
 
 %{
 #define YYSTYPE double
@@ -104,6 +106,10 @@ Structdef: T_STRUCT T_ID T_DOUBLE_POINT
 
 Stats: 
 	| Stats Stat T_SEMICOLON
+	@{
+		@i @Stat.symbols@ = @Stats.0.symbols@;
+		@i @Stats.1.symbols@ = @Stats.0.symbols@;
+	@}
 	;
 
 
@@ -120,22 +126,42 @@ LetRec:
 
 CondRec:
 	| CondRec Expr T_THEN Stats T_END T_SEMICOLON
+	@{
+		//inherit
+		@i @Expr.symbols@ = @CondRec.symbols@;
+		@i @CondRec.1.symbols@ = @CondRec.0.symbols@;
+		@i @Stats.symbols@ = @CondRec.0.symbols@;
+	@}
 	;
 
 Stat: T_RETURN Expr
+	@{
+		@i @Expr.symbols@ = @Stat.symbols@;
+	@}
 	| T_COND CondRec T_END
+	@{
+		@i @CondRec.symbols@ = @Stat.symbols@;
+	@}
 	| T_LET LetRec T_IN Stats T_END
 	@{
 		@i @Stats.symbols@ = @LetRec.vars@;
 	@}
 	| WITH
+	@{
+		@i @WITH.symbols@ = @Stat.symbols@;
+	@}
 	| Lexpr T_EQUAL Expr 
+	@{
+		@i @Expr.symbols@ = @Stat.symbols@;
+	@}
 	| Term
 	;
 
 WITH: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 	@{
 		@i @WITH.strukturname@ = is_struct(T_ID);
+		@i @Stats.symbols@ = @WITH.symbols@;
+		@i @Expr.symbols@ = @WITH.symbols@;
 	@}
 	;
 
