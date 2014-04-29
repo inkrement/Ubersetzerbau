@@ -28,7 +28,8 @@ struct symbol_t *table_clone(struct symbol_t *table) {
 	item->type = table->type;
 	item->name = table->name;
 
-	item->next = table_clone(table->next);
+	if(table->next != EMPTY_TABLE) 
+		item->next = table_clone(table->next);
 
 	return item;
 }
