@@ -3,6 +3,9 @@
 /*Namen der IDs werden im scanner mitgeliefert*/
 @attributes { char *name; } T_ID
 
+/*Namen der IDs werden im scanner mitgeliefert*/
+@attributes { char *val; } T_NUM
+
 /*Ein Programm hat Funktionen, Strukturen und Felder*/
 @attributes	{ struct symbol_t *structs; struct symbol_t *fields; } Program
 
