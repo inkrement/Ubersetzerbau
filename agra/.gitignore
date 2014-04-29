@@ -2,3 +2,9 @@ oxout.h
 lex.yy.c
 oxout.tab.c
 oxout.tab.h
+ag
+oxout.l
+oxout.y
+parser.c
+parser.h
+scanner.c

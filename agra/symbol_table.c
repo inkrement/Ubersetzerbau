@@ -17,7 +17,7 @@ struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
 	return (item->name == identifier)?item:EMPTY_TABLE;
 }
 
-stuct symbol_t *table_clone(struct symbol_t *table) {
+struct symbol_t *table_clone(struct symbol_t *table) {
 	struct symbol_t* item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
 
 	item->type = table->type;
@@ -53,7 +53,7 @@ struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_
 struct symbol_t* add_symbol(struct symbol_t *table, char *name, short type, short unique) {
 	struct symbol_t* item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
 
-	//fehler wenn schon vorkommt
+	/* fehler wenn schon vorkommt */
 	if (unique == 1 && (table_lookup(table, name) == EMPTY_TABLE)) exit(3);
 
 	item->next = table;
@@ -72,10 +72,10 @@ void is_struct(struct symbol_t *table, char *identifier){
 	if(item != EMPTY_TABLE && item->type != TYPE_STRUCT) exit(3);
 }
 
-
+/*
 
 main(){
 	struct symbol_t* test = new_table();
 
 
-}
+}*/

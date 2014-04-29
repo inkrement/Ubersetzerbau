@@ -20,7 +20,7 @@ struct symbol_t {
 struct symbol_t *new_table(void);
 struct symbol_t *lookup(struct symbol_t *table, char *name);
 struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_two);
-struct symbol_t *table_add_symbol(struct symbol_t *table, char *identifier, short type);
+struct symbol_t *add_symbol(struct symbol_t *table, char *identifier, short type, short unique);
 void is_struct(struct symbol_t *table, char *identifier);
 
 #endif

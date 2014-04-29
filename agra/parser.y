@@ -4,20 +4,20 @@
 @attributes { char *name; } T_ID
 
 /*Ein Programm hat Funktionen, Strukturen und Felder*/
-@attributes	{ struct symbol_t *structs; struct symbol_t *fields;} Program
+@attributes	{ struct symbol_t *structs; struct symbol_t *fields; } Program
 
 /*Sichtbare Symbole*/
-@attributes	{ struct symbol_t *symbols;} Lexpr Funcdef Stats Expr Stat CondRec ExprList Term
+@attributes	{ struct symbol_t *symbols; } Lexpr Funcdef Stats Expr Stat CondRec ExprList Term
 
 /*Parameter innerhalb einer Funktion*/
-@attributes { struct symbol_t *vars;} Params LetRec
+@attributes { struct symbol_t *vars; } Params LetRec
 
 /*Strukturnamen*/
 @attributes { struct symbol_t *strukturname;} Structdef
 
 
 /*Feldnamen*/
-@attributes { struct symbol_t *feldname;} Rec_id
+@attributes { struct symbol_t *feldname; } Rec_id
 
 @attributes { char* strukturname; struct symbol_t *symbols; } With
 
@@ -80,13 +80,13 @@ Params: /*no params*/
 	@}
 	| Params T_ID
 	@{
-		@i @Params.0.vars@ = table_add_symbol(@Params.1.vars@, @T_ID.name@, PARAMETER_SYMBOL);
+		@i @Params.0.vars@ = add_symbol(@Params.1.vars@, @T_ID.name@, PARAMETER_SYMBOL, UNIQUE);
 	@}
 	;
 
 Rec_id: 
 	@{
-		@i @Rec_id.feldname@ = NULL;
+		@i @Rec_id.feldname@ = new_table();
 	@}
 	| Rec_id T_ID
 	@{
@@ -134,9 +134,10 @@ CondRec:
 
 With: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 	@{
-		@i @With.strukturname@ = is_struct(With.symbols, @T_ID.name@);
+		@i @With.strukturname@ = @T_ID.name@;
 		@i @Stats.symbols@ = @With.symbols@;
 		@i @Expr.symbols@ = @With.symbols@;
+		@t is_struct(@Expr.symbols@, @T_ID.name@);
 	@}
 	;
 
