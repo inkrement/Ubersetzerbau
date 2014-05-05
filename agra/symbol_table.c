@@ -35,6 +35,16 @@ void check(struct symbol_t *table, char *identifier){
 	printf("CHECK: %s is NOT in table.\n", identifier);
 }
 
+void check(struct  symbol_t* t1, struct symbol_t* t2)
+{
+	struct  symbol_t* node;
+
+	if(t1 == EMPTY_TABLE) return;
+
+	for(node = t1; node->next != EMPTY_TABLE; node->next)
+		check(t2, node->name);
+}
+
 struct symbol_t *table_clone(struct symbol_t *table) {
 	
 	struct symbol_t* item;
