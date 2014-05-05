@@ -69,10 +69,6 @@ Params: /*no params*/
 	| Params T_ID
 	;
 
-Rec_id: 
-	| Rec_id T_ID
-	;
-
 Structdef: T_STRUCT T_ID T_DOUBLE_POINT Fields T_END
 	@{
 		@i @Structdef.name@ = @T_ID.name@;
