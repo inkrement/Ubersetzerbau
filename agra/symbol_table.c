@@ -83,7 +83,7 @@ struct symbol_t* add_symbol(struct symbol_t *table, char *name, short type, shor
 	printf("DEBUG: add symbol(%s/%d/%d)\n", name, type, unique);
 
 	/* fehler wenn schon vorkommt */
-	if (unique == 1 && (table_lookup(table, name) == EMPTY_TABLE)) {
+	if (unique == 1 && (table_lookup(table, name) != EMPTY_TABLE)) {
 		printf("DEBUG: add_symbol(%s) EXIT 3\n", name);
 		exit(3);
 	}
