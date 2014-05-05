@@ -8,3 +8,4 @@ oxout.y
 parser.c
 parser.h
 scanner.c
+oxout.output

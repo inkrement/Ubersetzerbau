@@ -39,6 +39,8 @@ void check_table(struct  symbol_t* t1, struct symbol_t* t2)
 {
 	struct  symbol_t* node;
 
+	printf("CHECK_TABLE\n");
+
 	if(t1 == EMPTY_TABLE) return;
 
 	for(node = t1; node->next != EMPTY_TABLE; node->next)
