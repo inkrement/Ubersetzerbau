@@ -4,10 +4,9 @@ cd ../
 make clean
 make
 
-
 for filename in ./test/*
 do
-    ./ag < $filename > debug.log 2>/dev/null
+    ./ag < $filename > "./log/$( basename $filename).log" 2>/dev/null
 
 
     retval=$?
