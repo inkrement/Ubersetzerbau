@@ -6,12 +6,13 @@
 /*Namen der IDs werden im scanner mitgeliefert*/
 @attributes { char *val; } T_NUM
 
-@attributes { struct symbol_t *struktur_namen; } Funcdef Stats Stat With LetRec CondRec
+@attributes { struct symbol_t *struktur_namen; } Stats Stat With LetRec CondRec
 
 @attributes { struct symbol_t *struktur_namen; struct symbol_t *feld_namen;} Program
 @attributes { struct symbol_t *feld_namen; char *name;} Structdef
 @attributes { struct symbol_t *feld_namen;} Fields
 @attributes { struct symbol_t *params;} Params
+@attributes { struct symbol_t *struktur_namen; struct symbol_t *params; struct symbol_t *feld_namen;} Funcdef
 
 /*Funcdef Params Stats Stat CondRec LetRec With Lexpr Term Expr ExprList*/
 
@@ -62,12 +63,14 @@ Program: /*empty Program*/
 		@i @Program.0.struktur_namen@ = @Program.1.struktur_namen@;
 		@i @Funcdef.struktur_namen@ = @Program.0.struktur_namen@;
 		@i @Program.0.feld_namen@ = @Program.1.feld_namen@;
+		@i @Funcdef.feld_namen@ = @Program.0.feld_namen@;
 	@}
 	;
 
 Funcdef: T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 	@{
 		@i @Stats.struktur_namen@ = @Funcdef.struktur_namen@;
+		@i @Funcdef.params@ = @Params.params@;
 	@}
 	;
 
