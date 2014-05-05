@@ -46,12 +46,12 @@ Program: /*empty Program*/
 	@}
 	| Program Structdef T_SEMICOLON
 	@{
-		@i @Program.1.struktur_namen@ = @Program.0.struktur_namen@;
+		@i @Program.0.struktur_namen@ = add_symbol(@Program.1.struktur_namen@, @Structdef.name@, TYPE_STRUKTURNAME, UNIQUE);
 	@}
 	| Program Funcdef T_SEMICOLON
 	@{
-		@i @Program.1.struktur_namen@ = @Program.0.struktur_namen@;
-		@i @Funkdef.struktur_namen@ = @Program.0.struktur_namen@;
+		@i @Program.0.struktur_namen@ = @Program.1.struktur_namen@;
+		@i @Funcdef.struktur_namen@ = @Program.0.struktur_namen@;
 	@}
 	;
 
@@ -77,25 +77,49 @@ Structdef: T_STRUCT T_ID T_DOUBLE_POINT Rec_id T_END
 
 Stats: 
 	| Stats Stat T_SEMICOLON
+	@{
+		@i @Stats.1.struktur_namen@ = @Stats.0.struktur_namen@;
+		@i @Stat.struktur_namen@ = @Stats.0.struktur_namen@;
+	@}
 	;
 
 
 LetRec:
 	| LetRec T_ID T_EQUAL Expr T_SEMICOLON
+	@{
+		@i @LetRec.1.struktur_namen@ = @LetRec.0.struktur_namen@;
+	@}
 	;
 
 CondRec:
 	| CondRec Expr T_THEN Stats T_END T_SEMICOLON
+	@{
+		@i @Stats.struktur_namen@ = @CondRec.struktur_namen@;
+		@i @CondRec.1.struktur_namen@ = @CondRec.0.struktur_namen@;
+	@}
 	;
 
 
 With: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
+	@{
+		@i @Stats.struktur_namen@ = @With.struktur_namen@;
+	@}
 	;
 
 Stat: T_RETURN Expr
 	| T_COND CondRec T_END
+	@{
+		@i @CondRec.struktur_namen@ = @Stat.struktur_namen@;
+	@}
 	| T_LET LetRec T_IN Stats T_END
+	@{
+		@i @Stats.struktur_namen@ = @Stat.struktur_namen@;
+		@i @LetRec.struktur_namen@ = @Stat.struktur_namen@;
+	@}
 	| With
+	@{
+		@i @With.struktur_namen@ = @Stat.struktur_namen@;
+	@}
 	| Lexpr T_EQUAL Expr
 	| Term
 	;
