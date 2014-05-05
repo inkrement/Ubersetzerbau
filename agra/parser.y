@@ -88,7 +88,7 @@ Fields: /*no params*/
 	@}
 	| Fields T_ID
 	@{
-		@i @Fields.0.feld_namen@ = add_symbol(@Fields.1.feld_namen@, @T_ID.name@, TYPE_FELDNAME, UNIQUE);
+		@i @Fields.0.feld_namen@ = add_feldname(@Fields.1.feld_namen@, @T_ID.name@);
 	@}
 	;
 
