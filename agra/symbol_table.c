@@ -11,20 +11,23 @@ struct symbol_t *new_table(void) {
 
 struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
 	
-	struct symbol_t* item;
+	struct symbol_t* item = table;
 
-	printf("DEBUG LOOKUP: %s\n", identifier);
+	printf("DEBUG: table lookup %s in %p\n", identifier, (void *) table);
 
-	if(table == EMPTY_TABLE) return EMPTY_TABLE;
+	while(item != EMPTY_TABLE){
+		printf("LOOKUP... elem: %s\n", item->name);
 
-	item = table;
-
-	printf("DEBUG: table lookup\n");
-
-	while(item->name != identifier && item->next != EMPTY_TABLE)
+		if(0 ==  strcmp(item->name, identifier)){
+			printf("TABLE lookup found %s in %p!\n", identifier,(void *) table);
+			return item;
+		}
 		item = item->next;
+	}
 
-	return (item->name == identifier)?item:EMPTY_TABLE;
+	printf("TABLE lookup NOTHING found in %p\n",(void *)table);
+
+	return EMPTY_TABLE;
 }
 
 void exists(struct symbol_t *table, char *identifier){
@@ -108,7 +111,8 @@ struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_
 struct symbol_t* add_symbol(struct symbol_t *table, char *name, short type, short unique) {
 	struct symbol_t* item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
 
-	printf("DEBUG: add symbol(%s/%d/%d)\n", name, type, unique);
+	table_info(table);
+	printf("DEBUG: add symbol(%s/%d/%d/unique) to %p\n", name, type, unique,(void *) table);
 
 	/* fehler wenn schon vorkommt */
 	if (unique == 1 && (table_lookup(table, name) != EMPTY_TABLE)) {
@@ -121,6 +125,20 @@ struct symbol_t* add_symbol(struct symbol_t *table, char *name, short type, shor
 	item->type = type;
 
 	return item;
+}
+
+void table_info(struct symbol_t *table){
+	int i=0;
+	struct symbol_t *node = table;
+
+	printf("tableinfo (%p): [", (void *) table);
+
+	for(;node != EMPTY_TABLE;node=node->next){
+		printf("%s", node->name);
+		i = i + 1;
+	}
+
+	printf("] has %d elements\n", i);
 }
 
 

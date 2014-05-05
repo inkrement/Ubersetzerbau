@@ -28,6 +28,7 @@ void is_struct(struct symbol_t *table, char *identifier);
 void exists(struct symbol_t *table, char *identifier);
 void check(struct symbol_t *table, char *identifier);
 void check_table(struct  symbol_t* t1, struct symbol_t* t2);
+void table_info(struct symbol_t *table);
 
 #endif
 
