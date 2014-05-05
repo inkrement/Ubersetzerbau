@@ -15,6 +15,8 @@ struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
 
 	if(table == EMPTY_TABLE) return EMPTY_TABLE;
 
+	printf("DEBUG LOOKUP: %s\n", identifier);
+
 	item = table;
 
 	printf("DEBUG: table lookup\n");
@@ -54,6 +56,7 @@ struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_
 	if(table_one == EMPTY_TABLE) return table_two;
 	if(table_two == EMPTY_TABLE) return table_one;
 
+
 	first=table_clone(table_one);
 	second=table_clone(table_two);
 
@@ -81,6 +84,11 @@ struct symbol_t* add_symbol(struct symbol_t *table, char *name, short type, shor
 
 	/* fehler wenn schon vorkommt */
 	if (unique == 1 && (table_lookup(table, name) == EMPTY_TABLE)) exit(3);
+
+	printf("DEBUG ADD-NAME: %s\n", name);
+	printf("DEBUG ADD-TYPE: %d\n", type);
+	printf("DEBUG ADD-UNIQUE: %d\n", unique);
+
 
 	item->next = table;
 	item->name = name;
