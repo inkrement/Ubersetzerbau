@@ -1,14 +1,16 @@
 /********Symboltabelle*********/
 
 /*Namen der IDs werden im scanner mitgeliefert*/
-@attributes { char *name; } T_ID Structdef
+@attributes { char *name; } T_ID
 
 /*Namen der IDs werden im scanner mitgeliefert*/
 @attributes { char *val; } T_NUM
 
-@attributes { struct symbol_t *struktur_namen; } Program Funcdef Stats Stat With LetRec CondRec
+@attributes { struct symbol_t *struktur_namen; } Funcdef Stats Stat With LetRec CondRec
 
-@attributes { struct symbol_t *feld_namen;} Program Structdef Fields
+@attributes { struct symbol_t *struktur_namen; struct symbol_t *feld_namen;} Program
+@attributes { struct symbol_t *feld_namen; char *name;} Structdef
+@attributes { struct symbol_t *feld_namen;} Fields
 
 /*Funcdef Params Stats Stat CondRec LetRec With Lexpr Term Expr ExprList*/
 
@@ -47,15 +49,18 @@ void yyerror(const char* s) {
 Program: /*empty Program*/
 	@{
 		@i @Program.struktur_namen@ = new_table();
+		@i @Program.feld_namen@ = new_table();
 	@}
 	| Program Structdef T_SEMICOLON
 	@{
 		@i @Program.0.struktur_namen@ = add_symbol(@Program.1.struktur_namen@, @Structdef.name@, TYPE_STRUKTURNAME, UNIQUE);
+		@i @Program.0.feld_namen@ = table_merge(@Program.1.feld_namen@, @Structdef.feld_namen@);
 	@}
 	| Program Funcdef T_SEMICOLON
 	@{
 		@i @Program.0.struktur_namen@ = @Program.1.struktur_namen@;
 		@i @Funcdef.struktur_namen@ = @Program.0.struktur_namen@;
+		@i @Program.0.feld_namen@ = @Program.1.feld_namen@;
 	@}
 	;
 
