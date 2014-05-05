@@ -128,10 +128,12 @@ struct symbol_t* add_symbol(struct symbol_t *table, char *name, short type, shor
 
 struct symbol_t* add_feldname(struct symbol_t *table, char *name, short type) {
 	struct symbol_t* item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
+	struct symbol_t* feldnamen;
+	
 	printf("DEBUG: add feldname(%s/%d/%d/unique) to %p\n", name, type, unique,(void *) table);
 
 	/* fehler wenn schon vorkommt */
-	struct symbol_t* feldnamen = table_lookup(table, name);
+	feldnamen = table_lookup(table, name);
 
 	while(feldnamen!=EMPTY_TABLE){
 		if(feldnamen->type == TYPE_FELDNAME) exit(3);
