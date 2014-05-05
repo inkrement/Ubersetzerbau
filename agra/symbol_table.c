@@ -13,9 +13,9 @@ struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
 	
 	struct symbol_t* item;
 
-	if(table == EMPTY_TABLE) return EMPTY_TABLE;
-
 	printf("DEBUG LOOKUP: %s\n", identifier);
+
+	if(table == EMPTY_TABLE) return EMPTY_TABLE;
 
 	item = table;
 
@@ -31,11 +31,11 @@ struct symbol_t *table_clone(struct symbol_t *table) {
 	
 	struct symbol_t* item;
 
+	printf("DEBUG: table clone\n");
+
 	if(table == EMPTY_TABLE) return EMPTY_TABLE;
 
 	item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
-
-	printf("DEBUG: table clone\n");
 
 	item->type = table->type;
 	item->name = table->name;
@@ -53,6 +53,8 @@ struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_
 
 	struct symbol_t *first, *second, *i;
 
+	printf("DEBUG: table merge\n");
+
 	if(table_one == EMPTY_TABLE) return table_two;
 	if(table_two == EMPTY_TABLE) return table_one;
 
@@ -61,8 +63,6 @@ struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_
 	second=table_clone(table_two);
 
 	i = first;
-
-	printf("DEBUG: table merge\n");
 
 	while(i->next != EMPTY_TABLE) i = i->next;
 
@@ -80,15 +80,13 @@ struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_
 struct symbol_t* add_symbol(struct symbol_t *table, char *name, short type, short unique) {
 	struct symbol_t* item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
 
-	printf("DEBUG: add symbol\n");
+	printf("DEBUG: add symbol(%s/%d/%d)\n", name, type, unique);
 
 	/* fehler wenn schon vorkommt */
-	if (unique == 1 && (table_lookup(table, name) == EMPTY_TABLE)) exit(3);
-
-	printf("DEBUG ADD-NAME: %s\n", name);
-	printf("DEBUG ADD-TYPE: %d\n", type);
-	printf("DEBUG ADD-UNIQUE: %d\n", unique);
-
+	if (unique == 1 && (table_lookup(table, name) == EMPTY_TABLE)) {
+		printf("DEBUG: add_symbol(%s) EXIT 3\n", name);
+		exit(3);
+	}
 
 	item->next = table;
 	item->name = name;
