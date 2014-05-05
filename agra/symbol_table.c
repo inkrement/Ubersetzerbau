@@ -147,11 +147,6 @@ struct symbol_t* add_feldname(struct symbol_t *table, char *name, short type) {
 
 
 
-
-
-
-
-
 void table_info(struct symbol_t *table){
 	int i=0;
 	struct symbol_t *node = table;
