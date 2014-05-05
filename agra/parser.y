@@ -13,7 +13,7 @@
 @attributes	{ struct symbol_t *symbols; } Lexpr Funcdef Stats Expr Stat CondRec ExprList Term
 
 /*Parameter innerhalb einer Funktion*/
-@attributes { struct symbol_t *vars; } Params LetRec
+@attributes { struct symbol_t *vars; } LetRec Params
 
 /*Strukturnamen*/
 @attributes { char *strukturname;} Structdef
@@ -73,6 +73,7 @@ Program: /*empty Program*/
 
 Funcdef: T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 	@{
+		@t check(@Funcdef.symbols@, @Params.vars@);
 		@i @Stats.symbols@ = table_merge(@Funcdef.symbols@, @Params.vars@);
 	@}
 	;
