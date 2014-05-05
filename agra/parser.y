@@ -71,6 +71,7 @@ Funcdef: T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 	@{
 		@i @Stats.struktur_namen@ = @Funcdef.struktur_namen@;
 		@i @Funcdef.params@ = @Params.params@;
+		@t table_merge(@Funcdef.params@, @Funcdef.feld_namen@);
 	@}
 	;
 
