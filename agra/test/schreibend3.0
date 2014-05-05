@@ -1,0 +1,6 @@
+func x()
+  /* Schreibender var zugriff auf vorh. var */
+  let x = 0; in
+    x = 3;
+  end;
+end;

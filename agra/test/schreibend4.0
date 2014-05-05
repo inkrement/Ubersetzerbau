@@ -1,0 +1,8 @@
+func x(a)
+  /* Schreibender var zugriff auf vorh. var */
+  let x = 0; y = 1; in
+    x = 3;
+    y = 2;
+    a = 9;
+  end;
+end;
