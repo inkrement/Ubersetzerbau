@@ -11,6 +11,7 @@
 @attributes { struct symbol_t *struktur_namen; struct symbol_t *feld_namen;} Program
 @attributes { struct symbol_t *feld_namen; char *name;} Structdef
 @attributes { struct symbol_t *feld_namen;} Fields
+@attributes { struct symbol_t *params;} Params
 
 /*Funcdef Params Stats Stat CondRec LetRec With Lexpr Term Expr ExprList*/
 
@@ -71,7 +72,13 @@ Funcdef: T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 	;
 
 Params: /*no params*/
+	@{
+		@i @Params.params@ = new_table();
+	@}
 	| Params T_ID
+	@{
+		@i @Params.0.params@ = add_symbol(@Params.1.params@, @T_ID.name@, TYPE_PARAMNAME, UNIQUE);
+	@}
 	;
 
 Structdef: T_STRUCT T_ID T_DOUBLE_POINT Fields T_END

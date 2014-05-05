@@ -9,6 +9,7 @@
 #define TYPE_STRUKTURNAME 3
 #define TYPE_FUNKTIONSNAME 4
 #define TYPE_LET_ID 5
+#define TYPE_PARAMNAME 6
 #define UNIQUE 1
 #define NOT_UNIQUE 0
 
