@@ -3,6 +3,7 @@
 
 #define PARAMETER_SYMBOL 1
 #define EMPTY_TABLE (struct symbol_t *) NULL
+#define EMPTY_STRUCT_TABLE (struct struct_t *) NULL
 #define TYPE_STRUCT 1
 #define TYPE_FELDNAME 2
 #define TYPE_STRUKTURNAME 3
@@ -15,6 +16,7 @@ struct symbol_t {
 	char *name;
 	struct symbol_t *next;
 	short type;
+	char *struct_name;
 };
 
 /*Was soll man mit den Table anstelln koennen*/
