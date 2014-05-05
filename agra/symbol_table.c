@@ -27,6 +27,14 @@ struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
 	return (item->name == identifier)?item:EMPTY_TABLE;
 }
 
+void check(struct symbol_t *table, char *identifier){
+	if (table_lookup(table, identifier) != EMPTY_TABLE){
+		printf("CHECK: %s is in table. EXIT!\n", identifier);
+		exit(3);
+	}
+	printf("CHECK: %s is NOT in table.\n", identifier);
+}
+
 struct symbol_t *table_clone(struct symbol_t *table) {
 	
 	struct symbol_t* item;
