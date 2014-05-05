@@ -10,7 +10,12 @@ struct symbol_t *new_table(void) {
 }
 
 struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
-	struct symbol_t* item = table;
+	
+	struct symbol_t* item;
+
+	if(table == EMPTY_TABLE) return EMPTY_TABLE;
+
+	item = table;
 
 	printf("DEBUG: table lookup\n");
 
@@ -21,9 +26,12 @@ struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
 }
 
 struct symbol_t *table_clone(struct symbol_t *table) {
+	
+	struct symbol_t* item;
+
 	if(table == EMPTY_TABLE) return EMPTY_TABLE;
 
-	struct symbol_t* item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
+	item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
 
 	printf("DEBUG: table clone\n");
 
@@ -40,10 +48,16 @@ struct symbol_t *table_clone(struct symbol_t *table) {
  * merges zwei tables
  */
 struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_two){
-	struct symbol_t* first=table_clone(table_one);
-	struct symbol_t* second=table_clone(table_two);
 
-	struct symbol_t* i = first;
+	struct symbol_t *first, *second, *i;
+
+	if(table_one == EMPTY_TABLE) return table_two;
+	if(table_two == EMPTY_TABLE) return table_one;
+
+	first=table_clone(table_one);
+	second=table_clone(table_two);
+
+	i = first;
 
 	printf("DEBUG: table merge\n");
 
