@@ -35,7 +35,7 @@ void check(struct symbol_t *table, char *identifier){
 	printf("CHECK: %s is NOT in table.\n", identifier);
 }
 
-void check(struct  symbol_t* t1, struct symbol_t* t2)
+void check_table(struct  symbol_t* t1, struct symbol_t* t2)
 {
 	struct  symbol_t* node;
 
