@@ -3,6 +3,8 @@
 make clean
 make
 
+mkdir log
+
 for filename in ./test/*
 do
     ./ag < $filename > "./log/$( basename $filename).log" 2>/dev/null

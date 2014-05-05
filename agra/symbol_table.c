@@ -43,7 +43,7 @@ void check_table(struct  symbol_t* t1, struct symbol_t* t2)
 
 	if(t1 == EMPTY_TABLE) return;
 
-	for(node = t1; node->next != EMPTY_TABLE; node->next)
+	for(node = t1; node->next != EMPTY_TABLE; node=node->next)
 		check(t2, node->name);
 }
 
