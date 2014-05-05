@@ -8,7 +8,7 @@
 
 @attributes { struct symbol_t *struktur_namen; } Program Funcdef Stats Stat With LetRec CondRec
 
-@attributes { struct symbol_t *feld_namen} Program Structdef Fields
+@attributes { struct symbol_t *feld_namen;} Program Structdef Fields
 
 /*Funcdef Params Stats Stat CondRec LetRec With Lexpr Term Expr ExprList*/
 
