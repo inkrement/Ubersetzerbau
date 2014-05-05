@@ -129,8 +129,8 @@ struct symbol_t* add_symbol(struct symbol_t *table, char *name, short type, shor
 struct symbol_t* add_feldname(struct symbol_t *table, char *name, short type) {
 	struct symbol_t* item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
 	struct symbol_t* feldnamen;
-	
-	printf("DEBUG: add feldname(%s/%d/%d/unique) to %p\n", name, type, unique,(void *) table);
+
+	printf("DEBUG: add feldname(%s) to %p\n", name,(void *) table);
 
 	/* fehler wenn schon vorkommt */
 	feldnamen = table_lookup(table, name);
