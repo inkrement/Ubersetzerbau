@@ -10,24 +10,22 @@ struct symbol_t *new_table(void) {
 }
 
 struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
-	
-	struct symbol_t* item = table;
+	struct symbol_t* i = table;
+	struct symbol_t *result = EMPTY_TABLE;
 
 	printf("DEBUG: table lookup %s in %p\n", identifier, (void *) table);
 
-	while(item != EMPTY_TABLE){
-		printf("LOOKUP... elem: %s\n", item->name);
+	while(i != EMPTY_TABLE){
+		if(0 ==  strcmp(i->name, identifier))
+			result = add_symbol(result, i->name, i->type, NOT_UNIQUE);
 
-		if(0 ==  strcmp(item->name, identifier)){
-			printf("TABLE lookup found %s in %p!\n", identifier,(void *) table);
-			return item;
-		}
-		item = item->next;
+		i = i->next;
 	}
 
-	printf("TABLE lookup NOTHING found in %p\n",(void *)table);
+	printf("TABLE lookup found following: ");
+	table_info(result);
 
-	return EMPTY_TABLE;
+	return result;
 }
 
 void exists(struct symbol_t *table, char *identifier){
