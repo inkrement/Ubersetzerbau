@@ -79,25 +79,29 @@ struct symbol_t *table_clone(struct symbol_t *table) {
  * merges zwei tables
  */
 struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_two){
-
-	struct symbol_t *first, *second, *i;
+	struct symbol_t *i, *result, *next;
 
 	printf("DEBUG: table merge\n");
 
 	if(table_one == EMPTY_TABLE) return table_two;
-	if(table_two == EMPTY_TABLE) return table_one;
 
+	i = table_two;
+	result = table_one;
 
-	first=table_clone(table_one);
-	second=table_clone(table_two);
+	while(i!=EMPTY_TABLE){
+		next = i->next;
 
-	i = first;
+		if(table_lookup(result, i->name) == EMPTY_TABLE){
+			i->next = result;
+			result = i;
+		} else{
+			exit(3);
+		}
 
-	while(i->next != EMPTY_TABLE) i = i->next;
+		i=next;
+	}
 
-	i->next = second;
-
-	return first;
+	return result;
 }
 
 
