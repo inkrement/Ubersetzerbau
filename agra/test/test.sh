@@ -1,11 +1,11 @@
-#!/bin/bashs
+#!/bin/bash
 
 cd ../
 make clean
 make
 
 
-for filename in ./test/agtests/*
+for filename in ./test/*
 do
     ./ag < $filename >/dev/null 2>/dev/null
 
