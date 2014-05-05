@@ -8,6 +8,10 @@
 
 @attributes { struct symbol_t *struktur_namen; } Program Funcdef Stats Stat With LetRec CondRec
 
+@attributes { struct symbol_t *feld_namen} Program Structdef Fields
+
+/*Funcdef Params Stats Stat CondRec LetRec With Lexpr Term Expr ExprList*/
+
 
 @traversal @postorder t
 
@@ -69,9 +73,21 @@ Rec_id:
 	| Rec_id T_ID
 	;
 
-Structdef: T_STRUCT T_ID T_DOUBLE_POINT Rec_id T_END
+Structdef: T_STRUCT T_ID T_DOUBLE_POINT Fields T_END
 	@{
 		@i @Structdef.name@ = @T_ID.name@;
+		@i @Structdef.feld_namen@ = @Fields.feld_namen@;
+
+	@}
+	;
+
+Fields: /*no params*/
+	@{
+		@i @Fields.feld_namen@ = new_table();
+	@}
+	| Fields T_ID
+	@{
+		@i @Fields.0.feld_namen@ = add_symbol(@Fields.1.feld_namen@, @T_ID.name@, TYPE_FELDNAME, UNIQUE);
 	@}
 	;
 
