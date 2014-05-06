@@ -6,13 +6,13 @@
 /*Namen der IDs werden im scanner mitgeliefert*/
 @attributes { char *val; } T_NUM
 
-@attributes { struct symbol_t *struktur_namen; } With LetRec CondRec
+@attributes { struct symbol_t *struktur_namen; } LetRec
 
 @attributes { struct symbol_t *struktur_namen; struct symbol_t *feld_namen;} Program
 @attributes { struct symbol_t *feld_namen; char *name;} Structdef
 @attributes { struct symbol_t *feld_namen;} Fields
 @attributes { struct symbol_t *params;} Params
-@attributes { struct symbol_t *struktur_namen; struct symbol_t *params; struct symbol_t *feld_namen;} Funcdef Stats Stat CondRec
+@attributes { struct symbol_t *struktur_namen; struct symbol_t *params; struct symbol_t *feld_namen;} Funcdef Stats Stat CondRec With
 
 /*Funcdef Params Stats Stat CondRec LetRec With Lexpr Term Expr ExprList*/
 
@@ -129,7 +129,11 @@ CondRec:
 	| CondRec Expr T_THEN Stats T_END T_SEMICOLON
 	@{
 		@i @Stats.struktur_namen@ = @CondRec.struktur_namen@;
+		@i @Stats.params@ = @CondRec.params@;
+		@i @Stats.feld_namen@ = @CondRec.feld_namen@;
 		@i @CondRec.1.struktur_namen@ = @CondRec.0.struktur_namen@;
+		@i @CondRec.1.params@ = @CondRec.0.params@;
+		@i @CondRec.1.feld_namen@ = @CondRec.0.feld_namen@;
 	@}
 	;
 
@@ -137,6 +141,8 @@ CondRec:
 With: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 	@{
 		@i @Stats.struktur_namen@ = @With.struktur_namen@;
+		@i @Stats.params@ = @With.params@;
+		@i @Stats.feld_namen@ = @With.feld_namen@;
 	@}
 	;
 
@@ -150,18 +156,23 @@ Stat: T_RETURN Expr
 	| T_LET LetRec T_IN Stats T_END
 	@{
 		@i @Stats.struktur_namen@ = @Stat.struktur_namen@;
+		@i @Stats.feld_namen@ = @Stat.feld_namen@;
+		@i @Stats.params@ = @Stat.params@;
 		@i @LetRec.struktur_namen@ = @Stat.struktur_namen@;
+
 	@}
 	| With
 	@{
 		@i @With.struktur_namen@ = @Stat.struktur_namen@;
+		@i @With.params@ = @Stat.params@;
+		@i @With.feld_namen@ = @Stat.feld_namen@;
 	@}
 	| Lexpr T_EQUAL Expr
 	| Term
 	;
 
 
-Lexpr: T_ID 
+Lexpr: T_ID
 	| Term T_POINT T_ID
 	;
 
