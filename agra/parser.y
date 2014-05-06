@@ -12,7 +12,7 @@
 @attributes { struct symbol_t *feld_namen; char *name;} Structdef
 @attributes { struct symbol_t *feld_namen;} Fields
 @attributes { struct symbol_t *params;} Params
-@attributes { struct symbol_t *struktur_namen; struct symbol_t *params; struct symbol_t *feld_namen;} Funcdef Stats Stat
+@attributes { struct symbol_t *struktur_namen; struct symbol_t *params; struct symbol_t *feld_namen;} Funcdef Stats Stat CondRec
 
 /*Funcdef Params Stats Stat CondRec LetRec With Lexpr Term Expr ExprList*/
 
@@ -143,6 +143,8 @@ With: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 Stat: T_RETURN Expr
 	| T_COND CondRec T_END
 	@{
+		@i @CondRec.feld_namen@ = @Stat.feld_namen@;
+		@i @CondRec.params@ = @Stat.params@;
 		@i @CondRec.struktur_namen@ = @Stat.struktur_namen@;
 	@}
 	| T_LET LetRec T_IN Stats T_END
