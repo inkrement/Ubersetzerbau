@@ -1,0 +1,4 @@
+func f()
+0.a1=0;
+end;
+struct a : a1 a2 a3 end;

@@ -1,0 +1,9 @@
+func f(a)
+  with 0:s do
+    let b=0; in
+      a; s1; s2; b;
+      a=0; s1=0; s2=0; b=0;
+    end;
+  end;
+end;
+struct s : s1 s2 end;

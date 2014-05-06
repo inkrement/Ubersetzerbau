@@ -1,0 +1,11 @@
+struct a : b end;
+func f(x)
+  x=x; /*read + write*/
+  
+  let d=x; d=0; in x=x; d=d; end;
+  
+  with x:b do x=x; c=c; end;
+
+  x=x;
+end;
+struct b : c end;

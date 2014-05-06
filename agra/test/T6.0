@@ -1,0 +1,8 @@
+struct a : a1 a2 end;
+struct b : b1 b2 b3 end;
+func c(d) 
+  with 0:a do
+    let f=1; in end;
+  end;
+end;
+struct e : e1 end;

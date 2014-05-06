@@ -1,0 +1,8 @@
+struct a: b end;
+func f(c)
+	let b=0; in b=0; /* Variable */ end;
+	with 0:a do b=0; /* Feld */ end;
+end;
+func g(b)
+	with 0:a do /* fehler: zwei b sind sichtbar */ end;
+end;

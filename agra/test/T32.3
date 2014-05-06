@@ -1,0 +1,7 @@
+struct a : b end;
+func f(x)
+  let c=x; in
+    with x:b do x=x; c=c; end;
+  end;
+end;
+struct b : c end;
