@@ -1,7 +1,7 @@
 /********Symboltabelle*********/
 
 /*Namen der IDs werden im scanner mitgeliefert*/
-@attributes { char *name; } T_ID
+@attributes { char *name; } T_ID Lexpr
 
 /*Namen der IDs werden im scanner mitgeliefert*/
 @attributes { char *val; } T_NUM
@@ -168,12 +168,21 @@ Stat: T_RETURN Expr
 		@i @With.feld_namen@ = @Stat.feld_namen@;
 	@}
 	| Lexpr T_EQUAL Expr
+	@{
+		@t exists(@Stat.params@, @Stat.struktur_namen@, @Stat.feld_namen@, @Lexpr.name@);
+	@}
 	| Term
 	;
 
 
 Lexpr: T_ID
+	@{
+		@i @Lexpr.name@ = @T_ID.name@;
+	@}
 	| Term T_POINT T_ID
+	@{
+		@i @Lexpr.name@ = @T_ID.name@;
+	@}
 	;
 
 /* one or more not/minus*/

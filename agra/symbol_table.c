@@ -28,12 +28,22 @@ struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
 	return result;
 }
 
-void exists(struct symbol_t *table, char *identifier){
-	if (table_lookup(table, identifier) == EMPTY_TABLE){
-		printf("EXISTS: %s does not exist. EXIT!\n", identifier);
-		exit(3);
+void exists(struct symbol_t *param_context, struct symbol_t *struct_context,struct symbol_t *feldnamen, char *identifier){
+	struct symbol_t *feld_query;
+
+	/*test params*/
+	if(table_lookup(param_context, identifier) != EMPTY_TABLE)
+		return;
+
+	/*test struct*/
+	feld_query = table_lookup(feldnamen, identifier);
+	while (feld_query != EMPTY_TABLE){
+		if (table_lookup(struct_context, feld_query->struct_name) != EMPTY_TABLE)
+			return;
+		feld_query = feld_query->next;
 	}
-	printf("EXISTS: %s does exist in table.\n", identifier);
+
+	exit(3);
 }
 
 void check(struct symbol_t *table, char *identifier){
