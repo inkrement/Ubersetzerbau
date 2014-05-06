@@ -161,7 +161,7 @@ Stat: T_RETURN Expr
 	@{
 		@i @Stats.struktur_namen@ = @Stat.struktur_namen@;
 		@i @Stats.feld_namen@ = @Stat.feld_namen@;
-		@i @Stats.vars@ = @Stat.vars@;
+		@i @Stats.vars@ = table_merge(@Stat.vars@, @LetRec.vars@);
 		@i @LetRec.struktur_namen@ = @Stat.struktur_namen@;
 
 	@}
