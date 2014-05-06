@@ -145,7 +145,7 @@ CondRec:
 With: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 	@{
 		@i @Stats.struktur_namen@ = @With.struktur_namen@;
-		@i @Stats.vars@ = @With.vars@;
+		@i @Stats.vars@ = table_merge(@With.vars@, filter_feldnamen(@With.feld_namen@, @T_ID.name@));
 		@i @Stats.feld_namen@ = @With.feld_namen@;
 	@}
 	;
