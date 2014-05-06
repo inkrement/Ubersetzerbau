@@ -148,6 +148,7 @@ With: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 		@i @Stats.vars@ = table_merge(@With.vars@, filter_feldnamen(@With.feld_namen@, @T_ID.name@));
 		@i @Stats.feld_namen@ = @With.feld_namen@;
 	@}
+	| T_WITH Expr T_DOUBLE_POINT T_ID T_DO T_END
 	;
 
 Stat: T_RETURN Expr
