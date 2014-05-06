@@ -60,25 +60,6 @@ void exists(struct symbol_t *param_context, struct symbol_t *struct_context,stru
 	exit(3);
 }
 
-void check(struct symbol_t *table, char *identifier){
-	if (table_lookup(table, identifier) != EMPTY_TABLE){
-		printf("CHECK: %s is in table. EXIT!\n", identifier);
-		exit(3);
-	}
-	printf("CHECK: %s is NOT in table.\n", identifier);
-}
-
-void check_table(struct  symbol_t* t1, struct symbol_t* t2)
-{
-	struct  symbol_t* node;
-
-	printf("CHECK_TABLE\n");
-
-	if(t1 == EMPTY_TABLE) return;
-
-	for(node = t1; node != EMPTY_TABLE; node=node->next)
-		check(t2, node->name);
-}
 
 struct symbol_t *table_clone(struct symbol_t *table) {
 	
@@ -112,17 +93,10 @@ struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_
 	i = table_two;
 	result = table_one;
 
-	while(i!=EMPTY_TABLE){
-		next = i->next;
 
-		if(table_lookup(result, i->name) == EMPTY_TABLE){
-			i->next = result;
-			result = i;
-		} else{
-			exit(3);
-		}
-
-		i=next;
+	while(i != EMPTY_TABLE ){
+		result = add_symbol(result, i->name, i->type, UNIQUE);
+		i = i->next;
 	}
 
 	return result;
@@ -175,8 +149,6 @@ struct symbol_t* add_feldname(struct symbol_t *table, char *name) {
 	return item;
 }
 
-
-
 void table_info(struct symbol_t *table){
 	int i=0;
 	struct symbol_t *node = table;
@@ -190,21 +162,3 @@ void table_info(struct symbol_t *table){
 
 	printf("] has %d elements\n", i);
 }
-
-
-
-
-void is_struct(struct symbol_t *table, char *identifier){
-	struct symbol_t* item = table_lookup(table, identifier);
-	printf("DEBUG: is struct\n");
-
-	if(item != EMPTY_TABLE && item->type != TYPE_STRUCT) exit(3);
-}
-
-/*
-
-main(){
-	struct symbol_t* test = new_table();
-
-
-}*/
