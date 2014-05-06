@@ -57,6 +57,8 @@ void exists(struct symbol_t *param_context, struct symbol_t *struct_context,stru
 		feld_query = feld_query->next;
 	}
 
+	printf("SORRY: exists %s\n", identifier);
+
 	exit(3);
 }
 
