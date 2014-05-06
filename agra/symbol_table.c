@@ -13,6 +13,11 @@ struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
 	struct symbol_t* i = table;
 	struct symbol_t *result = EMPTY_TABLE;
 
+	if(identifier == (char *) NULL){
+		printf("LOOKUP_EMPTY_IDENTIFER!\n");
+		return EMPTY_TABLE;
+	}
+
 	printf("DEBUG: table lookup %s in %p\n", identifier, (void *) table);
 
 	while(i != EMPTY_TABLE){
@@ -28,14 +33,23 @@ struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
 	return result;
 }
 
+struct symbol_t* tag_struct_elements(struct symbol_t *table, char *struct_name){
+	struct symbol_t *loop=table;
+
+	while (loop != EMPTY_TABLE){
+		loop->struct_name = struct_name;
+		loop = loop->next;
+	}
+		
+		return table;
+}
+
 void exists(struct symbol_t *param_context, struct symbol_t *struct_context,struct symbol_t *feldnamen, char *identifier){
 	struct symbol_t *feld_query;
 
-	/*test params*/
 	if(table_lookup(param_context, identifier) != EMPTY_TABLE)
 		return;
 
-	/*test struct*/
 	feld_query = table_lookup(feldnamen, identifier);
 	while (feld_query != EMPTY_TABLE){
 		if (table_lookup(struct_context, feld_query->struct_name) != EMPTY_TABLE)

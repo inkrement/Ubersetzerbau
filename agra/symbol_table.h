@@ -26,6 +26,7 @@ struct symbol_t *lookup(struct symbol_t *table, char *name);
 struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_two);
 struct symbol_t *add_symbol(struct symbol_t *table, char *identifier, short type, short unique);
 struct symbol_t* add_feldname(struct symbol_t *table, char *name);
+struct symbol_t* tag_struct_elements(struct symbol_t *table, char *struct_name);
 void is_struct(struct symbol_t *table, char *identifier);
 void exists(struct symbol_t *param_context, struct symbol_t *struct_context, struct symbol_t *feldnamen, char *identifier);
 void check(struct symbol_t *table, char *identifier);

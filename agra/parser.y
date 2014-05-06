@@ -90,7 +90,7 @@ Params: /*no params*/
 Structdef: T_STRUCT T_ID T_DOUBLE_POINT Fields T_END
 	@{
 		@i @Structdef.name@ = @T_ID.name@;
-		@i @Structdef.feld_namen@ = @Fields.feld_namen@;
+		@i @Structdef.feld_namen@ = tag_struct_elements(@Fields.feld_namen@, @T_ID.name@);
 
 	@}
 	;
