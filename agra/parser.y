@@ -6,13 +6,13 @@
 /*Namen der IDs werden im scanner mitgeliefert*/
 @attributes { char *val; } T_NUM
 
-@attributes { struct symbol_t *struktur_namen; } LetRec
+@attributes { struct symbol_t *struktur_namen; struct symbol_t *vars;} LetRec
 
 @attributes { struct symbol_t *struktur_namen; struct symbol_t *feld_namen;} Program
 @attributes { struct symbol_t *feld_namen; char *name;} Structdef
 @attributes { struct symbol_t *feld_namen;} Fields
-@attributes { struct symbol_t *params;} Params
-@attributes { struct symbol_t *struktur_namen; struct symbol_t *params; struct symbol_t *feld_namen;} Funcdef Stats Stat CondRec With
+@attributes { struct symbol_t *vars;} Params
+@attributes { struct symbol_t *struktur_namen; struct symbol_t *vars; struct symbol_t *feld_namen;} Funcdef Stats Stat CondRec With
 
 /*Funcdef Params Stats Stat CondRec LetRec With Lexpr Term Expr ExprList*/
 
@@ -69,21 +69,21 @@ Program: /*empty Program*/
 
 Funcdef: T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 	@{
-		@i @Funcdef.params@ = @Params.params@;
-		@t table_merge(@Funcdef.params@, @Funcdef.feld_namen@);
+		@i @Funcdef.vars@ = @Params.vars@;
+		@t table_merge(@Funcdef.vars@, @Funcdef.feld_namen@);
 		@i @Stats.feld_namen@ = @Funcdef.feld_namen@;
-		@i @Stats.params@ = @Funcdef.params@;
+		@i @Stats.vars@ = @Funcdef.vars@;
 		@i @Stats.struktur_namen@ = @Funcdef.struktur_namen@;		
 	@}
 	;
 
 Params: /*no params*/
 	@{
-		@i @Params.params@ = new_table();
+		@i @Params.vars@ = new_table();
 	@}
 	| Params T_ID
 	@{
-		@i @Params.0.params@ = add_symbol(@Params.1.params@, @T_ID.name@, TYPE_PARAMNAME, UNIQUE);
+		@i @Params.0.vars@ = add_symbol(@Params.1.vars@, @T_ID.name@, TYPE_PARAMNAME, UNIQUE);
 	@}
 	;
 
@@ -109,19 +109,23 @@ Stats:
 	| Stats Stat T_SEMICOLON
 	@{
 		@i @Stats.1.feld_namen@ = @Stats.0.feld_namen@;
-		@i @Stats.1.params@ = @Stats.0.params@;
+		@i @Stats.1.vars@ = @Stats.0.vars@;
 		@i @Stats.1.struktur_namen@ = @Stats.0.struktur_namen@;
 		@i @Stat.feld_namen@ = @Stats.1.feld_namen@;
-		@i @Stat.params@ = @Stats.1.params@;
+		@i @Stat.vars@ = @Stats.1.vars@;
 		@i @Stat.struktur_namen@ = @Stats.0.struktur_namen@;		
 	@}
 	;
 
 
 LetRec:
+	@{
+		@i @LetRec.vars@ = new_table();
+	@}
 	| LetRec T_ID T_EQUAL Expr T_SEMICOLON
 	@{
 		@i @LetRec.1.struktur_namen@ = @LetRec.0.struktur_namen@;
+		@i @LetRec.0.vars@ = add_symbol(@LetRec.1.vars@, @T_ID.name@, TYPE_PARAMNAME, UNIQUE);
 	@}
 	;
 
@@ -129,10 +133,10 @@ CondRec:
 	| CondRec Expr T_THEN Stats T_END T_SEMICOLON
 	@{
 		@i @Stats.struktur_namen@ = @CondRec.struktur_namen@;
-		@i @Stats.params@ = @CondRec.params@;
+		@i @Stats.vars@ = @CondRec.vars@;
 		@i @Stats.feld_namen@ = @CondRec.feld_namen@;
 		@i @CondRec.1.struktur_namen@ = @CondRec.0.struktur_namen@;
-		@i @CondRec.1.params@ = @CondRec.0.params@;
+		@i @CondRec.1.vars@ = @CondRec.0.vars@;
 		@i @CondRec.1.feld_namen@ = @CondRec.0.feld_namen@;
 	@}
 	;
@@ -141,7 +145,7 @@ CondRec:
 With: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 	@{
 		@i @Stats.struktur_namen@ = @With.struktur_namen@;
-		@i @Stats.params@ = @With.params@;
+		@i @Stats.vars@ = @With.vars@;
 		@i @Stats.feld_namen@ = @With.feld_namen@;
 	@}
 	;
@@ -150,26 +154,26 @@ Stat: T_RETURN Expr
 	| T_COND CondRec T_END
 	@{
 		@i @CondRec.feld_namen@ = @Stat.feld_namen@;
-		@i @CondRec.params@ = @Stat.params@;
+		@i @CondRec.vars@ = @Stat.vars@;
 		@i @CondRec.struktur_namen@ = @Stat.struktur_namen@;
 	@}
 	| T_LET LetRec T_IN Stats T_END
 	@{
 		@i @Stats.struktur_namen@ = @Stat.struktur_namen@;
 		@i @Stats.feld_namen@ = @Stat.feld_namen@;
-		@i @Stats.params@ = @Stat.params@;
+		@i @Stats.vars@ = @Stat.vars@;
 		@i @LetRec.struktur_namen@ = @Stat.struktur_namen@;
 
 	@}
 	| With
 	@{
 		@i @With.struktur_namen@ = @Stat.struktur_namen@;
-		@i @With.params@ = @Stat.params@;
+		@i @With.vars@ = @Stat.vars@;
 		@i @With.feld_namen@ = @Stat.feld_namen@;
 	@}
 	| Lexpr T_EQUAL Expr
 	@{
-		@t exists(@Stat.params@, @Stat.struktur_namen@, @Stat.feld_namen@, @Lexpr.name@);
+		@t exists(@Stat.vars@, @Stat.struktur_namen@, @Stat.feld_namen@, @Lexpr.name@);
 	@}
 	| Term
 	;
