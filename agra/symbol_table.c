@@ -84,7 +84,7 @@ struct symbol_t *table_clone(struct symbol_t *table) {
  * merges zwei tables
  */
 struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_two){
-	struct symbol_t *i, *result, *next;
+	struct symbol_t *i, *result;
 
 	printf("DEBUG: table merge\n");
 
@@ -166,6 +166,8 @@ void table_info(struct symbol_t *table){
 
 struct symbol_t* filter_feldnamen(struct symbol_t* feldnamen, char *struct_name){
 	struct symbol_t* res, *loop;
+
+	printf("FILTERFELDNAMEN: %s\n", struct_name);
 
 	if((char*)struct_name==NULL) return EMPTY_TABLE;
 
