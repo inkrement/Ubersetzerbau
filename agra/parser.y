@@ -6,13 +6,13 @@
 /*Namen der IDs werden im scanner mitgeliefert*/
 @attributes { char *val; } T_NUM
 
-@attributes { struct symbol_t *struktur_namen; } Stats Stat With LetRec CondRec
+@attributes { struct symbol_t *struktur_namen; } With LetRec CondRec
 
 @attributes { struct symbol_t *struktur_namen; struct symbol_t *feld_namen;} Program
 @attributes { struct symbol_t *feld_namen; char *name;} Structdef
 @attributes { struct symbol_t *feld_namen;} Fields
 @attributes { struct symbol_t *params;} Params
-@attributes { struct symbol_t *struktur_namen; struct symbol_t *params; struct symbol_t *feld_namen;} Funcdef
+@attributes { struct symbol_t *struktur_namen; struct symbol_t *params; struct symbol_t *feld_namen;} Funcdef Stats Stat
 
 /*Funcdef Params Stats Stat CondRec LetRec With Lexpr Term Expr ExprList*/
 
@@ -69,9 +69,11 @@ Program: /*empty Program*/
 
 Funcdef: T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 	@{
-		@i @Stats.struktur_namen@ = @Funcdef.struktur_namen@;
 		@i @Funcdef.params@ = @Params.params@;
 		@t table_merge(@Funcdef.params@, @Funcdef.feld_namen@);
+		@i @Stats.feld_namen@ = @Funcdef.feld_namen@;
+		@i @Stats.params@ = @Funcdef.params@;
+		@i @Stats.struktur_namen@ = @Funcdef.struktur_namen@;		
 	@}
 	;
 
@@ -103,11 +105,15 @@ Fields: /*no params*/
 	@}
 	;
 
-Stats: 
+Stats:
 	| Stats Stat T_SEMICOLON
 	@{
+		@i @Stats.1.feld_namen@ = @Stats.0.feld_namen@;
+		@i @Stats.1.params@ = @Stats.0.params@;
 		@i @Stats.1.struktur_namen@ = @Stats.0.struktur_namen@;
-		@i @Stat.struktur_namen@ = @Stats.0.struktur_namen@;
+		@i @Stat.feld_namen@ = @Stats.1.feld_namen@;
+		@i @Stat.params@ = @Stats.1.params@;
+		@i @Stat.struktur_namen@ = @Stats.0.struktur_namen@;		
 	@}
 	;
 
