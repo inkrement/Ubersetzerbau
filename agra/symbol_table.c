@@ -167,12 +167,16 @@ void table_info(struct symbol_t *table){
 struct symbol_t* filter_feldnamen(struct symbol_t* feldnamen, char *struct_name){
 	struct symbol_t* res, *loop;
 
+	if((char*)struct_name==NULL) return EMPTY_TABLE;
+
 	res = new_table();
 	loop = feldnamen;
 
 	while(feldnamen != EMPTY_TABLE){
-		if(0 == strcmp(feldnamen->struct_name, struct_name)){
-			res = add_symbol(res, loop->name, loop->type, UNIQUE);
+		if(feldnamen->struct_name != (char*) NULL){
+			if(0 == strcmp(feldnamen->struct_name, struct_name)){
+				res = add_symbol(res, loop->name, loop->type, UNIQUE);
+			}
 		}
 
 		feldnamen = feldnamen->next;
