@@ -33,6 +33,11 @@ struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
 	return result;
 }
 
+
+struct symbol_t *assert_contains(struct symbol_t *table, char *identifier){
+	if(table_lookup(table, identifier) == EMPTY_TABLE) exit(3);
+}
+
 struct symbol_t* tag_struct_elements(struct symbol_t *table, char *struct_name){
 	struct symbol_t *loop=table;
 
@@ -47,8 +52,12 @@ struct symbol_t* tag_struct_elements(struct symbol_t *table, char *struct_name){
 void exists(struct symbol_t *param_context, struct symbol_t *struct_context,struct symbol_t *feldnamen, char *identifier){
 	struct symbol_t *feld_query;
 
+	printf("EXIST: lookup param_context: %s\n", identifier);
+
 	if(table_lookup(param_context, identifier) != EMPTY_TABLE)
 		return;
+
+	printf("EXIST: lookup struct_context: %s\n", identifier);
 
 	feld_query = table_lookup(feldnamen, identifier);
 	while (feld_query != EMPTY_TABLE){
@@ -57,7 +66,7 @@ void exists(struct symbol_t *param_context, struct symbol_t *struct_context,stru
 		feld_query = feld_query->next;
 	}
 
-	printf("SORRY: exists %s\n", identifier);
+	printf("SORRY: does not exist %s\n", identifier);
 
 	exit(3);
 }

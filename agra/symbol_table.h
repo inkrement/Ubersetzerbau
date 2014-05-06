@@ -29,6 +29,7 @@ struct symbol_t* tag_struct_elements(struct symbol_t *table, char *struct_name);
 struct symbol_t* filter_feldnamen(struct symbol_t* feldnamen, char *struct_name);
 void exists(struct symbol_t *param_context, struct symbol_t *struct_context, struct symbol_t *feldnamen, char *identifier);
 void table_info(struct symbol_t *table);
+struct symbol_t *assert_contains(struct symbol_t *table, char *identifier);
 
 
 #endif
