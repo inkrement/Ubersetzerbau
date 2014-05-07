@@ -1,7 +1,7 @@
 /********Symboltabelle*********/
 
 /*Namen der IDs werden im scanner mitgeliefert*/
-@attributes { char *name; } T_ID Lexpr
+@attributes { char *name; struct symbol_t symbols;} T_ID Lexpr
 
 /*Namen der IDs werden im scanner mitgeliefert*/
 @attributes { char *val; } T_NUM
@@ -13,6 +13,10 @@
 @attributes { struct symbol_t *feld_namen;} Fields
 @attributes { struct symbol_t *vars;} Params
 @attributes { struct symbol_t *struktur_namen; struct symbol_t *vars; struct symbol_t *feld_namen;} Funcdef Stats Stat CondRec With
+
+@attributes { struct symbol_t *symbols;} Term ExprList Expr
+
+/*Expr ExprList*/
 
 /*Funcdef Params Stats Stat CondRec LetRec With Lexpr Term Expr ExprList*/
 
@@ -156,6 +160,9 @@ With: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 	;
 
 Stat: T_RETURN Expr
+	@{
+		@i @Expr.symbols@ = @Stat.vars@;
+	@}
 	| T_COND CondRec T_END
 	@{
 		@i @CondRec.feld_namen@ = @Stat.feld_namen@; debug("Stat - CondRec");
@@ -178,9 +185,13 @@ Stat: T_RETURN Expr
 	@}
 	| Lexpr T_EQUAL Expr
 	@{
+		@i @Lexpr.symbols@ = @Stat.vars@;
 		@t exists(@Stat.vars@, @Stat.struktur_namen@, @Stat.feld_namen@, @Lexpr.name@); debug("Stat - Lexpr");
 	@}
 	| Term
+	@{
+		@i @Term.symbols@ = @Stat.vars@;
+	@}
 	;
 
 
@@ -191,6 +202,7 @@ Lexpr: T_ID
 	| Term T_POINT T_ID
 	@{
 		@i @Lexpr.name@ = @T_ID.name@;
+		@i @Term.symbols@ = @Lexpr.symbols@;
 	@}
 	;
 
