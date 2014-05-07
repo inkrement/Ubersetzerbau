@@ -150,6 +150,9 @@ With: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 		@t assert_contains(@With.struktur_namen@, @T_ID.name@);
 	@}
 	| T_WITH Expr T_DOUBLE_POINT T_ID T_DO T_END
+	@{
+		@t assert_contains(@With.struktur_namen@, @T_ID.name@);
+	@}
 	;
 
 Stat: T_RETURN Expr
