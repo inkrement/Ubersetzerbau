@@ -32,5 +32,7 @@ void table_info(struct symbol_t *table);
 struct symbol_t *assert_contains(struct symbol_t *table, char *identifier);
 
 
+void debug(char *);
+
 #endif
 

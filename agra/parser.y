@@ -50,12 +50,12 @@ void yyerror(const char* s) {
 
 Program: /*empty Program*/
 	@{
-		@i @Program.struktur_namen@ = new_table();
+		@i @Program.struktur_namen@ = new_table(); debug("Program - new table");
 		@i @Program.feld_namen@ = new_table();
 	@}
 	| Program Structdef T_SEMICOLON
 	@{
-		@i @Program.0.struktur_namen@ = add_symbol(@Program.1.struktur_namen@, @Structdef.name@, TYPE_STRUKTURNAME, UNIQUE);
+		@i @Program.0.struktur_namen@ = add_symbol(@Program.1.struktur_namen@, @Structdef.name@, TYPE_STRUKTURNAME, UNIQUE); debug("Program");
 		@i @Program.0.feld_namen@ = table_merge(@Program.1.feld_namen@, @Structdef.feld_namen@);
 	@}
 	| Program Funcdef T_SEMICOLON
@@ -69,7 +69,7 @@ Program: /*empty Program*/
 
 Funcdef: T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 	@{
-		@i @Funcdef.vars@ = @Params.vars@;
+		@i @Funcdef.vars@ = @Params.vars@;debug("Funcdef");
 		@t table_merge(@Funcdef.vars@, @Funcdef.feld_namen@);
 		@i @Stats.feld_namen@ = @Funcdef.feld_namen@;
 		@i @Stats.vars@ = @Funcdef.vars@;
@@ -79,7 +79,7 @@ Funcdef: T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 
 Params: /*no params*/
 	@{
-		@i @Params.vars@ = new_table();
+		@i @Params.vars@ = new_table(); debug("Params - new table");
 	@}
 	| Params T_ID
 	@{
@@ -89,7 +89,7 @@ Params: /*no params*/
 
 Structdef: T_STRUCT T_ID T_DOUBLE_POINT Fields T_END
 	@{
-		@i @Structdef.name@ = @T_ID.name@;
+		@i @Structdef.name@ = @T_ID.name@; debug("Structdef");
 		@i @Structdef.feld_namen@ = tag_struct_elements(@Fields.feld_namen@, @T_ID.name@);
 
 	@}
@@ -97,18 +97,18 @@ Structdef: T_STRUCT T_ID T_DOUBLE_POINT Fields T_END
 
 Fields: /*no params*/
 	@{
-		@i @Fields.feld_namen@ = new_table();
+		@i @Fields.feld_namen@ = new_table(); debug("Fields - new table");
 	@}
 	| Fields T_ID
 	@{
-		@i @Fields.0.feld_namen@ = add_feldname(@Fields.1.feld_namen@, @T_ID.name@);
+		@i @Fields.0.feld_namen@ = add_feldname(@Fields.1.feld_namen@, @T_ID.name@); debug("Fields");
 	@}
 	;
 
 Stats:
 	| Stats Stat T_SEMICOLON
 	@{
-		@i @Stats.1.feld_namen@ = @Stats.0.feld_namen@;
+		@i @Stats.1.feld_namen@ = @Stats.0.feld_namen@; debug("Stats");
 		@i @Stats.1.vars@ = @Stats.0.vars@;
 		@i @Stats.1.struktur_namen@ = @Stats.0.struktur_namen@;
 		@i @Stat.feld_namen@ = @Stats.1.feld_namen@;
@@ -120,11 +120,11 @@ Stats:
 
 LetRec:
 	@{
-		@i @LetRec.vars@ = new_table();
+		@i @LetRec.vars@ = new_table(); debug("LetRec - new table");
 	@}
 	| LetRec T_ID T_EQUAL Expr T_SEMICOLON
 	@{
-		@i @LetRec.1.struktur_namen@ = @LetRec.0.struktur_namen@;
+		@i @LetRec.1.struktur_namen@ = @LetRec.0.struktur_namen@; debug("LetRec");
 		@i @LetRec.0.vars@ = add_symbol(@LetRec.1.vars@, @T_ID.name@, TYPE_PARAMNAME, UNIQUE);
 	@}
 	;
@@ -132,7 +132,7 @@ LetRec:
 CondRec:
 	| CondRec Expr T_THEN Stats T_END T_SEMICOLON
 	@{
-		@i @Stats.struktur_namen@ = @CondRec.struktur_namen@;
+		@i @Stats.struktur_namen@ = @CondRec.struktur_namen@; debug("CondREc");
 		@i @Stats.vars@ = @CondRec.vars@;
 		@i @Stats.feld_namen@ = @CondRec.feld_namen@;
 		@i @CondRec.1.struktur_namen@ = @CondRec.0.struktur_namen@;
@@ -144,7 +144,7 @@ CondRec:
 
 With: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 	@{
-		@i @Stats.struktur_namen@ = @With.struktur_namen@;
+		@i @Stats.struktur_namen@ = @With.struktur_namen@; debug("With");
 		@i @Stats.vars@ = table_merge(@With.vars@, filter_feldnamen(@With.feld_namen@, @T_ID.name@));
 		@i @Stats.feld_namen@ = @With.feld_namen@;
 		@t assert_contains(@With.struktur_namen@, @T_ID.name@);
@@ -155,13 +155,13 @@ With: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 Stat: T_RETURN Expr
 	| T_COND CondRec T_END
 	@{
-		@i @CondRec.feld_namen@ = @Stat.feld_namen@;
+		@i @CondRec.feld_namen@ = @Stat.feld_namen@; debug("Stat - CondRec");
 		@i @CondRec.vars@ = @Stat.vars@;
 		@i @CondRec.struktur_namen@ = @Stat.struktur_namen@;
 	@}
 	| T_LET LetRec T_IN Stats T_END
 	@{
-		@i @Stats.struktur_namen@ = @Stat.struktur_namen@;
+		@i @Stats.struktur_namen@ = @Stat.struktur_namen@; debug("Stat - LetRec");
 		@i @Stats.feld_namen@ = @Stat.feld_namen@;
 		@i @Stats.vars@ = table_merge(@Stat.vars@, @LetRec.vars@);
 		@i @LetRec.struktur_namen@ = @Stat.struktur_namen@;
@@ -169,13 +169,13 @@ Stat: T_RETURN Expr
 	@}
 	| With
 	@{
-		@i @With.struktur_namen@ = @Stat.struktur_namen@;
+		@i @With.struktur_namen@ = @Stat.struktur_namen@; debug("Stat - With");
 		@i @With.vars@ = @Stat.vars@;
 		@i @With.feld_namen@ = @Stat.feld_namen@;
 	@}
 	| Lexpr T_EQUAL Expr
 	@{
-		@t exists(@Stat.vars@, @Stat.struktur_namen@, @Stat.feld_namen@, @Lexpr.name@);
+		@t exists(@Stat.vars@, @Stat.struktur_namen@, @Stat.feld_namen@, @Lexpr.name@); debug("Stat - Lexpr");
 	@}
 	| Term
 	;

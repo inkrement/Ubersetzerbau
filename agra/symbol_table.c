@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include "symbol_table.h"
 
+void debug(char* string){
+	printf("##############################\n");
+	printf("#######  %s\n", string);
+	printf("##############################\n");
+}
 
 struct symbol_t *new_table(void) {
 	printf("DEBUG: new table\n");
@@ -181,7 +186,7 @@ void table_info(struct symbol_t *table){
 struct symbol_t* filter_feldnamen(struct symbol_t* feldnamen, char *struct_name){
 	struct symbol_t* res, *loop;
 
-	printf("FILTERFELDNAMEN: %s\n", struct_name);
+	printf("~~~~~~~~~~~~~ FILTERFELDNAMEN: %s~~~~~~~~~~~~~~~~ \n", struct_name);
 
 	if((char*)struct_name==NULL) return EMPTY_TABLE;
 
@@ -197,6 +202,8 @@ struct symbol_t* filter_feldnamen(struct symbol_t* feldnamen, char *struct_name)
 
 		feldnamen = feldnamen->next;
 	}
+
+	printf("~~~~~~~~~~~~~~ END FILTERFELDNAMEN ~~~~~~~~~~~~~\n");
 
 
 	return tag_struct_elements(res, struct_name);
