@@ -97,7 +97,8 @@ struct symbol_t *table_clone(struct symbol_t *table) {
 struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_two){
 	struct symbol_t *i, *result;
 
-	printf("DEBUG: table merge\n");
+	printf(" ~~~~~~~~~~~~~~~~ START MERGE  ~~~~~~~~~~~~~~~~ \n");
+	printf("DEBUG: table merge (%p, %p) \n", table_one, table_two);
 
 	if(table_one == EMPTY_TABLE) return table_two;
 
@@ -109,6 +110,8 @@ struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_
 		result = add_symbol(result, i->name, i->type, UNIQUE);
 		i = i->next;
 	}
+
+	printf(" ~~~~~~~~~~~~~~~~ END MERGE  ~~~~~~~~~~~~~~~~ \n");
 
 	return result;
 }
@@ -123,7 +126,7 @@ struct symbol_t* add_symbol(struct symbol_t *table, char *name, short type, shor
 	struct symbol_t* item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
 
 	table_info(table);
-	printf("DEBUG: add symbol(%s/%d/%d/unique) to %p\n", name, type, unique,(void *) table);
+	printf("DEBUG: add symbol(%s/%d/%d/unique) to %p now %p\n", name, type, unique,(void *) table, (void* ) item);
 
 	/* fehler wenn schon vorkommt */
 	if (unique == 1 && (table_lookup(table, name) != EMPTY_TABLE)) {
