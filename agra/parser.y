@@ -142,6 +142,8 @@ CondRec:
 		@i @CondRec.1.struktur_namen@ = @CondRec.0.struktur_namen@;
 		@i @CondRec.1.vars@ = @CondRec.0.vars@;
 		@i @CondRec.1.feld_namen@ = @CondRec.0.feld_namen@;
+
+		@i @Expr.symbols@ = @CondRec.vars@;
 	@}
 	;
 
