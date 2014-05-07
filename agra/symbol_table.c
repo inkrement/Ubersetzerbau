@@ -184,19 +184,18 @@ void table_info(struct symbol_t *table){
 
 
 struct symbol_t* filter_feldnamen(struct symbol_t* feldnamen, char *struct_name){
-	struct symbol_t* res, *loop;
+	struct symbol_t* res;
 
 	printf("~~~~~~~~~~~~~ FILTERFELDNAMEN: %s~~~~~~~~~~~~~~~~ \n", struct_name);
 
-	if((char*)struct_name==NULL) return EMPTY_TABLE;
+	if((char*)struct_name== (char*) NULL) return EMPTY_TABLE;
 
 	res = new_table();
-	loop = feldnamen;
 
 	while(feldnamen != EMPTY_TABLE){
 		if(feldnamen->struct_name != (char*) NULL){
 			if(0 == strcmp(feldnamen->struct_name, struct_name)){
-				res = add_symbol(res, loop->name, loop->type, UNIQUE);
+				res = add_symbol(res, feldnamen->name, feldnamen->type, UNIQUE);
 			}
 		}
 
