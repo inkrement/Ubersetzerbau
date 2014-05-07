@@ -3,7 +3,7 @@
 /*Namen der IDs werden im scanner mitgeliefert*/
 @attributes { char *name;} T_ID
 
-@attributes { char *name; struct symbol_t symbols;} Lexpr
+@attributes { char *name; struct symbol_t *symbols;} Lexpr
 
 /*Namen der IDs werden im scanner mitgeliefert*/
 @attributes { char *val; } T_NUM
@@ -132,6 +132,7 @@ LetRec:
 	@{
 		@i @LetRec.1.struktur_namen@ = @LetRec.0.struktur_namen@; debug("LetRec");
 		@i @LetRec.0.vars@ = add_symbol(@LetRec.1.vars@, @T_ID.name@, TYPE_PARAMNAME, UNIQUE);
+		@i @Expr.symbols@ = @LetRec.0.vars@;
 	@}
 	;
 
@@ -155,10 +156,14 @@ With: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 		@i @Stats.struktur_namen@ = @With.struktur_namen@; debug("With");
 		@i @Stats.vars@ = table_merge(@With.vars@, filter_feldnamen(@With.feld_namen@, @T_ID.name@));
 		@i @Stats.feld_namen@ = @With.feld_namen@;
+
+		@i @Expr.symbols@ = @Stats.vars@;
 		@t assert_contains(@With.struktur_namen@, @T_ID.name@);
+
 	@}
 	| T_WITH Expr T_DOUBLE_POINT T_ID T_DO T_END
 	@{
+		@i @Expr.symbols@ = new_table();
 		@t assert_contains(@With.struktur_namen@, @T_ID.name@);
 	@}
 	;
@@ -190,6 +195,7 @@ Stat: T_RETURN Expr
 	| Lexpr T_EQUAL Expr
 	@{
 		@i @Lexpr.symbols@ = @Stat.vars@;
+		@i @Expr.symbols@ = @Stat.vars@;
 		@t exists(@Stat.vars@, @Stat.struktur_namen@, @Stat.feld_namen@, @Lexpr.name@); debug("Stat - Lexpr");
 	@}
 	| Term
@@ -224,22 +230,65 @@ RecCompSym:
 
 Expr: 
 	| Term /* sollte eigentlich úeberfluessig sein da bei der unteren regel notrec auch null sein kann. is es aber nicht */
+	@{
+		@i @Term.symbols@ = @Expr.symbols@;
+	@}
 	| Vorzeichen Term
+	@{
+		@i @Term.symbols@ = @Expr.symbols@;
+	@}
 	| Expr T_PLUS Term
+	@{
+		@i @Expr.1.symbols@ = @Expr.0.symbols@;
+		@i @Term.symbols@ = @Expr.symbols@;
+	@}
 	| Expr T_MUL Term
+	@{
+		@i @Expr.1.symbols@ = @Expr.0.symbols@;
+		@i @Term.symbols@ = @Expr.symbols@;
+	@}
 	| Expr T_OR Term
+	@{
+		@i @Expr.1.symbols@ = @Expr.0.symbols@;
+		@i @Term.symbols@ = @Expr.symbols@;
+	@}
 	| Term RecCompSym Term
+	@{
+		@i @Term.0.symbols@ = @Expr.symbols@;
+		@i @Term.1.symbols@ = @Expr.symbols@;
+	@}
 	;
 
 ExprList: Expr
+	@{
+		@i @Expr.symbols@ = @ExprList.symbols@;
+	@}
 	| Expr T_COLON ExprList
+	@{
+		@i @Expr.symbols@ = @ExprList.symbols@;
+		@i @ExprList.1.symbols@ = @ExprList.0.symbols@;
+
+	@}
 	;
 
 Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
+	@{
+		@i @Expr.symbols@ = @Term.symbols@;
+	@}
 	| T_NUM
 	| Term T_POINT T_ID
+	@{
+		@i @Term.1.symbols@ = @Term.0.symbols@;
+		@t assert_contains(@Term.symbols@, @T_ID.name@);
+	@}
 	| T_ID
+	@{
+		@t assert_contains(@Term.symbols@, @T_ID.name@);
+	@}
 	| T_ID T_BRACKET_LEFT ExprList T_BRACKET_RIGHT
+	@{
+		@i @ExprList.symbols@ = @Term.symbols@;
+	@}
 	;
 
 %%
