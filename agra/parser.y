@@ -1,7 +1,9 @@
 /********Symboltabelle*********/
 
 /*Namen der IDs werden im scanner mitgeliefert*/
-@attributes { char *name; struct symbol_t symbols;} T_ID Lexpr
+@attributes { char *name;} T_ID
+
+@attributes { char *name; struct symbol_t symbols;} Lexpr
 
 /*Namen der IDs werden im scanner mitgeliefert*/
 @attributes { char *val; } T_NUM
