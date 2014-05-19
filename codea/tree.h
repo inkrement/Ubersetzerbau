@@ -4,6 +4,7 @@
 #ifndef CODE
 typedef struct burm_state *STATEPTR_TYPE; 
 #endif
+#define DEBUG_ME
 
 enum {
   /* logical ops */
@@ -37,8 +38,7 @@ enum {
   OP_Stats,
   OP_NOP,
   OP_Assign,
-  OP_AND,
-  OP_GREATER
+  OP_AND
 };
 
 static char rule_names[100][100]={
@@ -74,8 +74,7 @@ static char rule_names[100][100]={
   "OP_Stats",
   "OP_NOP",
   "OP_Assign",
-  "OP_AND",
-  "OP_GREATER"
+  "OP_AND"
 };
     
 
@@ -91,6 +90,7 @@ typedef struct treenode {
   int skip_reg;
   int param_index; /* -1 if not a parameter */
   int usage_count;
+  int offset;
 } treenode;
 
 typedef treenode *treenodep;
@@ -112,6 +112,7 @@ treenode *new_named_leaf(int , char *);
 treenode *new_named_leaf_value(int , char *, long);
 treenode *new_named_node(int, treenode *, treenode *, char *);
 treenode *new_id_leaf(int, char *, int);
+treenode * new_field_leaf(int ,char* ,treenode * ,int);
 
 void write_indent(int );
 void write_tree(treenode *, int);

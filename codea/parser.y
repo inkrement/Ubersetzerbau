@@ -1,15 +1,13 @@
-/*offset als attribut von Felder hinzugefuegt*/
-
 @autoinh structs visible_structs symbols
 @attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs;}  Stats
-@attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;}   Stat Lexpr Term Expr CondRec PlusExpr MultExpr OrExpr ExprList Sign
+@attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;}   Stat Lexpr Term Expr CondRec PlusExpr MultExpr OrExpr ExprList
 @attributes { struct symbol_t* symbols; struct symbol_t* vars; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;} LetRec
 
 @attributes { struct symbol_t* felder; char *name; } Structdef
 @attributes { struct struct_table* structs; }  Funcdef
 @attributes { struct struct_table* struct_gen; struct struct_table* structs; } Program 
 @attributes { struct symbol_t* syms_gen; int index; }  Params
-@attributes { struct symbol_t* syms_gen; int offset;}  Felder 
+@attributes { struct symbol_t* syms_gen; }  Felder 
 @attributes { char *name;} T_ID
 @attributes { char *val; } T_NUM
 
@@ -48,9 +46,7 @@ Input: Program
 	;
 
 Program:
-	@{
-		@i @Program.struct_gen@ = (struct struct_table *) NULL;
-	@}
+	@{ @i @Program.struct_gen@ = (struct struct_table *) NULL; @}
 	| Program Structdef T_SEMICOLON
 	@{
 		@i @Program.0.struct_gen@ = add_struct(@Program.1.struct_gen@, @Structdef.name@, @Structdef.felder@);
@@ -77,7 +73,6 @@ Structdef: T_STRUCT T_ID T_DOUBLE_POINT Felder T_END
 	@{
 		@i @Structdef.name@ = @T_ID.name@;
 		@i @Structdef.felder@ = @Felder.syms_gen@;
-		@i @Felder.offset@ = 0;
 	@}
 	;
 
@@ -88,7 +83,7 @@ Params:
 	@}
 	| Params T_ID
 	@{
-		@i @Params.0.syms_gen@ = add_symbol(@Params.1.syms_gen@, @T_ID.name@, UNIQUE, @Params.index@,-1);
+		@i @Params.0.syms_gen@ = add_symbol(@Params.1.syms_gen@, @T_ID.name@, UNIQUE, @Params.index@);
 		@i @Params.0.index@ = @Params.1.index@ + 1;
 	@}
 	;
@@ -96,10 +91,7 @@ Params:
 Felder:
 	@{ @i @Felder.syms_gen@ = EMPTY_TABLE; @}
 	| Felder T_ID
-	@{  
-		@i @Felder.1.offset@ = @Felder.0.offset@ + 1;
-		@i @Felder.0.syms_gen@ = add_symbol(@Felder.1.syms_gen@, @T_ID.name@, UNIQUE, -1, @Felder.1.offset@);
-	@}
+	@{ @i @Felder.0.syms_gen@ = add_symbol(@Felder.1.syms_gen@, @T_ID.name@, UNIQUE, -1); @}
 	;
 
 Stats: 
@@ -119,20 +111,16 @@ LetRec:
 	@}
 	| LetRec T_ID T_EQUAL Expr T_SEMICOLON
 	@{
-		@i @LetRec.0.vars@ = add_symbol(@LetRec.1.vars@, @T_ID.name@, UNIQUE, -1, -1);
+		@i @LetRec.0.vars@ = add_symbol(@LetRec.1.vars@, @T_ID.name@, UNIQUE, -1);
 
 		@i @LetRec.node@ = new_leaf(OP_NOP);
 	@}
 	;
 
 CondRec:
-	@{ 
-		@i @CondRec.node@ = new_leaf(OP_NOP);
-	@}
+	@{ @i @CondRec.node@ = new_leaf(OP_NOP);@}
 	| CondRec Expr T_THEN Stats T_END T_SEMICOLON
-	@{ 
-		@i @CondRec.node@ = new_leaf(OP_NOP); 
-	@}
+	@{ @i @CondRec.node@ = new_leaf(OP_NOP); @}
 	;
 
 Stat: T_RETURN Expr
@@ -142,9 +130,7 @@ Stat: T_RETURN Expr
 		@reg @Stat.node@->reg = get_next_reg((char *)NULL, 0); @Expr.node@->reg = @Stat.node@->reg;
 	@}
 	| T_COND CondRec T_END
-	@{
-		@i @Stat.node@ = new_leaf(OP_NOP);
-	@}
+	@{ @i @Stat.node@ = new_leaf(OP_NOP); @}
 	| T_LET LetRec T_IN Stats T_END
 	@{
 		@i @Stats.symbols@ = table_merge(@Stat.symbols@, @LetRec.vars@);
@@ -181,9 +167,7 @@ Expr: Term
 		@reg @Term.node@->reg = @Expr.node@->reg; 
 	@}
 	| Sign Term
-	@{
-		@i @Expr.node@ = @Sign.node@;
-	@}
+	@{ @i @Expr.node@ = new_leaf(OP_NOP); @}
 	| PlusExpr
 	@{
 		@i @Expr.node@ = @PlusExpr.node@;
@@ -200,15 +184,9 @@ Expr: Term
 		@reg @OrExpr.node@->reg = @Expr.node@->reg;
 	@}
 	| Term T_GREATER Term
-	@{
-		@i @Expr.node@ = new_node(OP_GREATER, @Term.0.node@, @Term.1.node@);
-		@reg @Term.0.node@->reg = @Expr.node@->reg; @Term.1.node@->reg = get_next_reg(@Expr.node@->reg, @Expr.node@->skip_reg);
-	@}
+	@{ @i @Expr.node@ = new_leaf(OP_NOP); @}
 	| Term T_NOT_EQUAL Term
-	@{
-		@i @Expr.node@ = new_node(OP_NEQ, @Term.0.node@, @Term.1.node@);
-		@reg @Term.0.node@->reg = @Expr.node@->reg; @Term.1.node@->reg = get_next_reg(@Expr.node@->reg, @Expr.node@->skip_reg);
-	@}
+	@{ @i @Expr.node@ = new_leaf(OP_NOP); @}
 	;
 
 PlusExpr: Term T_PLUS Term
@@ -237,33 +215,29 @@ MultExpr: Term T_MUL Term
 	@}
 	;
 
-OrExpr: Term T_OR Term 
-	@{ @i @OrExpr.node@ = new_leaf(OP_NOP); @}
+OrExpr: Term T_OR Term
+	@{ 
+		@i @OrExpr.node@ = new_node(OP_OR, @Term.0.node@, @Term.1.node@);
+		
+		@reg @Term.node@->reg = @OrExpr.node@->reg; @Term.1.node@->reg = get_next_reg(@OrExpr.node@->reg);
+	@}
 	| OrExpr T_OR Term
-	@{ @i @OrExpr.node@ = new_leaf(OP_NOP); @}
+	@{ 
+		@i @OrExpr.node@ = new_leaf(OP_NOP);
+	@}
 	;
 
 Sign: 
 	T_NOT
-	@{
-		@i @Sign.node@ = new_leaf(OP_NOP);
-	@}
 	| T_MINUS
-	@{
-		@i @Sign.node@ = new_leaf(OP_NOP);
-	@}
 	| Sign T_NOT
-	@{
-		@i @Sign.0.node@ = new_leaf(OP_NOP);
-	@}
 	| Sign T_MINUS
-	@{
-		@i @Sign.0.node@ = new_leaf(OP_NOP);
-	@}
 	;
 
 Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
-	@{ @i @Term.node@ = new_leaf(OP_NOP); @}
+	@{
+		@i @Term.node@ = @Expr.node@;
+	@}
 	| T_NUM
 	@{
 		@i @Term.node@ = new_number_leaf(@T_NUM.val@);
@@ -271,7 +245,10 @@ Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
 	| Term T_POINT T_ID
 	@{
 		@t assert_exists_feldkontext(@Term.structs@, @Term.symbols@, @T_ID.name@); 
-		@i @Term.node@ = new_leaf(OP_NOP);
+		
+		@i @Term.0.node@ = new_field_leaf(OP_Field, @T_ID.name@, @Term.1.node@, get_field_offset(@Term.structs@, @T_ID.name@));
+
+		@reg @Term.1.node@->reg = @Term.0.node@->reg;
 	@}
 	| T_ID
 	@{
@@ -282,23 +259,15 @@ Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
 		@codegen record_var_usage(@T_ID.name@);
 	@}
 	| T_ID T_BRACKET_LEFT  T_BRACKET_RIGHT
-	@{ 
-		@i @Term.node@ = new_leaf(OP_NOP);
-	@}
+	@{ @i @Term.node@ = new_leaf(OP_NOP); @}
 	| T_ID T_BRACKET_LEFT ExprList T_BRACKET_RIGHT
-	@{ 
-		@i @Term.node@ = new_leaf(OP_NOP);
-	@}
+	@{ @i @Term.node@ = new_leaf(OP_NOP); @}
 	| T_ID T_BRACKET_LEFT ExprList T_COLON T_BRACKET_RIGHT
-	@{
-		@i @Term.node@ = new_leaf(OP_NOP);
-	@}
+	@{ @i @Term.node@ = new_leaf(OP_NOP); @}
 	;
 
 ExprList: Expr 
-	@{
-		@i @ExprList.node@ = NULL;
-	@}
+	@{ @i @ExprList.node@ = NULL; @}
 	| ExprList T_COLON Expr
 	@{
 		@i @ExprList.0.node@ = new_node(OP_Args, @ExprList.1.node@, @Expr.node@);

@@ -74,6 +74,16 @@ void move(char *src, char *dst) {
 
 }
 
+
+void move_offset(char *src, char *dst, int offset) {
+#ifdef DEBUG_ME
+  if(src == NULL || dst == NULL) {
+    printf("null register! src: %d, dst: %d\n", src, dst);
+  }
+#endif
+    printf("\tmovq (%%%s,%d,8), %%%s\n",src, offset, dst);
+}
+
 void movei(long value, char *reg){
 	printf("\tmovq $%li, %%%s\n", value, reg);
 }
@@ -105,6 +115,15 @@ void andi(long fst, char *snd){
 	printf("\tand $%li, %%%s\n",fst, snd);
 }
 
+void or(char *fst, char *snd){
+	if(strcmp(fst,snd))
+		printf("\tor %%%s, %%%s\n",fst,snd);
+}
+
+void ori(long fst, char *snd){
+	printf("\tor $%li, %%%s\n",fst, snd);
+}
+
 void neg(char *reg){
 	printf("\tnegq %%%s\n", reg);
 }
@@ -131,6 +150,18 @@ void smallerequali2(char *fst, long snd, char *dst){
 	printf("\tand $1, %%%s\n", dst);
 }
 
+void notequal(char *fst, char *snd, char *dst){
+	printf("\tcmp %%%s, %%%s\n", fst, snd);
+	printf("\tsetne %%%s\n",getByteRegister(dst));
+	printf("\tand $1, %%%s\n",dst);
+}
+
+void notequali(long fst, char *snd, char *dst){
+	printf("\tcmpq $%li, %%%s\n", fst, snd);
+	printf("\tsetne %%%s\n",getByteRegister(dst));
+	printf("\tand $1, %%%s\n",dst);
+}
+
 void address(char *src, char *dst){
 	printf("\tmovq (%%%s), %%%s\n", src, dst);
 }
@@ -140,45 +171,11 @@ void addressi(long src, char *dst){
 }
 
 
-void notequal(char *fst, char *snd, char *dst){
-	printf("\tcmp %%%s, %%%s\n", fst, snd);
-	printf("\tsetne %%%s\n",getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-	printf("\tneg %%%s\n", dst);
-}
-
-void notequali(long fst, char *snd, char *dst){
-	printf("\tcmpq $%li, %%%s\n", fst, snd);
-	printf("\tsetne %%%s\n",getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-	printf("\tneg %%%s\n", dst);
-}
-
-void notequali2(char *fst, long snd, char *dst){
-	printf("\tcmpq $%s, %%%li\n", fst, snd);
-	printf("\tsetne %%%s\n",getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-	printf("\tneg %%%s\n", dst);
+void loadfield(char *fieldname, int offset, char* reg){
+	printf("\tmovq %s+%d(%%rip), %%%s\n", fieldname, offset, reg);
 }
 
 
-void greater(char *fst, char *snd, char *dst){
-	printf("\tcmp %%%s, %%%s\n", fst, snd);
-	printf("\tsetg %%%s\n", getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-	printf("\tneg %%%s\n", dst);
-}
-
-void greateri(long fst, char *snd, char *dst){
-	printf("\tcmp %%%li, %%%s\n", fst, snd);
-	printf("\tsetg %%%s\n", getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-	printf("\tneg %%%s\n", dst);
-}
-
-void greateri2(char *fst, long snd, char *dst){
-	printf("\tcmp %%%s, %%%li\n", fst, snd);
-	printf("\tsetg %%%s\n", getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-	printf("\tneg %%%s\n", dst);
+void setfield(char *fieldname, int offset, char* reg){
+	printf("\tmovq %%%s, %s+%d(%%rip)\n", reg, fieldname, offset);
 }

@@ -20,10 +20,10 @@ void notequal(char *fst, char *snd, char *dst);
 void notequali(long value, char *fst, char *dst);
 void and(char *fst, char *snd);
 void andi(long fst, char *snd);
+void or(char *fst, char *snd);
+void ori(long fst, char *snd);
 void address(char *src, char *dst);
 void addressi(long value, char *dst);
+void move_offset(char *src, char *dst, int offset);
 
-void greater(char *fst, char *snd, char *dst);
-void greateri(long value, char *fst, char *dst);
-void greateri2(char *fst, long snd, char *dst);
 #endif

@@ -28,7 +28,4 @@ struct struct_table* get_struct_by_name(struct struct_table*, char *);
 int get_field_offset(struct struct_table* , char *);
 
 
-int get_offset(struct symbol_t*, char*);
-
-
 #endif

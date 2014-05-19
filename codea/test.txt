@@ -1,6 +1,6 @@
-/* struct a: a b c end;*/
-func funf(a)
+struct a: a b c end;
+func oder(z)
 
-return a;
+return z.b;
 
 end;

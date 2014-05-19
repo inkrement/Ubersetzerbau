@@ -4,17 +4,6 @@
 #include "struct_table.h"
 #include "symbol_table.h"
 
-/*TODO Argumente checken*/
-int get_offset(struct symbol_t* structs, char *fieldname){
-	struct symbol_t* field = table_lookup(structs, fieldname);
-
-	if(field != EMPTY_TABLE){
-		return field->offset;
-	}
-
-	return -1;
-}
-
 
 int get_field_offset(struct struct_table* structs, char *fieldname){
 	int offset = 0;

@@ -12,13 +12,11 @@ struct symbol_t {
 	int stack_offset;
 	int usage_count;
 	int param_index;
-	/*was ist mit stack_offset gemeint?*/
-	int offset;
 };
 
 void debug_symbol_table(struct symbol_t *);
 struct symbol_t *table_lookup(struct symbol_t*, char*);
-struct symbol_t *add_symbol(struct symbol_t*, char*, short, int, int);
+struct symbol_t *add_symbol(struct symbol_t*, char*, short, int);
 
 #endif
 

@@ -82,7 +82,7 @@ treenode *new_named_leaf_value(int op, char *name, long value) {
   treenode *new=(treenode *)malloc(sizeof(treenode));
   
 #ifdef DEBUG_ME
-  printf("new_named_leaf_value: %i (%s), %s, %li, param: %d\n",op,rule_names[op],name,value, param);
+  printf("new_named_leaf_value: %i (%s), %s, %li, param: %d\n",op,rule_names[op],name,value);
 #endif
 
   new->child[0]=(treenode *)NULL;
@@ -181,6 +181,20 @@ treenode * new_id_leaf(int op, char * name, int param_index){
   new->op=op;
   new->name=name;
   new->param_index=param_index;
+
+  return new;
+}
+
+
+treenode * new_field_leaf(int op, char* name, treenode * address_term, int offset){
+  treenode *new=(treenode *)malloc(sizeof(treenode));
+  
+  new->child[0]=address_term;
+  new->child[1]=(treenode *)NULL;
+  new->op=op;
+  new->name=name;
+  new->param_index=-1;
+  new->offset = offset;
 
   return new;
 }
