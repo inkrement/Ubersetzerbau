@@ -19,7 +19,6 @@ ret:	OP_Return(expr)					# 2 # move(bnode->reg, "rax"); retrn();
 
 expr:	OP_ID							# 1 # if(bnode->param_index != -1) move(getParamRegister(bnode->param_index), bnode->reg);
 expr:	immediate						# 1 # movei(bnode->value, bnode->reg);
-expr:	OP_NOT(expr)					# 1 # not(bnode->reg);
 expr:	OP_ADD(expr,expr)				# 1 # add(bnode->child[1]->reg, bnode->child[0]->reg);
 expr:	OP_ADD(immediate,expr)			# 1 # addi(bnode->child[0]->value, bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
 expr:	OP_ADD(expr,immediate)			# 1 # addi(bnode->child[1]->value, bnode->child[0]->reg);
@@ -29,7 +28,10 @@ expr:	OP_MUL(expr,immediate)			# 1 # muli(bnode->child[1]->value, bnode->child[0
 expr:	OP_AND(expr,expr)				# 2 # and(bnode->child[0]->reg,bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
 expr:	OP_AND(immediate,expr)			# 2 # andi(bnode->child[0]->value,bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
 expr:	OP_AND(expr,immediate)			# 2 # andi(bnode->child[1]->value,bnode->child[0]->reg); move(bnode->child[0]->reg, bnode->reg);
+
 expr:	OP_NEG(expr)					# 1 # neg(bnode->reg);
+expr:	OP_NOT(expr)					# 1 # not(bnode->reg);
+
 expr:	OP_LEQ(expr,expr)			# 3 # smallerequal(bnode->child[1]->reg, bnode->child[0]->reg, bnode->reg);
 expr: 	OP_LEQ(immediate,expr)		# 3 # smallerequali2(bnode->child[1]->reg,bnode->child[0]->value, bnode->reg);
 expr: 	OP_LEQ(expr,immediate)		# 3 # smallerequali(bnode->child[1]->value,bnode->child[0]->reg, bnode->reg);

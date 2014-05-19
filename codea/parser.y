@@ -2,7 +2,7 @@
 
 @autoinh structs visible_structs symbols
 @attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs;}  Stats
-@attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;}   Stat Lexpr Term Expr CondRec PlusExpr MultExpr OrExpr ExprList
+@attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;}   Stat Lexpr Term Expr CondRec PlusExpr MultExpr OrExpr ExprList Sign
 @attributes { struct symbol_t* symbols; struct symbol_t* vars; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;} LetRec
 
 @attributes { struct symbol_t* felder; char *name; } Structdef
@@ -182,7 +182,7 @@ Expr: Term
 	@}
 	| Sign Term
 	@{
-		@i @Expr.node@ = new_leaf(OP_NOP);
+		@i @Expr.node@ = @Sign.node@;
 	@}
 	| PlusExpr
 	@{
@@ -245,9 +245,21 @@ OrExpr: Term T_OR Term
 
 Sign: 
 	T_NOT
+	@{
+		@i @Sign.node@ = new_leaf(OP_NOP);
+	@}
 	| T_MINUS
+	@{
+		@i @Sign.node@ = new_leaf(OP_NOP);
+	@}
 	| Sign T_NOT
+	@{
+		@i @Sign.0.node@ = new_leaf(OP_NOP);
+	@}
 	| Sign T_MINUS
+	@{
+		@i @Sign.0.node@ = new_leaf(OP_NOP);
+	@}
 	;
 
 Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
