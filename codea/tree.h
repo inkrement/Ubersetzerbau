@@ -4,7 +4,6 @@
 #ifndef CODE
 typedef struct burm_state *STATEPTR_TYPE; 
 #endif
-#define DEBUG_ME
 
 enum {
   /* logical ops */
@@ -38,7 +37,8 @@ enum {
   OP_Stats,
   OP_NOP,
   OP_Assign,
-  OP_AND
+  OP_AND,
+  OP_GREATER
 };
 
 static char rule_names[100][100]={
@@ -74,7 +74,8 @@ static char rule_names[100][100]={
   "OP_Stats",
   "OP_NOP",
   "OP_Assign",
-  "OP_AND"
+  "OP_AND",
+  "OP_GREATER"
 };
     
 

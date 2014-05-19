@@ -1,6 +1,13 @@
 struct a: a b c end;
-func oder(z)
 
-return z.b;
+func oder(a b c)
+	return (a or b) or c;
+end;
 
+func greater(a b)
+	return a > b;
+end;
+
+func neq(a b)
+	return a <> b;
 end;

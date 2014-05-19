@@ -10,7 +10,7 @@
 %}
 
 %start stat
-%term OP_NOT=1 OP_OR=2 OP_EQ=3 OP_GT=4 OP_GEQ=5 OP_LS=6 OP_LEQ=7 OP_NEQ=8 OP_ADD=9 OP_MUL=10 OP_NEG=11 OP_ID=12 OP_Number=13 OP_Field=14 OP_Return=15 OP_Zero=16 OP_One=17 OP_Args=18 OP_Call=19 OP_ReadMem=20 OP_IF=21 OP_Stats=22 OP_NOP=23 OP_Assign=24 OP_AND=25
+%term OP_NOT=1 OP_OR=2 OP_EQ=3 OP_GT=4 OP_GEQ=5 OP_LS=6 OP_LEQ=7 OP_NEQ=8 OP_ADD=9 OP_MUL=10 OP_NEG=11 OP_ID=12 OP_Number=13 OP_Field=14 OP_Return=15 OP_Zero=16 OP_One=17 OP_Args=18 OP_Call=19 OP_ReadMem=20 OP_IF=21 OP_Stats=22 OP_NOP=23 OP_Assign=24 OP_AND=25 OP_GREATER=26
 %%
 
 stat:	ret								# 0 #
@@ -51,6 +51,10 @@ immediate:	OP_Number					# 0 #
 immediate:	OP_Zero						# 0 #
 immediate:	OP_One						# 0 #
 
+expr:	OP_GREATER(expr,expr)			# 2 # greater(bnode->child[1]->reg, bnode->child[0]->reg, bnode->reg);
+expr: 	OP_GREATER(immediate,expr)		# 2 # greateri(bnode->child[1]->value,bnode->child[0]->reg, bnode->reg);
+expr: 	OP_GREATER(expr,immediate)		# 2 # greateri2(bnode->child[1]->reg,bnode->child[0]->value, bnode->reg);
+
 zero:	OP_NEG(zero)					# 0 #
 zero:	OP_Zero							# 0 #
 zero:	OP_MUL(zeroexpr,zero) 			# 0 #
@@ -67,6 +71,7 @@ zeroexpr:	OP_AND(zeroexpr,zeroexpr)	# 0 #
 zeroexpr:	OP_LEQ(zeroexpr, zeroexpr) # 0 #
 zeroexpr:	OP_NEQ(zeroexpr, zeroexpr) # 0 #
 zeroexpr:	OP_Id						# 0 #
+zeroexpr:	OP_GREATER(zeroexpr,zeroexpr)	# 0 # 
 
 %%
 

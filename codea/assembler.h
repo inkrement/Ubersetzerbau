@@ -26,4 +26,9 @@ void address(char *src, char *dst);
 void addressi(long value, char *dst);
 void move_offset(char *src, char *dst, int offset);
 
+void greater(char *fst, char *snd, char *dst);
+void greateri(long value, char *fst, char *dst);
+void greateri2(char *fst, long snd, char *dst);
+void notequali2(char *fst, long snd, char *dst);
+
 #endif

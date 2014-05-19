@@ -167,7 +167,11 @@ Expr: Term
 		@reg @Term.node@->reg = @Expr.node@->reg; 
 	@}
 	| Sign Term
-	@{ @i @Expr.node@ = new_leaf(OP_NOP); @}
+	@{ 
+		@i @Expr.node@ = @Term.node@;
+
+		@reg @Term.node@->reg = @Expr.node@->reg;
+	@}
 	| PlusExpr
 	@{
 		@i @Expr.node@ = @PlusExpr.node@;
@@ -184,9 +188,15 @@ Expr: Term
 		@reg @OrExpr.node@->reg = @Expr.node@->reg;
 	@}
 	| Term T_GREATER Term
-	@{ @i @Expr.node@ = new_leaf(OP_NOP); @}
+	@{
+		@i @Expr.node@ = new_node(OP_GREATER, @Term.0.node@, @Term.1.node@);
+		@reg @Term.0.node@->reg = @Expr.node@->reg; @Term.1.node@->reg = get_next_reg(@Expr.node@->reg, @Expr.node@->skip_reg);
+	@}
 	| Term T_NOT_EQUAL Term
-	@{ @i @Expr.node@ = new_leaf(OP_NOP); @}
+	@{
+		@i @Expr.node@ = new_node(OP_NEQ, @Term.0.node@, @Term.1.node@);
+		@reg @Term.0.node@->reg = @Expr.node@->reg; @Term.1.node@->reg = get_next_reg(@Expr.node@->reg, @Expr.node@->skip_reg);
+	@}
 	;
 
 PlusExpr: Term T_PLUS Term

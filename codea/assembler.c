@@ -150,18 +150,6 @@ void smallerequali2(char *fst, long snd, char *dst){
 	printf("\tand $1, %%%s\n", dst);
 }
 
-void notequal(char *fst, char *snd, char *dst){
-	printf("\tcmp %%%s, %%%s\n", fst, snd);
-	printf("\tsetne %%%s\n",getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-}
-
-void notequali(long fst, char *snd, char *dst){
-	printf("\tcmpq $%li, %%%s\n", fst, snd);
-	printf("\tsetne %%%s\n",getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-}
-
 void address(char *src, char *dst){
 	printf("\tmovq (%%%s), %%%s\n", src, dst);
 }
@@ -178,4 +166,47 @@ void loadfield(char *fieldname, int offset, char* reg){
 
 void setfield(char *fieldname, int offset, char* reg){
 	printf("\tmovq %%%s, %s+%d(%%rip)\n", reg, fieldname, offset);
+}
+
+void notequal(char *fst, char *snd, char *dst){
+	printf("\tcmp %%%s, %%%s\n", fst, snd);
+	printf("\tsetne %%%s\n",getByteRegister(dst));
+	printf("\tand $1, %%%s\n",dst);
+	printf("\tneg %%%s\n", dst);
+}
+
+void notequali(long fst, char *snd, char *dst){
+	printf("\tcmpq $%li, %%%s\n", fst, snd);
+	printf("\tsetne %%%s\n",getByteRegister(dst));
+	printf("\tand $1, %%%s\n",dst);
+	printf("\tneg %%%s\n", dst);
+}
+
+void notequali2(char *fst, long snd, char *dst){
+	printf("\tcmpq $%s, %%%li\n", fst, snd);
+	printf("\tsetne %%%s\n",getByteRegister(dst));
+	printf("\tand $1, %%%s\n",dst);
+	printf("\tneg %%%s\n", dst);
+}
+
+
+void greater(char *fst, char *snd, char *dst){
+	printf("\tcmp %%%s, %%%s\n", fst, snd);
+	printf("\tsetg %%%s\n", getByteRegister(dst));
+	printf("\tand $1, %%%s\n",dst);
+	printf("\tneg %%%s\n", dst);
+}
+
+void greateri(long fst, char *snd, char *dst){
+	printf("\tcmp %%%li, %%%s\n", fst, snd);
+	printf("\tsetg %%%s\n", getByteRegister(dst));
+	printf("\tand $1, %%%s\n",dst);
+	printf("\tneg %%%s\n", dst);
+}
+
+void greateri2(char *fst, long snd, char *dst){
+	printf("\tcmp %%%s, %%%li\n", fst, snd);
+	printf("\tsetg %%%s\n", getByteRegister(dst));
+	printf("\tand $1, %%%s\n",dst);
+	printf("\tneg %%%s\n", dst);
 }

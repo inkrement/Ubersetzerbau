@@ -92,21 +92,25 @@ short *burm_nts[] = {
 	burm_nts_2,	/* 33 */
 	burm_nts_2,	/* 34 */
 	burm_nts_2,	/* 35 */
-	burm_nts_7,	/* 36 */
-	burm_nts_2,	/* 37 */
-	burm_nts_9,	/* 38 */
-	burm_nts_10,	/* 39 */
-	burm_nts_10,	/* 40 */
+	burm_nts_4,	/* 36 */
+	burm_nts_5,	/* 37 */
+	burm_nts_6,	/* 38 */
+	burm_nts_7,	/* 39 */
+	burm_nts_2,	/* 40 */
 	burm_nts_9,	/* 41 */
-	burm_nts_7,	/* 42 */
-	burm_nts_3,	/* 43 */
-	burm_nts_11,	/* 44 */
-	burm_nts_12,	/* 45 */
-	burm_nts_12,	/* 46 */
-	burm_nts_12,	/* 47 */
+	burm_nts_10,	/* 42 */
+	burm_nts_10,	/* 43 */
+	burm_nts_9,	/* 44 */
+	burm_nts_7,	/* 45 */
+	burm_nts_3,	/* 46 */
+	burm_nts_11,	/* 47 */
 	burm_nts_12,	/* 48 */
 	burm_nts_12,	/* 49 */
-	burm_nts_13,	/* 50 */
+	burm_nts_12,	/* 50 */
+	burm_nts_12,	/* 51 */
+	burm_nts_12,	/* 52 */
+	burm_nts_13,	/* 53 */
+	burm_nts_12,	/* 54 */
 };
 
 char burm_arity[] = {
@@ -136,6 +140,7 @@ char burm_arity[] = {
 	0,	/* 23=OP_NOP */
 	0,	/* 24=OP_Assign */
 	2,	/* 25=OP_AND */
+	2,	/* 26=OP_GREATER */
 };
 
 static short burm_decode_stat[] = {
@@ -172,6 +177,9 @@ static short burm_decode_expr[] = {
 	22,
 	23,
 	24,
+	36,
+	37,
+	38,
 };
 
 static short burm_decode_immediate[] = {
@@ -191,25 +199,26 @@ static short burm_decode_immediate[] = {
 
 static short burm_decode_zero[] = {
 	0,
-	36,
-	37,
-	38,
 	39,
 	40,
 	41,
+	42,
+	43,
+	44,
 };
 
 static short burm_decode_zeroexpr[] = {
 	0,
-	42,
-	43,
-	44,
 	45,
 	46,
 	47,
 	48,
 	49,
 	50,
+	51,
+	52,
+	53,
+	54,
 };
 
 static short burm_decode_OP_Id[] = {
@@ -945,6 +954,37 @@ STATEPTR_TYPE burm_state(int op, STATEPTR_TYPE left, STATEPTR_TYPE right) {
 			}
 		}
 		break;
+	case 26: /* OP_GREATER */
+		assert(l && r);
+		{	/* zeroexpr: OP_GREATER(zeroexpr,zeroexpr) */
+			c = l->cost[burm_zeroexpr_NT] + r->cost[burm_zeroexpr_NT] + 0;
+			if (c + 0 < p->cost[burm_zeroexpr_NT]) {
+				p->cost[burm_zeroexpr_NT] = c + 0;
+				p->rule.burm_zeroexpr = 10;
+			}
+		}
+		{	/* expr: OP_GREATER(expr,immediate) */
+			c = l->cost[burm_expr_NT] + r->cost[burm_immediate_NT] + 2;
+			if (c + 0 < p->cost[burm_expr_NT]) {
+				p->cost[burm_expr_NT] = c + 0;
+				p->rule.burm_expr = 25;
+			}
+		}
+		{	/* expr: OP_GREATER(immediate,expr) */
+			c = l->cost[burm_immediate_NT] + r->cost[burm_expr_NT] + 2;
+			if (c + 0 < p->cost[burm_expr_NT]) {
+				p->cost[burm_expr_NT] = c + 0;
+				p->rule.burm_expr = 24;
+			}
+		}
+		{	/* expr: OP_GREATER(expr,expr) */
+			c = l->cost[burm_expr_NT] + r->cost[burm_expr_NT] + 2;
+			if (c + 0 < p->cost[burm_expr_NT]) {
+				p->cost[burm_expr_NT] = c + 0;
+				p->rule.burm_expr = 23;
+			}
+		}
+		break;
 	default:
 		burm_assert(0, PANIC("Bad operator %d in burm_state\n", op));
 	}
@@ -982,16 +1022,16 @@ NODEPTR_TYPE *burm_kids(NODEPTR_TYPE p, int eruleno, NODEPTR_TYPE kids[]) {
 	burm_assert(p, PANIC("NULL tree in burm_kids\n"));
 	burm_assert(kids, PANIC("NULL kids in burm_kids\n"));
 	switch (eruleno) {
-	case 50: /* zeroexpr: OP_Id */
-	case 43: /* zeroexpr: immediate */
-	case 42: /* zeroexpr: zero */
+	case 53: /* zeroexpr: OP_Id */
+	case 46: /* zeroexpr: immediate */
+	case 45: /* zeroexpr: zero */
 	case 25: /* immediate: zero */
 	case 5: /* expr: immediate */
 	case 1: /* stat: ret */
 		kids[0] = p;
 		break;
-	case 44: /* zeroexpr: OP_NEG(zeroexpr) */
-	case 36: /* zero: OP_NEG(zero) */
+	case 47: /* zeroexpr: OP_NEG(zeroexpr) */
+	case 39: /* zero: OP_NEG(zero) */
 	case 30: /* immediate: OP_NEG(immediate) */
 	case 26: /* immediate: OP_NOT(immediate) */
 	case 24: /* expr: OP_ReadMem(immediate) */
@@ -1002,21 +1042,25 @@ NODEPTR_TYPE *burm_kids(NODEPTR_TYPE p, int eruleno, NODEPTR_TYPE kids[]) {
 	case 2: /* ret: OP_Return(expr) */
 		kids[0] = LEFT_CHILD(p);
 		break;
-	case 37: /* zero: OP_Zero */
+	case 40: /* zero: OP_Zero */
 	case 35: /* immediate: OP_One */
 	case 34: /* immediate: OP_Zero */
 	case 33: /* immediate: OP_Number */
 	case 3: /* expr: OP_ID */
 		break;
-	case 49: /* zeroexpr: OP_NEQ(zeroexpr,zeroexpr) */
-	case 48: /* zeroexpr: OP_LEQ(zeroexpr,zeroexpr) */
-	case 47: /* zeroexpr: OP_AND(zeroexpr,zeroexpr) */
-	case 46: /* zeroexpr: OP_MUL(zeroexpr,zeroexpr) */
-	case 45: /* zeroexpr: OP_ADD(zeroexpr,zeroexpr) */
-	case 41: /* zero: OP_AND(zeroexpr,zero) */
-	case 40: /* zero: OP_AND(zero,zeroexpr) */
-	case 39: /* zero: OP_MUL(zero,zeroexpr) */
-	case 38: /* zero: OP_MUL(zeroexpr,zero) */
+	case 54: /* zeroexpr: OP_GREATER(zeroexpr,zeroexpr) */
+	case 52: /* zeroexpr: OP_NEQ(zeroexpr,zeroexpr) */
+	case 51: /* zeroexpr: OP_LEQ(zeroexpr,zeroexpr) */
+	case 50: /* zeroexpr: OP_AND(zeroexpr,zeroexpr) */
+	case 49: /* zeroexpr: OP_MUL(zeroexpr,zeroexpr) */
+	case 48: /* zeroexpr: OP_ADD(zeroexpr,zeroexpr) */
+	case 44: /* zero: OP_AND(zeroexpr,zero) */
+	case 43: /* zero: OP_AND(zero,zeroexpr) */
+	case 42: /* zero: OP_MUL(zero,zeroexpr) */
+	case 41: /* zero: OP_MUL(zeroexpr,zero) */
+	case 38: /* expr: OP_GREATER(expr,immediate) */
+	case 37: /* expr: OP_GREATER(immediate,expr) */
+	case 36: /* expr: OP_GREATER(expr,expr) */
 	case 32: /* immediate: OP_NEQ(immediate,immediate) */
 	case 31: /* immediate: OP_LEQ(immediate,immediate) */
 	case 29: /* immediate: OP_AND(immediate,immediate) */
@@ -1138,19 +1182,31 @@ void burm_reduce(NODEPTR_TYPE bnode, int goalnt)
 
     break;
   case 36:
-
+ greater(bnode->child[1]->reg, bnode->child[0]->reg, bnode->reg);
     break;
   case 50:
 
     break;
   case 37:
+ greateri(bnode->child[1]->value,bnode->child[0]->reg, bnode->reg);
+    break;
+  case 51:
 
     break;
   case 38:
+ greateri2(bnode->child[1]->reg,bnode->child[0]->value, bnode->reg);
+    break;
+  case 52:
 
     break;
   case 39:
 
+    break;
+  case 53:
+
+    break;
+  case 54:
+ 
     break;
   case 1:
 
