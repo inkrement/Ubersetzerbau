@@ -1,0 +1,9 @@
+	.text
+	movq $0, %rax
+	ret
+
+	.globl somefunction
+	.type somefunction, @function
+somefunction:
+	movq $0, %rax
+	ret

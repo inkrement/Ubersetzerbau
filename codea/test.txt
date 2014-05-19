@@ -1,0 +1,6 @@
+/* struct a: a b c end;*/
+func funf(a)
+
+return a;
+
+end;

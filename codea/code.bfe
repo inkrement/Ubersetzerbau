@@ -1,0 +1,80 @@
+%{
+#define CODE
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+#include "tree.h"
+#include "assembler.h"
+
+%}
+
+%start stat
+%term OP_NOT=1 OP_OR=2 OP_EQ=3 OP_GT=4 OP_GEQ=5 OP_LS=6 OP_LEQ=7 OP_NEQ=8 OP_ADD=9 OP_MUL=10 OP_NEG=11 OP_ID=12 OP_Number=13 OP_Field=14 OP_Return=15 OP_Zero=16 OP_One=17 OP_Args=18 OP_Call=19 OP_ReadMem=20 OP_IF=21 OP_Stats=22 OP_NOP=23 OP_Assign=24 OP_AND=25 OP_GREATER=26
+%%
+
+stat:	ret								# 0 #
+
+ret:	OP_Return(expr)					# 2 # move(bnode->reg, "rax"); retrn();
+
+expr:	OP_ID							# 1 # if(bnode->param_index != -1) move(getParamRegister(bnode->param_index), bnode->reg);
+expr:	immediate						# 1 # movei(bnode->value, bnode->reg);
+expr:	OP_NOT(expr)					# 1 # not(bnode->reg);
+expr:	OP_ADD(expr,expr)				# 1 # add(bnode->child[1]->reg, bnode->child[0]->reg);
+expr:	OP_ADD(immediate,expr)			# 1 # addi(bnode->child[0]->value, bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
+expr:	OP_ADD(expr,immediate)			# 1 # addi(bnode->child[1]->value, bnode->child[0]->reg);
+expr:	OP_MUL(expr,expr)				# 1 # mul(bnode->child[1]->reg, bnode->child[0]->reg);
+expr:	OP_MUL(immediate,expr)			# 1 # muli(bnode->child[0]->value, bnode->child[1]->reg);
+expr:	OP_MUL(expr,immediate)			# 1 # muli(bnode->child[1]->value, bnode->child[0]->reg);
+expr:	OP_AND(expr,expr)				# 2 # and(bnode->child[0]->reg,bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
+expr:	OP_AND(immediate,expr)			# 2 # andi(bnode->child[0]->value,bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
+expr:	OP_AND(expr,immediate)			# 2 # andi(bnode->child[1]->value,bnode->child[0]->reg); move(bnode->child[0]->reg, bnode->reg);
+expr:	OP_NEG(expr)					# 1 # neg(bnode->reg);
+expr:	OP_LEQ(expr,expr)			# 3 # smallerequal(bnode->child[1]->reg, bnode->child[0]->reg, bnode->reg);
+expr: 	OP_LEQ(immediate,expr)		# 3 # smallerequali2(bnode->child[1]->reg,bnode->child[0]->value, bnode->reg);
+expr: 	OP_LEQ(expr,immediate)		# 3 # smallerequali(bnode->child[1]->value,bnode->child[0]->reg, bnode->reg);
+expr:	OP_ReadMem(expr)				# 1 # address(bnode->child[0]->reg, bnode->reg);
+expr:	OP_ReadMem(immediate)			# 1 # addressi(bnode->child[0]->value, bnode->reg);
+
+expr:	OP_GREATER(expr,expr)			# 2 # greater(bnode->child[1]->reg, bnode->child[0]->reg, bnode->reg);
+expr: 	OP_GREATER(immediate,expr)		# 2 # greateri(bnode->child[1]->value,bnode->child[0]->reg, bnode->reg);
+expr: 	OP_GREATER(expr,immediate)		# 2 # greateri2(bnode->child[1]->reg,bnode->child[0]->value, bnode->reg);
+
+expr:	OP_NEQ(expr,expr)			# 3 # notequal(bnode->child[0]->reg, bnode->child[1]->reg, bnode->reg);
+expr:	OP_NEQ(immediate,expr)		# 3 # notequali(bnode->child[0]->value, bnode->child[1]->reg, bnode->reg);
+expr:	OP_NEQ(expr,immediate)		# 3 # notequali2(bnode->child[1]->reg, bnode->child[0]->value, bnode->reg);
+
+
+immediate:	zero						# 0 # bnode->value = 0;
+immediate:	OP_NOT(immediate)			# 0 # bnode->value = ! bnode->child[0]->value;
+immediate:	OP_ADD(immediate,immediate)	# 0 # bnode->value = bnode->child[0]->value + bnode->child[1]->value;
+immediate:	OP_MUL(immediate,immediate) # 0 # bnode->value = bnode->child[0]->value * bnode->child[1]->value;
+immediate:	OP_AND(immediate,immediate) # 0 # bnode->value = bnode->child[0]->value & bnode->child[1]->value;
+immediate:	OP_NEG(immediate)			# 0 # bnode->value = - bnode->child[0]->value;
+immediate:	OP_LEQ(immediate,immediate) # 0 # bnode->value = (bnode->child[0]->value <= bnode->child[1]->value)? 1 : 0;
+immediate:	OP_NEQ(immediate,immediate) # 0 # bnode->value = (bnode->child[0]->value != bnode->child[1]->value)? 1 : 0;
+immediate:	OP_Number					# 0 #
+immediate:	OP_Zero						# 0 #
+immediate:	OP_One						# 0 #
+
+zero:	OP_NEG(zero)					# 0 #
+zero:	OP_Zero							# 0 #
+zero:	OP_MUL(zeroexpr,zero) 			# 0 #
+zero:	OP_MUL(zero,zeroexpr) 			# 0 #
+zero:	OP_AND(zero, zeroexpr)			# 0 #
+zero:	OP_AND(zeroexpr, zero)			# 0 #
+
+zeroexpr:	zero						# 0 #
+zeroexpr:	immediate					# 0 #
+zeroexpr:	OP_NEG(zeroexpr)			# 0 #
+zeroexpr:	OP_ADD(zeroexpr,zeroexpr)	# 0 #
+zeroexpr:	OP_MUL(zeroexpr,zeroexpr)	# 0 #
+zeroexpr:	OP_AND(zeroexpr,zeroexpr)	# 0 #
+zeroexpr:	OP_LEQ(zeroexpr, zeroexpr) 	# 0 #
+zeroexpr:	OP_NEQ(zeroexpr, zeroexpr) 	# 0 #
+zeroexpr:	OP_Id						# 0 #
+zeroexpr:	OP_GREATER(zeroexpr,zeroexpr)	# 0 # 
+
+%%
+
+
