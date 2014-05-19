@@ -1,6 +1,6 @@
 @autoinh structs visible_structs symbols
 @attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs;}  Stats
-@attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;}   Stat Lexpr Term Expr CondRec PlusExpr MultExpr OrExpr ExprList
+@attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;}   Stat Lexpr Term Expr CondRec PlusExpr MultExpr OrExpr ExprList SignTerm
 @attributes { struct symbol_t* symbols; struct symbol_t* vars; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;} LetRec
 
 @attributes { struct symbol_t* felder; char *name; } Structdef
@@ -161,16 +161,39 @@ Lexpr: T_ID
 	@}
 	;
 
+SignTerm: Term
+	@{
+		@i @SignTerm.node@ = @Term.node@;
+        @reg @Term.node@->reg = @SignTerm.node@->reg;
+	@}
+	|
+	T_MINUS SignTerm
+	@{
+		@i @SignTerm.0.node@ = new_node(OP_NEG, @SignTerm.1.node@, (treenode *) NULL);
+		@reg @SignTerm.1.node@->reg = @SignTerm.0.node@->reg;
+	@}
+	|
+	T_NOT SignTerm
+	@{
+		@i @SignTerm.0.node@ = new_node(OP_NOT, @SignTerm.1.node@, (treenode *) NULL);
+		@reg @SignTerm.1.node@->reg = @SignTerm.0.node@->reg;
+	@}
+	;
+
 Expr: Term
 	@{ 
 		@i @Expr.node@ = @Term.node@;
 		@reg @Term.node@->reg = @Expr.node@->reg; 
 	@}
-	| Sign Term
-	@{ 
-		@i @Expr.node@ = @Term.node@;
-
-		@reg @Term.node@->reg = @Expr.node@->reg;
+	| T_MINUS SignTerm
+	@{
+		@i @Expr.node@ = new_node(OP_NEG, @SignTerm.node@, (treenode *) NULL);
+		@reg @SignTerm.node@->reg = @Expr.node@->reg;
+	@}
+	| T_NOT SignTerm
+	@{
+		@i @Expr.node@ = new_node(OP_NOT, @SignTerm.node@, (treenode *) NULL);
+		@reg @SignTerm.node@->reg = @Expr.node@->reg;
 	@}
 	| PlusExpr
 	@{
@@ -235,13 +258,6 @@ OrExpr: Term T_OR Term
 	@{ 
 		@i @OrExpr.node@ = new_leaf(OP_NOP);
 	@}
-	;
-
-Sign: 
-	T_NOT
-	| T_MINUS
-	| Sign T_NOT
-	| Sign T_MINUS
 	;
 
 Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
