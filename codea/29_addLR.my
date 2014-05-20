@@ -1,8 +1,0 @@
-struct s0 : s00 s01 s02 end;
-
-func f(a)
-	 return (91223344H+91223344H)+(a+1); 
-end;
-
-struct s1 : s10 s11 s12 end;
-struct s2 : s20 s21 s22 end;
