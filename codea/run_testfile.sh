@@ -5,7 +5,7 @@ make
 testFolder=testFolder
 targetFolder=tmp
 
-mkdir $targetFolder
+mkdir -p $targetFolder 
 #rm $targetFolder/*
 
 let "i = 0"
