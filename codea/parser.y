@@ -107,20 +107,20 @@ LetRec:
 	@{ 
 		@i @LetRec.vars@ = EMPTY_TABLE;
 
-		@i @LetRec.node@ = new_leaf(OP_NOP);
+		@i @LetRec.node@ = NULL;
 	@}
 	| LetRec T_ID T_EQUAL Expr T_SEMICOLON
 	@{
 		@i @LetRec.0.vars@ = add_symbol(@LetRec.1.vars@, @T_ID.name@, UNIQUE, -1);
 
-		@i @LetRec.node@ = new_leaf(OP_NOP);
+		@i @LetRec.node@ = @Expr.node@;
 	@}
 	;
 
 CondRec:
-	@{ @i @CondRec.node@ = new_leaf(OP_NOP);@}
+	@{ @i @CondRec.node@ = NULL;@}
 	| CondRec Expr T_THEN Stats T_END T_SEMICOLON
-	@{ @i @CondRec.node@ = new_leaf(OP_NOP); @}
+	@{ @i @CondRec.node@ = NULL; @}
 	;
 
 Stat: T_RETURN Expr
@@ -130,29 +130,29 @@ Stat: T_RETURN Expr
 		@reg @Stat.node@->reg = get_next_reg((char *)NULL, 0); @Expr.node@->reg = @Stat.node@->reg;
 	@}
 	| T_COND CondRec T_END
-	@{ @i @Stat.node@ = new_leaf(OP_NOP); @}
+	@{ @i @Stat.node@ = NULL; @}
 	| T_LET LetRec T_IN Stats T_END
 	@{
 		@i @Stats.symbols@ = table_merge(@Stat.symbols@, @LetRec.vars@);
-		@i @Stat.node@ = new_leaf(OP_NOP);
+		@i @Stat.node@ = NULL;
 	@}
 	| T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 	@{
 		@t assert_struct_exists(@Stat.structs@, @T_ID.name@);
 		@i @Stats.symbols@ = load_struct(@Stat.structs@,@Stat.symbols@, @T_ID.name@);
-		@i @Stat.node@ = new_leaf(OP_NOP);
+		@i @Stat.node@ = NULL;
 	@}
 	| Lexpr T_EQUAL Expr
-	@{ @i @Stat.node@ = new_leaf(OP_NOP); @}
+	@{ @i @Stat.node@ = NULL; @}
 	| Term
-	@{ @i @Stat.node@ = new_leaf(OP_NOP); @}
+	@{ @i @Stat.node@ = NULL; @}
 	;
 
 Lexpr: T_ID
 	@{
 		@t assert_exists(@Lexpr.structs@, @Lexpr.visible_structs@, @Lexpr.symbols@, @T_ID.name@);
 
-		@i @Lexpr.node@ = new_leaf(OP_NOP);
+		@i @Lexpr.node@ = NULL;
 	@}
 	| Term T_POINT T_ID
 	@{
