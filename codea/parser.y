@@ -280,7 +280,7 @@ Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
 	@{
 		@t assert_exists(@Term.structs@, @Term.visible_structs@, @Term.symbols@, @T_ID.name@);
 
-		@i @Term.node@ = new_id_leaf(OP_ID, @T_ID.name@ , table_lookup(@Term.symbols@, @T_ID.name@)->param_index);
+		@i @Term.node@ = new_id_leaf(OP_ID, @T_ID.name@ , (table_lookup(@Term.symbols@, @T_ID.name@) == EMPTY_TABLE )?0:table_lookup(@Term.symbols@, @T_ID.name@)->param_index);
 
 		@codegen record_var_usage(@T_ID.name@);
 	@}
