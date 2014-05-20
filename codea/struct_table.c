@@ -137,8 +137,6 @@ void assert_exists(struct struct_table *struct_table, struct symbol_t *visible_s
 
 void assert_exists_feldkontext(struct struct_table *struct_table, struct symbol_t *symbols, char* name){
 
-	printf("assert exists feldkontext\n");
-
 	while(struct_table != (struct struct_table *) NULL){
 		if(table_lookup(struct_table->fields, name) != EMPTY_TABLE) return;
 
@@ -174,8 +172,6 @@ void assert_single_occurence(struct struct_table *struct_table, struct symbol_t 
 struct symbol_t * load_struct(struct struct_table* str_t, struct symbol_t* sym_t, char* struct_name){
 
 	struct struct_table* s = str_t;
-
-	printf("load structs\n");
 
 	debug_struct_table(str_t);
 
