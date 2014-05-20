@@ -2,8 +2,8 @@
 
 make
 
-testFolder=/home/dominik/Development/Uni/ub/codea/testFolder
-targetFolder=/home/dominik/Development/Uni/ub/codea
+testFolder=testFolder
+targetFolder=.
 
 mkdir $targetFolder
 #rm $targetFolder/*
