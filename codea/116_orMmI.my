@@ -1,0 +1,8 @@
+struct s0 : s00 s01 s02 end;
+
+func f(a)
+	 return (a+8).s20.s01 or 7; 
+end;
+
+struct s1 : s10 s11 s12 end;
+struct s2 : s20 s21 s22 end;

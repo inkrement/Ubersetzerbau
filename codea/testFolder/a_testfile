@@ -1,0 +1,245 @@
+returnI # a_mainL  # return 13; # return 13;
+returnL # a_mainL  # return 91223344H+91223344H; # return 0x91223344L+0x91223344L;
+returnR # a_mainL  # return a; # return a;
+returnR # a_mainLL # return b; # return b;
+return # a_mainLL  # return a; return b; # return a; return b;
+returnM # a_mainP  # return a.s11; # return a[1];
+returnMr# a_mainP  # return (a+16).s10; # return a[2];
+returnMm# a_mainDP  # return (a+8).s11.s20; # return a[2][0];
+
+negI # a_mainL  # return -13; # return -13;
+negL # a_mainL  # return -(91223344H+91223344H); # return -(0x91223344L+0x91223344L);
+negR # a_mainL  # return -a; # return -a;
+negR # a_mainLL # return -(b+1); # return -(b+1);
+negM # a_mainP  # return -a.s11; # return -a[1];
+negMr# a_mainP  # return -(a+16).s10; # return -a[2];
+negMm# a_mainDP # return -(a+8).s11.s20; # return -a[2][0];
+
+notI # a_mainL  # return not 13; # return ~13;
+notL # a_mainL  # return not (91223344H+91223344H); # return ~(0x91223344L+0x91223344L);
+notR # a_mainL  # return not a; # return ~a;
+notR # a_mainLL # return not (b+1); # return ~(b+1);
+notM # a_mainP  # return not a.s11; # return ~a[1];
+notMr# a_mainP  # return not (a+16).s10; # return ~a[2];
+notMm# a_mainDP # return not (a+8).s11.s20; # return ~a[2][0];
+
+addIR  # a_mainL  # return 3+a; # return 3+a; // IM + REG
+addRI  # a_mainL  # return a+7; # return a+7;
+addLR  # a_mainL  # return (91223344H+91223344H)+a; # return (0x91223344L+0x91223344L)+a; // long IM + R
+addRL  # a_mainL  # return a+(98765432H+98765431H); # return (0x98765432L+0x98765431L)+a;
+addIR  # a_mainL  # return 3+(a+1); # return 3+(a+1); // IM + REG
+addRI  # a_mainL  # return (a+1)+7; # return (a+1)+7;
+addLR  # a_mainL  # return (91223344H+91223344H)+(a+1); # return (0x91223344L+0x91223344L)+(a+1); // long IM + R
+addRL  # a_mainL  # return (a+1)+(98765432H+98765431H); # return (0x98765432L+0x98765431L)+(a+1);
+addIM  # a_mainP  # return 3+a.s02; # return 3+a[2]; // IM + MEM
+addMI  # a_mainP  # return a.s02+7; # return 7+a[2];
+addIMr # a_mainP  # return 3+(a+8).s00; # return 3+a[1]; // IM + MEM(REG)
+addMrI # a_mainP  # return (a+8).s21+7; # return 7+a[2];
+addIMm # a_mainDP # return 3+(a+8).s00.s11; # return 3+a[1][1]; // IM + MEM(MEM)
+addMmI # a_mainDP # return (a+8).s20.s01+7; # return 7+a[1][1];
+addLM  # a_mainP  # return (91223344H+91223344H)+a.s01; # return (0x91223344L+0x91223344L)+a[1]; // long IM + MEM
+addML  # a_mainP  # return a.s22+(98765432H+98765431H); # return (0x98765432L+0x98765431L)+a[2];
+addLMr # a_mainP  # return (91223344H+91223344H)+(a+8).s00; # return (0x91223344L+0x91223344L)+a[1]; // long IM + MEM(REG)
+addMrL # a_mainP  # return (a+8).s21+(98765432H+98765431H); # return (0x98765432L+0x98765431L)+a[2];
+addLMm # a_mainDP # return (91223344H+91223344H)+(a+8).s01.s20; # return (0x91223344L+0x91223344L)+a[2][0]; // long IM + MEM(MEM)
+addMmL # a_mainDP # return (a+8).s21.s10+(98765432H+98765431H); # return (0x98765432L+0x98765431L)+a[2][0];
+addRM  # a_mainPL  # return b+a.s02; # return b+a[2]; // REG + MEM
+addMR  # a_mainPL  # return a.s02+b; # return b+a[2];
+addRMr # a_mainPL  # return b+(a+8).s00; # return b+a[1]; // REG + MEM(REG)
+addMrR # a_mainPL  # return (a+8).s21+b; # return b+a[2];
+addRMm # a_mainDPL # return b+(a+8).s00.s11; # return b+a[1][1]; // REG + MEM(MEM)
+addMmR # a_mainDPL # return (a+8).s20.s01+b; # return b+a[1][1];
+addRM  # a_mainPL  # return (b+1)+a.s02; # return (b+1)+a[2]; // REG2 + MEM
+addMR  # a_mainPL  # return a.s02+(b+1); # return (b+1)+a[2];
+addRMr # a_mainPL  # return (b+1)+(a+8).s00; # return (b+1)+a[1]; // REG2 + MEM(REG)
+addMrR # a_mainPL  # return (a+8).s21+(b+1); # return (b+1)+a[2];
+addRMm # a_mainDPL # return (b+1)+(a+8).s00.s11; # return (b+1)+a[1][1]; // REG2 + MEM(MEM)
+addMmR # a_mainDPL # return (a+8).s20.s01+(b+1); # return (b+1)+a[1][1];
+addII  # a_mainL  # return 3+7; # return 3+7; // I+I
+addRR  # a_mainLL # return a+b; # return a+b; // R+R
+addRR  # a_mainLL # return (a+3)+b; # return (a+3)+b;
+addRR  # a_mainLL # return a+(b+2); # return a+(b+2);
+addRR  # a_mainLL # return (a+1)+(b+1); # return (a+1)+(b+1);
+addMM  # a_mainP  # return a.s02+a.s10; # return a[2]+a[0]; // M+M
+addMrMr# a_mainP  # return (a+16).s10+(a+8).s21; # return a[2]+a[2];
+addMmMm# a_mainDP # return (a+16).s10.s00+(a+8).s00.s11; # return a[2][0]+a[1][1];
+
+mulIR  # a_mainL  # return 3*a; # return 3*a; // IM * REG
+mulRI  # a_mainL  # return a*7; # return a*7;
+mulLR  # a_mainL  # return (11223344H*11223344H)*a; # return (0x11223344L*0x11223344L)*a; // long IM * R
+mulRL  # a_mainL  # return a*(18765432H*18765431H); # return (0x18765432L*0x18765431L)*a;
+mulIR  # a_mainL  # return 3*(a+1); # return 3*(a+1); // IM * REG2
+mulRI  # a_mainL  # return (a+1)*7; # return (a+1)*7;
+mulLR  # a_mainL  # return (11223344H*11223344H)*(a+1); # return (0x11223344L*0x11223344L)*(a+1); // long IM * R2
+mulRL  # a_mainL  # return (a+1)*(18765432H*18765431H); # return (0x18765432L*0x18765431L)*(a+1);
+mulIM  # a_mainP  # return 3*a.s02; # return 3*a[2]; // IM * MEM
+mulMI  # a_mainP  # return a.s02*7; # return 7*a[2];
+mulIMr # a_mainP  # return 3*(a+8).s00; # return 3*a[1]; // IM * MEM(REG)
+mulMrI # a_mainP  # return (a+8).s21*7; # return 7*a[2];
+mulIMm # a_mainDP # return 3*(a+8).s00.s11; # return 3*a[1][1]; // IM * MEM(MEM)
+mulMmI # a_mainDP # return (a+8).s20.s01*7; # return 7*a[1][1];
+mulLM  # a_mainP  # return (11223344H*11223344H)*a.s01; # return (0x11223344L*0x11223344L)*a[1]; // long IM * MEM
+mulML  # a_mainP  # return a.s22*(18765432H*18765431H); # return (0x18765432L*0x18765431L)*a[2];
+mulLMr # a_mainP  # return (11223344H*11223344H)*(a+8).s00; # return (0x11223344L*0x11223344L)*a[1]; // long IM * MEM(REG)
+mulMrL # a_mainP  # return (a+8).s21*(18765432H*18765431H); # return (0x18765432L*0x18765431L)*a[2];
+mulLMm # a_mainDP # return (11223344H*11223344H)*(a+8).s01.s20; # return (0x11223344L*0x11223344L)*a[2][0]; // long IM * MEM(MEM)
+mulMmL # a_mainDP # return (a+8).s21.s10*(18765432H*18765431H); # return (0x18765432L*0x18765431L)*a[2][0];
+mulRM  # a_mainPL  # return b*a.s02; # return b*a[2]; // REG * MEM
+mulMR  # a_mainPL  # return a.s02*b; # return b*a[2];
+mulRMr # a_mainPL  # return b*(a+8).s00; # return b*a[1]; // REG * MEM(REG)
+mulMrR # a_mainPL  # return (a+8).s21*b; # return b*a[2];
+mulRMm # a_mainDPL # return b*(a+8).s00.s11; # return b*a[1][1]; // REG * MEM(MEM)
+mulMmR # a_mainDPL # return (a+8).s20.s01*b; # return b*a[1][1];
+mulRM  # a_mainPL  # return (b+1)*a.s02; # return (b+1)*a[2]; // REG2 * MEM
+mulMR  # a_mainPL  # return a.s02*(b+1); # return (b+1)*a[2];
+mulRMr # a_mainPL  # return (b+1)*(a+8).s00; # return (b+1)*a[1]; // REG2 * MEM(REG)
+mulMrR # a_mainPL  # return (a+8).s21*(b+1); # return (b+1)*a[2];
+mulRMm # a_mainDPL # return (b+1)*(a+8).s00.s11; # return (b+1)*a[1][1]; // REG2 * MEM(MEM)
+mulMmR # a_mainDPL # return (a+8).s20.s01*(b+1); # return (b+1)*a[1][1];
+mulII  # a_mainL  # return 3*7; # return 3*7; // I*I
+mulRR  # a_mainLL # return a*b; # return a*b; // R*R
+mulRR  # a_mainLL # return (a+3)*b; # return (a+3)*b;
+mulRR  # a_mainLL # return a*(b+2); # return a*(b+2);
+mulRR  # a_mainLL # return (a+1)*(b+1); # return (a+1)*(b+1); // R*R
+mulMM  # a_mainP  # return a.s02*a.s10; # return a[2]*a[0]; // M*M
+mulMrMr# a_mainP  # return (a+16).s10*(a+8).s21; # return a[2]*a[2];
+mulMmMm# a_mainDP # return (a+16).s10.s00*(a+8).s00.s11; # return a[2][0]*a[1][1];
+
+orIR  # a_mainL  # return 3 or a; # return 3 | a; // IM  or  REG
+orRI  # a_mainL  # return a or 7; # return a | 7;
+orLR  # a_mainL  # return (11223344H * 11223344H) or a; # return (0x11223344L * 0x11223344L) | a; // long IM  or  R
+orRL  # a_mainL  # return a or (18765432H * 18765431H); # return (0x18765432L * 0x18765431L) | a;
+orIR  # a_mainL  # return 3 or (a+1); # return 3 | (a+1); // IM  or  REG2
+orRI  # a_mainL  # return (a+1) or 7; # return (a+1) | 7;
+orLR  # a_mainL  # return (11223344H * 11223344H) or (a+1); # return (0x11223344L * 0x11223344L) | (a+1); // long IM  or  R2
+orRL  # a_mainL  # return (a+1) or (18765432H * 18765431H); # return (0x18765432L * 0x18765431L) | (a+1);
+orIM  # a_mainP  # return 3 or a.s02; # return 3 | a[2]; // IM  or  MEM
+orMI  # a_mainP  # return a.s02 or 7; # return 7 | a[2];
+orIMr # a_mainP  # return 3 or (a+8).s00; # return 3 | a[1]; // IM  or  MEM(REG)
+orMrI # a_mainP  # return (a+8).s21 or 7; # return 7 | a[2];
+orIMm # a_mainDP # return 3 or (a+8).s00.s11; # return 3 | a[1][1]; // IM  or  MEM(MEM)
+orMmI # a_mainDP # return (a+8).s20.s01 or 7; # return 7 | a[1][1];
+orLM  # a_mainP  # return (11223344H * 11223344H) or a.s01; # return (0x11223344L * 0x11223344L) | a[1]; // long IM  or  MEM
+orML  # a_mainP  # return a.s22 or (18765432H * 18765431H); # return (0x18765432L * 0x18765431L) | a[2];
+orLMr # a_mainP  # return (11223344H * 11223344H) or (a+8).s00; # return (0x11223344L * 0x11223344L) | a[1]; // long IM  or  MEM(REG)
+orMrL # a_mainP  # return (a+8).s21 or (18765432H * 18765431H); # return (0x18765432L * 0x18765431L) | a[2];
+orLMm # a_mainDP # return (11223344H * 11223344H) or (a+8).s01.s20; # return (0x11223344L * 0x11223344L) | a[2][0]; // long IM  or  MEM(MEM)
+orMmL # a_mainDP # return (a+8).s21.s10 or (18765432H * 18765431H); # return (0x18765432L * 0x18765431L) | a[2][0];
+orRM  # a_mainPL  # return b or a.s02; # return b | a[2]; // REG  or  MEM
+orMR  # a_mainPL  # return a.s02 or b; # return b | a[2];
+orRMr # a_mainPL  # return b or (a+8).s00; # return b | a[1]; // REG  or  MEM(REG)
+orMrR # a_mainPL  # return (a+8).s21 or b; # return b | a[2];
+orRMm # a_mainDPL # return b or (a+8).s00.s11; # return b | a[1][1]; // REG  or  MEM(MEM)
+orMmR # a_mainDPL # return (a+8).s20.s01 or b; # return b | a[1][1];
+orRM  # a_mainPL  # return (b+1) or a.s02; # return (b+1) | a[2]; // REG2  or  MEM
+orMR  # a_mainPL  # return a.s02 or (b+1); # return (b+1) | a[2];
+orRMr # a_mainPL  # return (b+1) or (a+8).s00; # return (b+1) | a[1]; // REG2  or  MEM(REG)
+orMrR # a_mainPL  # return (a+8).s21 or (b+1); # return (b+1) | a[2];
+orRMm # a_mainDPL # return (b+1) or (a+8).s00.s11; # return (b+1) | a[1][1]; // REG2  or  MEM(MEM)
+orMmR # a_mainDPL # return (a+8).s20.s01 or (b+1); # return (b+1) | a[1][1];
+orII  # a_mainL  # return 3 or 7; # return 3 | 7; // I or I
+orRR  # a_mainLL # return a or b; # return a | b; // R or R
+orRR  # a_mainLL # return (a+3) or b; # return (a+3) | b;
+orRR  # a_mainLL # return a or (b+2); # return a | (b+2);
+orRR  # a_mainLL # return (a+3) or (b+2); # return (a+3) | (b+2);
+orMM  # a_mainP  # return a.s02 or a.s10; # return a[2] | a[0]; // M or M
+orMrMr# a_mainP  # return (a+16).s10 or (a+8).s21; # return a[2] | a[2];
+orMmMm# a_mainDP # return (a+16).s10.s00 or (a+8).s00.s11; # return a[2][0] | a[1][1];
+
+gtIR  # a_mainL  # return 3>a; # return gt(3, a); // IM > REG
+gtRI  # a_mainL  # return a>7; # return gt(a, 7);
+gtLR  # a_mainL  # return (11223344H * 11223344H)>a; # return gt((0x11223344L * 0x11223344L), a); // long IM > R
+gtRL  # a_mainL  # return a>(18765432H * 18765431H); # return gt(a, (0x18765432L * 0x18765431L));
+gtIR  # a_mainL  # return 3>(a+1); # return gt(3, (a+1)); // IM > REG2
+gtRI  # a_mainL  # return (a+1)>7; # return gt((a+1), 7);
+gtLR  # a_mainL  # return (11223344H * 11223344H)>(a+1); # return gt((0x11223344L * 0x11223344L), (a+1)); // long IM > R2
+gtRL  # a_mainL  # return (a+1)>(18765432H * 18765431H); # return gt((a+1), (0x18765432L * 0x18765431L));
+gtIM  # a_mainP  # return 3>a.s02; # return gt(3, a[2]); // IM > MEM
+gtMI  # a_mainP  # return a.s02>7; # return gt(a[2], 7);
+gtIMr # a_mainP  # return 3>(a+8).s00; # return gt(3, a[1]); // IM > MEM(REG)
+gtMrI # a_mainP  # return (a+8).s21>7; # return gt(a[2], 7);
+gtIMm # a_mainDP # return 3>(a+8).s00.s11; # return gt(3, a[1][1]); // IM > MEM(MEM)
+gtMmI # a_mainDP # return (a+8).s20.s01>7; # return gt(a[1][1], 7);
+gtLM  # a_mainP  # return (11223344H * 11223344H)>a.s01; # return gt((0x11223344L * 0x11223344L), a[1]); // long IM > MEM
+gtML  # a_mainP  # return a.s22>(18765432H * 18765431H); # return gt(a[2], (0x18765432L * 0x18765431L));
+gtLMr # a_mainP  # return (11223344H * 11223344H)>(a+8).s00; # return gt((0x11223344L * 0x11223344L), a[1]); // long IM > MEM(REG)
+gtMrL # a_mainP  # return (a+8).s21>(18765432H * 18765431H); # return gt(a[2], (0x18765432L * 0x18765431L));
+gtLMm # a_mainDP # return (11223344H * 11223344H)>(a+8).s01.s20; # return gt((0x11223344L * 0x11223344L), a[2][0]); // long IM > MEM(MEM)
+gtMmL # a_mainDP # return (a+8).s21.s10>(18765432H * 18765431H); # return gt(a[2][0], (0x18765432L * 0x18765431L));
+gtRM  # a_mainPL  # return b>a.s02; # return gt(b, a[2]); // REG > MEM
+gtMR  # a_mainPL  # return a.s02>b; # return gt(a[2], b);
+gtRMr # a_mainPL  # return b>(a+8).s00; # return gt(b, a[1]); // REG > MEM(REG)
+gtMrR # a_mainPL  # return (a+8).s21>b; # return gt(a[2], b);
+gtRMm # a_mainDPL # return b>(a+8).s00.s11; # return gt(b, a[1][1]); // REG > MEM(MEM)
+gtMmR # a_mainDPL # return (a+8).s20.s01>b; # return gt(a[1][1], b);
+gtRM  # a_mainPL  # return (b+1)>a.s02; # return gt((b+1), a[2]); // REG2 > MEM
+gtMR  # a_mainPL  # return a.s02>(b+1); # return gt(a[2], (b+1));
+gtRMr # a_mainPL  # return (b+1)>(a+8).s00; # return gt((b+1), a[1]); // REG2 > MEM(REG)
+gtMrR # a_mainPL  # return (a+8).s21>(b+1); # return gt(a[2], (b+1));
+gtRMm # a_mainDPL # return (b+1)>(a+8).s00.s11; # return gt((b+1), a[1][1]); // REG2 > MEM(MEM)
+gtMmR # a_mainDPL # return (a+8).s20.s01>(b+1); # return gt(a[1][1], (b+1));
+gtII  # a_mainL  # return 3>7; # return gt(3, 7); // I>I
+gtRR  # a_mainLL # return a>b; # return gt(a, b); // R>R
+gtRR  # a_mainLL # return (a+3)>b; # return gt((a+3), b);
+gtRR  # a_mainLL # return a>(b+2); # return gt(a, (b+2));
+gtRR  # a_mainLL # return (a+3)>(b+2); # return gt((a+3), (b+2));
+gtMM  # a_mainP  # return a.s02>a.s10; # return gt(a[2], a[0]); // M>M
+gtMrMr# a_mainP  # return (a+16).s10>(a+8).s21; # return gt(a[2], a[2]);
+gtMmMm# a_mainDP # return (a+16).s10.s00>(a+8).s00.s11; # return gt(a[2][0], a[1][1]);
+
+neqIR  # a_mainL  # return 3<>a; # return neq(3, a); // IM <> REG
+neqRI  # a_mainL  # return a<>7; # return neq(a, 7);
+neqLR  # a_mainL  # return (11223344H * 11223344H)<>a; # return neq((0x11223344L * 0x11223344L), a); // long IM <> R
+neqRL  # a_mainL  # return a<>(18765432H * 18765431H); # return neq(a, (0x18765432L * 0x18765431L));
+neqIR  # a_mainL  # return 3<>(a+1); # return neq(3, (a+1)); // IM <> REG2
+neqRI  # a_mainL  # return (a+1)<>7; # return neq((a+1), 7);
+neqLR  # a_mainL  # return (11223344H * 11223344H)<>(a+1); # return neq((0x11223344L * 0x11223344L), (a+1)); // long IM <> R2
+neqRL  # a_mainL  # return (a+1)<>(18765432H * 18765431H); # return neq((a+1), (0x18765432L * 0x18765431L));
+neqIM  # a_mainP  # return 3<>a.s02; # return neq(3, a[2]); // IM <> MEM
+neqMI  # a_mainP  # return a.s02<>7; # return neq(a[2], 7);
+neqIMr # a_mainP  # return 3<>(a+8).s00; # return neq(3, a[1]); // IM <> MEM(REG)
+neqMrI # a_mainP  # return (a+8).s21<>7; # return neq(a[2], 7);
+neqIMm # a_mainDP # return 3<>(a+8).s00.s11; # return neq(3, a[1][1]); // IM <> MEM(MEM)
+neqMmI # a_mainDP # return (a+8).s20.s01<>7; # return neq(a[1][1], 7);
+neqLM  # a_mainP  # return (11223344H * 11223344H)<>a.s01; # return neq((0x11223344L * 0x11223344L), a[1]); // long IM <> MEM
+neqML  # a_mainP  # return a.s22<>(18765432H * 18765431H); # return neq(a[2], (0x18765432L * 0x18765431L));
+neqLMr # a_mainP  # return (11223344H * 11223344H)<>(a+8).s00; # return neq((0x11223344L * 0x11223344L), a[1]); // long IM <> MEM(REG)
+neqMrL # a_mainP  # return (a+8).s21<>(18765432H * 18765431H); # return neq(a[2], (0x18765432L * 0x18765431L));
+neqLMm # a_mainDP # return (11223344H * 11223344H)<>(a+8).s01.s20; # return neq((0x11223344L * 0x11223344L), a[2][0]); // long IM <> MEM(MEM)
+neqMmL # a_mainDP # return (a+8).s21.s10<>(18765432H * 18765431H); # return neq(a[2][0], (0x18765432L * 0x18765431L));
+neqRM  # a_mainPL  # return b<>a.s02; # return neq(b, a[2]); // REG <> MEM
+neqMR  # a_mainPL  # return a.s02<>b; # return neq(a[2], b);
+neqRMr # a_mainPL  # return b<>(a+8).s00; # return neq(b, a[1]); // REG <> MEM(REG)
+neqMrR # a_mainPL  # return (a+8).s21<>b; # return neq(a[2], b);
+neqRMm # a_mainDPL # return b<>(a+8).s00.s11; # return neq(b, a[1][1]); // REG <> MEM(MEM)
+neqMmR # a_mainDPL # return (a+8).s20.s01<>b; # return neq(a[1][1], b);
+neqRM  # a_mainPL  # return (b+1)<>a.s02; # return neq((b+1), a[2]); // REG2 <> MEM
+neqMR  # a_mainPL  # return a.s02<>(b+1); # return neq(a[2], (b+1));
+neqRMr # a_mainPL  # return (b+1)<>(a+8).s00; # return neq((b+1), a[1]); // REG2 <> MEM(REG)
+neqMrR # a_mainPL  # return (a+8).s21<>(b+1); # return neq(a[2], (b+1));
+neqRMm # a_mainDPL # return (b+1)<>(a+8).s00.s11; # return neq((b+1), a[1][1]); // REG2 <> MEM(MEM)
+neqMmR # a_mainDPL # return (a+8).s20.s01<>(b+1); # return neq(a[1][1], (b+1));
+neqII  # a_mainL  # return 3<>7; # return neq(3, 7); // I<>I
+neqRR  # a_mainLL # return a<>b; # return neq(a, b); // R<>R
+neqRR  # a_mainLL # return (a+3)<>b; # return neq((a+3), b);
+neqRR  # a_mainLL # return a<>(b+2); # return neq(a, (b+2));
+neqRR  # a_mainLL # return (a+3)<>(b+2); # return neq((a+3), (b+2));
+neqMM  # a_mainP  # return a.s02<>a.s10; # return neq(a[2], a[0]); // M<>M
+neqMrMr# a_mainP  # return (a+16).s10<>(a+8).s21; # return neq(a[2], a[2]);
+neqMmMm# a_mainDP # return (a+16).s10.s00<>(a+8).s00.s11; # return neq(a[2][0], a[1][1]);
+
+maxAdd	# a_mainDP	# return ((((a.s01.s11+a.s01.s11+5)+(a.s01.s11+a.s01.s11+5)+4)+((a.s01.s11+a.s01.s11+5)+(a.s01.s11+a.s01.s11+5)+4)+3)+(((a.s01.s11+a.s01.s11+5)+(a.s01.s11+a.s01.s11+5)+4)+((a.s01.s11+a.s01.s11+5)+(a.s01.s11+a.s01.s11+5)+4)+3)+2)+((((a.s01.s11+a.s01.s11+5)+(a.s01.s11+a.s01.s11+5)+4)+((a.s01.s11+a.s01.s11+5)+(a.s01.s11+a.s01.s11+5)+4)+3)+(((a.s01.s11+a.s01.s11+5)+(a.s01.s11+a.s01.s11+5)+4)+((a.s01.s11+a.s01.s11+5)+(a.s01.s11+a.s01.s11+5)+4)+3)+2)+1; # return ((((a[1][1]+a[1][1]+5)+(a[1][1]+a[1][1]+5)+4)+((a[1][1]+a[1][1]+5)+(a[1][1]+a[1][1]+5)+4)+3)+(((a[1][1]+a[1][1]+5)+(a[1][1]+a[1][1]+5)+4)+((a[1][1]+a[1][1]+5)+(a[1][1]+a[1][1]+5)+4)+3)+2)+((((a[1][1]+a[1][1]+5)+(a[1][1]+a[1][1]+5)+4)+((a[1][1]+a[1][1]+5)+(a[1][1]+a[1][1]+5)+4)+3)+(((a[1][1]+a[1][1]+5)+(a[1][1]+a[1][1]+5)+4)+((a[1][1]+a[1][1]+5)+(a[1][1]+a[1][1]+5)+4)+3)+2)+1;
+maxMul	# a_mainDP	# return ((((a.s01.s11*a.s01.s11*5)*(a.s01.s11*a.s01.s11*5)*4)*((a.s01.s11*a.s01.s11*5)*(a.s01.s11*a.s01.s11*5)*4)*3)*(((a.s01.s11*a.s01.s11*5)*(a.s01.s11*a.s01.s11*5)*4)*((a.s01.s11*a.s01.s11*5)*(a.s01.s11*a.s01.s11*5)*4)*3)*2)*((((a.s01.s11*a.s01.s11*5)*(a.s01.s11*a.s01.s11*5)*4)*((a.s01.s11*a.s01.s11*5)*(a.s01.s11*a.s01.s11*5)*4)*3)*(((a.s01.s11*a.s01.s11*5)*(a.s01.s11*a.s01.s11*5)*4)*((a.s01.s11*a.s01.s11*5)*(a.s01.s11*a.s01.s11*5)*4)*3)*2)*1; # return ((((a[1][1]*a[1][1]*5)*(a[1][1]*a[1][1]*5)*4)*((a[1][1]*a[1][1]*5)*(a[1][1]*a[1][1]*5)*4)*3)*(((a[1][1]*a[1][1]*5)*(a[1][1]*a[1][1]*5)*4)*((a[1][1]*a[1][1]*5)*(a[1][1]*a[1][1]*5)*4)*3)*2)*((((a[1][1]*a[1][1]*5)*(a[1][1]*a[1][1]*5)*4)*((a[1][1]*a[1][1]*5)*(a[1][1]*a[1][1]*5)*4)*3)*(((a[1][1]*a[1][1]*5)*(a[1][1]*a[1][1]*5)*4)*((a[1][1]*a[1][1]*5)*(a[1][1]*a[1][1]*5)*4)*3)*2)*1;
+maxOr	# a_mainDP	# return ((((a.s01.s11 or a.s01.s11 or 5) or (a.s01.s11 or a.s01.s11 or 5) or 4) or ((a.s01.s11 or a.s01.s11 or 5) or (a.s01.s11 or a.s01.s11 or 5) or 4) or 3) or (((a.s01.s11 or a.s01.s11 or 5) or (a.s01.s11 or a.s01.s11 or 5) or 4) or ((a.s01.s11 or a.s01.s11 or 5) or (a.s01.s11 or a.s01.s11 or 5) or 4) or 3) or 2) or ((((a.s01.s11 or a.s01.s11 or 5) or (a.s01.s11 or a.s01.s11 or 5) or 4) or ((a.s01.s11 or a.s01.s11 or 5) or (a.s01.s11 or a.s01.s11 or 5) or 4) or 3) or (((a.s01.s11 or a.s01.s11 or 5) or (a.s01.s11 or a.s01.s11 or 5) or 4) or ((a.s01.s11 or a.s01.s11 or 5) or (a.s01.s11 or a.s01.s11 or 5) or 4) or 3) or 2) or 1; # return ((((a[1][1]|a[1][1]|5)|(a[1][1]|a[1][1]|5)|4)|((a[1][1]|a[1][1]|5)|(a[1][1]|a[1][1]|5)|4)|3)|(((a[1][1]|a[1][1]|5)|(a[1][1]|a[1][1]|5)|4)|((a[1][1]|a[1][1]|5)|(a[1][1]|a[1][1]|5)|4)|3)|2)|((((a[1][1]|a[1][1]|5)|(a[1][1]|a[1][1]|5)|4)|((a[1][1]|a[1][1]|5)|(a[1][1]|a[1][1]|5)|4)|3)|(((a[1][1]|a[1][1]|5)|(a[1][1]|a[1][1]|5)|4)|((a[1][1]|a[1][1]|5)|(a[1][1]|a[1][1]|5)|4)|3)|2)|1;
+maxAdd	# a_mainDPL	# return b+(((a.s01.s11+a.s01.s11+4)+(a.s01.s11+a.s01.s11+4)+3)+((a.s01.s11+a.s01.s11+4)+(a.s01.s11+a.s01.s11+4)+3)+2)+(((a.s01.s11+a.s01.s11+4)+(a.s01.s11+a.s01.s11+4)+3)+((a.s01.s11+a.s01.s11+4)+(a.s01.s11+a.s01.s11+4)+3)+2)+1; # return b+(((a[1][1]+a[1][1]+4)+(a[1][1]+a[1][1]+4)+3)+((a[1][1]+a[1][1]+4)+(a[1][1]+a[1][1]+4)+3)+2)+(((a[1][1]+a[1][1]+4)+(a[1][1]+a[1][1]+4)+3)+((a[1][1]+a[1][1]+4)+(a[1][1]+a[1][1]+4)+3)+2)+1;
+maxMul	# a_mainDPL	# return b*(((a.s01.s11*a.s01.s11*4)*(a.s01.s11*a.s01.s11*4)*3)*((a.s01.s11*a.s01.s11*4)*(a.s01.s11*a.s01.s11*4)*3)*2)*(((a.s01.s11*a.s01.s11*4)*(a.s01.s11*a.s01.s11*4)*3)*((a.s01.s11*a.s01.s11*4)*(a.s01.s11*a.s01.s11*4)*3)*2)*1; # return b*(((a[1][1]*a[1][1]*4)*(a[1][1]*a[1][1]*4)*3)*((a[1][1]*a[1][1]*4)*(a[1][1]*a[1][1]*4)*3)*2)*(((a[1][1]*a[1][1]*4)*(a[1][1]*a[1][1]*4)*3)*((a[1][1]*a[1][1]*4)*(a[1][1]*a[1][1]*4)*3)*2)*1;
+maxOr	# a_mainDPL	# return b or (((a.s01.s11 or a.s01.s11 or 4) or (a.s01.s11 or a.s01.s11 or 4) or 3) or ((a.s01.s11 or a.s01.s11 or 4) or (a.s01.s11 or a.s01.s11 or 4) or 3) or 2) or (((a.s01.s11 or a.s01.s11 or 4) or (a.s01.s11 or a.s01.s11 or 4) or 3) or ((a.s01.s11 or a.s01.s11 or 4) or (a.s01.s11 or a.s01.s11 or 4) or 3) or 2) or 1; # return b|(((a[1][1]|a[1][1]|4)|(a[1][1]|a[1][1]|4)|3)|((a[1][1]|a[1][1]|4)|(a[1][1]|a[1][1]|4)|3)|2)|(((a[1][1]|a[1][1]|4)|(a[1][1]|a[1][1]|4)|3)|((a[1][1]|a[1][1]|4)|(a[1][1]|a[1][1]|4)|3)|2)|1;
+maxAdd	# a_mainDPLL	# return c+((a.s01.s11+a.s01.s11+3)+(a.s01.s11+a.s01.s11+3)+2)+((a.s01.s11+a.s01.s11+3)+(a.s01.s11+a.s01.s11+3)+2)+1; # return c+((a[1][1]+a[1][1]+3)+(a[1][1]+a[1][1]+3)+2)+((a[1][1]+a[1][1]+3)+(a[1][1]+a[1][1]+3)+2)+1;
+maxMul	# a_mainDPLL	# return c*((a.s01.s11*a.s01.s11*3)*(a.s01.s11*a.s01.s11*3)*2)*((a.s01.s11*a.s01.s11*3)*(a.s01.s11*a.s01.s11*3)*2)*1; # return c*((a[1][1]*a[1][1]*3)*(a[1][1]*a[1][1]*3)*2)*((a[1][1]*a[1][1]*3)*(a[1][1]*a[1][1]*3)*2)*1;
+maxOr	# a_mainDPLL	# return c or ((a.s01.s11 or a.s01.s11 or 3) or (a.s01.s11 or a.s01.s11 or 3) or 2) or ((a.s01.s11 or a.s01.s11 or 3) or (a.s01.s11 or a.s01.s11 or 3) or 2) or 1; # return c|((a[1][1]|a[1][1]|3)|(a[1][1]|a[1][1]|3)|2)|((a[1][1]|a[1][1]|3)|(a[1][1]|a[1][1]|3)|2)|1;
+maxAdd	# a_mainDPLLL	# return d+(a.s01.s11+a.s01.s11+2)+(a.s01.s11+a.s01.s11+2)+1; # return d+(a[1][1]+a[1][1]+2)+(a[1][1]+a[1][1]+2)+1;
+maxMul	# a_mainDPLLL	# return d*(a.s01.s11*a.s01.s11*2)*(a.s01.s11*a.s01.s11*2)*1; # return d*(a[1][1]*a[1][1]*2)*(a[1][1]*a[1][1]*2)*1;
+maxOr	# a_mainDPLLL	# return d or (a.s01.s11 or a.s01.s11 or 2) or (a.s01.s11 or a.s01.s11 or 2) or 1; # return d|(a[1][1]|a[1][1]|2)|(a[1][1]|a[1][1]|2)|1;
+maxAdd	# a_mainDPLLLL # return e+a.s01.s11+a.s01.s11+1; # return e+a[1][1]+a[1][1]+1;
+maxMul	# a_mainDPLLLL # return e*a.s01.s11*a.s01.s11*1; # return e*a[1][1]*a[1][1]*1;
+maxOr	# a_mainDPLLLL # return e or a.s01.s11 or a.s01.s11 or 1; # return e|a[1][1]|a[1][1]|1;
