@@ -238,12 +238,12 @@ PlusExpr: Term T_PLUS Term
 
 MultExpr: Term T_MUL Term 
 	@{
-		@i @MultExpr.node@ = new_node(OP_MUL, @MultExpr.node@, @Term.node@);
+		@i @MultExpr.node@ = new_node(OP_MUL, @Term.0.node@, @Term.1.node@);
 		@reg @Term.0.node@->reg = @MultExpr.node@->reg; @Term.1.node@->reg = get_next_reg(@MultExpr.node@->reg, @MultExpr.node@->skip_reg);
 	@}
 	| MultExpr T_MUL Term
 	@{
-		@i @MultExpr.0.node@ = new_node(OP_MUL, @MultExpr.1.node@, @Term.node@);
+		@i @MultExpr.0.node@ = new_node(OP_MUL, @Term.node@, @MultExpr.1.node@);
 		@reg @Term.node@->reg = @MultExpr.0.node@->reg; @MultExpr.1.node@->reg = get_next_reg(@MultExpr.0.node@->reg, @MultExpr.node@->skip_reg);
 	@}
 	;

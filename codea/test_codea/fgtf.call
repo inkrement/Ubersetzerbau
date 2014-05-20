@@ -1,0 +1,6 @@
+long s[]={4,8,15,16,23,42};
+long t[]={666,69};
+long u[]={5,5};
+extern long f(long*);
+
+RET(f(s)==0&&f(t)==-1&&f(u)==0);

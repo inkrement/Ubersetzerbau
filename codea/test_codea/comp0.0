@@ -1,0 +1,6 @@
+struct n : n0 n1 n2 n3 n4 n5 end;
+
+func f(a)
+	return (a.n0 * (a.n1 + 5)) + (a.n1 * (not a.n2)) + (a.n3 or a.n4) + (-a.n0);
+end;
+

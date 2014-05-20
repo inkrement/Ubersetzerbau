@@ -3,6 +3,7 @@
 extern long long int neq(long long int a, long long int b);
 extern long long int oder(long long int a, long long int b, long long int c);
 extern long long int greater(long long int a, long long int b);
+extern long long int f(long long int a, long long int b);
 
 int main(){
 	printf("%lld\n", neq(0,0));
@@ -22,4 +23,7 @@ int main(){
 	printf("%lld\n", greater(5,0));
 	printf("%lld\n", greater(1230,10));
 
+	printf("%lld\n", f(1,1));
+	printf("%lld\n", f(1,0));
+	printf("%lld\n", f(-1,-3));
 }

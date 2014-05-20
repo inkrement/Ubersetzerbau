@@ -1,0 +1,6 @@
+struct n : n0 n1 n2 n3 n4 n5 end;
+struct m : m0 m1 m2 m3 m4 m5 end;
+
+func f(x) 
+	return x.n0 or x.m1;
+end;

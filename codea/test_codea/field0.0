@@ -1,0 +1,5 @@
+struct n : n0 n1 n2 n3 n4 n5 end;
+
+func f(x) 
+	return x.n1;
+end;

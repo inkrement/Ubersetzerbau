@@ -1,0 +1,5 @@
+struct n : n0 n1 n2 end;
+
+func f(x)
+	return 3 * x.n0;
+end;
