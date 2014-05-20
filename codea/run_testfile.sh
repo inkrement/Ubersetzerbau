@@ -3,7 +3,7 @@
 make
 
 testFolder=testFolder
-targetFolder=.
+targetFolder=tmp
 
 mkdir $targetFolder
 #rm $targetFolder/*
