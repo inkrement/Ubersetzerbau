@@ -1,6 +1,6 @@
 @autoinh structs visible_structs symbols
 @attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs;}  Stats
-@attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;}   Stat Lexpr Term Expr CondRec PlusExpr MultExpr OrExpr ExprList SignTerm
+@attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;}   Stat Lexpr Term Expr CondRec PlusExpr MultExpr OrExpr ExprList SignExpr
 @attributes { struct symbol_t* symbols; struct symbol_t* vars; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;} LetRec
 
 @attributes { struct symbol_t* felder; char *name; } Structdef
@@ -161,22 +161,22 @@ Lexpr: T_ID
 	@}
 	;
 
-SignTerm: Term
+SignExpr: Term
 	@{
-		@i @SignTerm.node@ = @Term.node@;
-        @reg @Term.node@->reg = @SignTerm.node@->reg;
+		@i @SignExpr.node@ = @Term.node@;
+        @reg @Term.node@->reg = @SignExpr.node@->reg;
 	@}
 	|
-	T_MINUS SignTerm
+	T_MINUS SignExpr
 	@{
-		@i @SignTerm.0.node@ = new_node(OP_NEG, @SignTerm.1.node@, (treenode *) NULL);
-		@reg @SignTerm.1.node@->reg = @SignTerm.0.node@->reg;
+		@i @SignExpr.0.node@ = new_node(OP_NEG, @SignExpr.1.node@, (treenode *) NULL);
+		@reg @SignExpr.1.node@->reg = @SignExpr.0.node@->reg;
 	@}
 	|
-	T_NOT SignTerm
+	T_NOT SignExpr
 	@{
-		@i @SignTerm.0.node@ = new_node(OP_NOT, @SignTerm.1.node@, (treenode *) NULL);
-		@reg @SignTerm.1.node@->reg = @SignTerm.0.node@->reg;
+		@i @SignExpr.0.node@ = new_node(OP_NOT, @SignExpr.1.node@, (treenode *) NULL);
+		@reg @SignExpr.1.node@->reg = @SignExpr.0.node@->reg;
 	@}
 	;
 
@@ -185,15 +185,15 @@ Expr: Term
 		@i @Expr.node@ = @Term.node@;
 		@reg @Term.node@->reg = @Expr.node@->reg; 
 	@}
-	| T_MINUS SignTerm
+	| T_MINUS SignExpr
 	@{
-		@i @Expr.node@ = new_node(OP_NEG, @SignTerm.node@, (treenode *) NULL);
-		@reg @SignTerm.node@->reg = @Expr.node@->reg;
+		@i @Expr.node@ = new_node(OP_NEG, @SignExpr.node@, (treenode *) NULL);
+		@reg @SignExpr.node@->reg = @Expr.node@->reg;
 	@}
-	| T_NOT SignTerm
+	| T_NOT SignExpr
 	@{
-		@i @Expr.node@ = new_node(OP_NOT, @SignTerm.node@, (treenode *) NULL);
-		@reg @SignTerm.node@->reg = @Expr.node@->reg;
+		@i @Expr.node@ = new_node(OP_NOT, @SignExpr.node@, (treenode *) NULL);
+		@reg @SignExpr.node@->reg = @Expr.node@->reg;
 	@}
 	| PlusExpr
 	@{
@@ -230,7 +230,7 @@ PlusExpr: Term T_PLUS Term
 	@}
 	| PlusExpr T_PLUS Term
 	@{ 
-		@i @PlusExpr.0.node@ = new_node(OP_ADD, @PlusExpr.1.node@, @Term.node@);
+		@i @PlusExpr.0.node@ = new_node(OP_ADD, @Term.node@,@PlusExpr.1.node@);
 
         @reg @Term.node@->reg = @PlusExpr.0.node@->reg; @PlusExpr.1.node@->reg = get_next_reg(@PlusExpr.0.node@->reg, @PlusExpr.node@->skip_reg);
 	@}
@@ -238,12 +238,12 @@ PlusExpr: Term T_PLUS Term
 
 MultExpr: Term T_MUL Term 
 	@{
-		@i @MultExpr.node@ = new_node(OP_ADD, @MultExpr.node@, @Term.node@);
+		@i @MultExpr.node@ = new_node(OP_MUL, @MultExpr.node@, @Term.node@);
 		@reg @Term.0.node@->reg = @MultExpr.node@->reg; @Term.1.node@->reg = get_next_reg(@MultExpr.node@->reg, @MultExpr.node@->skip_reg);
 	@}
 	| MultExpr T_MUL Term
 	@{
-		@i @MultExpr.0.node@ = new_node(OP_ADD, @MultExpr.1.node@, @Term.node@);
+		@i @MultExpr.0.node@ = new_node(OP_MUL, @MultExpr.1.node@, @Term.node@);
 		@reg @Term.node@->reg = @MultExpr.0.node@->reg; @MultExpr.1.node@->reg = get_next_reg(@MultExpr.0.node@->reg, @MultExpr.node@->skip_reg);
 	@}
 	;
