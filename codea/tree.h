@@ -11,11 +11,6 @@ enum {
   OP_OR,
 
   /* comparison */
-  OP_EQ,
-  OP_GT,
-  OP_GEQ,
-  OP_LS,
-  OP_LEQ,
   OP_NEQ,
 
   /* arithmetic */
@@ -31,13 +26,7 @@ enum {
   OP_Zero,
   OP_One,
   OP_Args,
-  OP_Call,
-  OP_ReadMem,
-  OP_IF,
-  OP_Stats,
   OP_NOP,
-  OP_Assign,
-  OP_AND,
   OP_GREATER
 };
 
@@ -48,11 +37,6 @@ static char rule_names[100][100]={
   "OP_OR",
 
   /* comparison */
-  "OP_EQ",
-  "OP_GT",
-  "OP_GEQ",
-  "OP_LS",
-  "OP_LEQ",
   "OP_NEQ",
 
   /* arithmetic */
@@ -68,13 +52,7 @@ static char rule_names[100][100]={
   "OP_Zero",
   "OP_One",
   "OP_Args",
-  "OP_Call",
-  "OP_ReadMem",
-  "OP_IF",
-  "OP_Stats",
   "OP_NOP",
-  "OP_Assign",
-  "OP_AND",
   "OP_GREATER"
 };
     
