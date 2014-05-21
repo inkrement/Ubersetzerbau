@@ -2,7 +2,6 @@
 #include <stdio.h>
 
 #include "tree.h"
-#include "helpers.h"
 
 /* new_node: create "standard node" with one or two children and
  * given operation
