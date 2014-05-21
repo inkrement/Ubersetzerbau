@@ -16,37 +16,44 @@
 stat:	ret								# 0 #
 
 ret:	OP_Return(expr)					# 2 # move(bnode->reg, "rax"); retrn();
-expr:	OP_ID							# 1 # if(bnode->param_index != -1) move(getParamRegister(bnode->param_index), bnode->reg);
-expr:	OP_Field(expr)					# 1 # move_offset(bnode->child[0]->reg, bnode->reg, bnode->offset);
-expr:	immediate						# 1 # movei(bnode->value, bnode->reg);
+
+expr:	OP_NOT(expr)					# 1 # not(bnode->reg);
+expr:	OP_OR(immediate,expr)			# 2 # ori(bnode->child[0]->value,bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
+expr:	OP_OR(expr,expr)				# 2 # or(bnode->child[0]->reg,bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
+expr:	OP_OR(expr,immediate)			# 2 # ori(bnode->child[1]->value,bnode->child[0]->reg); move(bnode->child[0]->reg, bnode->reg);
+expr:	OP_NEQ(expr,expr)				# 3 # notequal(bnode->child[0]->reg, bnode->child[1]->reg, bnode->reg);
+expr:	OP_NEQ(immediate,expr)			# 3 # notequali(bnode->child[0]->value, bnode->child[1]->reg, bnode->reg);
+expr:	OP_NEQ(expr,immediate)			# 3 # notequali(bnode->child[1]->value, bnode->child[0]->reg, bnode->reg);
 expr:	OP_ADD(expr,expr)				# 1 # add(bnode->child[1]->reg, bnode->child[0]->reg);
 expr:	OP_ADD(immediate,expr)			# 1 # addi(bnode->child[0]->value, bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
 expr:	OP_ADD(expr,immediate)			# 1 # addi(bnode->child[1]->value, bnode->child[0]->reg);
 expr:	OP_MUL(expr,expr)				# 1 # mul(bnode->child[1]->reg, bnode->child[0]->reg);
 expr:	OP_MUL(immediate,expr)			# 1 # muli(bnode->child[0]->value, bnode->child[1]->reg);
 expr:	OP_MUL(expr,immediate)			# 1 # muli(bnode->child[1]->value, bnode->child[0]->reg);
-expr:	OP_OR(expr,expr)				# 2 # or(bnode->child[0]->reg,bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
-expr:	OP_OR(immediate,expr)			# 2 # ori(bnode->child[0]->value,bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
-expr:	OP_OR(expr,immediate)			# 2 # ori(bnode->child[1]->value,bnode->child[0]->reg); move(bnode->child[0]->reg, bnode->reg);
-expr:	OP_NEQ(expr,expr)				# 3 # notequal(bnode->child[0]->reg, bnode->child[1]->reg, bnode->reg);
-expr:	OP_NEQ(immediate,expr)			# 3 # notequali(bnode->child[0]->value, bnode->child[1]->reg, bnode->reg);
-expr:	OP_NEQ(expr,immediate)			# 3 # notequali(bnode->child[1]->value, bnode->child[0]->reg, bnode->reg);
-
-immediate:	zero						# 0 # bnode->value = 0;
-immediate:	OP_NOT(immediate)			# 0 # bnode->value = ! bnode->child[0]->value;
-immediate:	OP_ADD(immediate,immediate)	# 0 # bnode->value = bnode->child[0]->value + bnode->child[1]->value;
-immediate:	OP_MUL(immediate,immediate) # 0 # bnode->value = bnode->child[0]->value * bnode->child[1]->value;
-immediate:	OP_NEG(immediate)			# 0 # bnode->value = - bnode->child[0]->value;
-immediate:	OP_NEQ(immediate,immediate) # 0 # bnode->value = (bnode->child[0]->value != bnode->child[1]->value)? 1 : 0;
-immediate:	OP_Number					# 0 #
-immediate:	OP_Zero						# 0 #
-immediate:	OP_One						# 0 #
-
 expr:	OP_NEG(expr)					# 1 # neg(bnode->reg);
-expr:	OP_NOT(expr)					# 1 # not(bnode->reg);
+expr:	OP_ID							# 1 # if(bnode->param_index != -1) move(getParamRegister(bnode->param_index), bnode->reg);
+expr:	OP_Field(expr)					# 1 # move_offset(bnode->child[0]->reg, bnode->reg, bnode->offset);
 expr:	OP_GREATER(expr,expr)			# 2 # greater(bnode->child[1]->reg, bnode->child[0]->reg, bnode->reg);
 expr: 	OP_GREATER(immediate,expr)		# 2 # greateri(bnode->child[1]->value,bnode->child[0]->reg, bnode->reg);
 expr: 	OP_GREATER(expr,immediate)		# 2 # greateri2(bnode->child[1]->reg,bnode->child[0]->value, bnode->reg);
+
+expr:	immediate						# 1 # movei(bnode->value, bnode->reg);
+
+
+immediate:	OP_NOT(immediate)			# 0 # bnode->value = ! bnode->child[0]->value;
+immediate:	OP_NEG(immediate)			# 0 # bnode->value = - bnode->child[0]->value;
+immediate:	OP_NEQ(immediate,immediate) # 0 # bnode->value = (bnode->child[0]->value != bnode->child[1]->value)? 1 : 0;
+immediate:	OP_ADD(immediate,immediate)	# 0 # bnode->value = bnode->child[0]->value + bnode->child[1]->value;
+immediate:	OP_MUL(immediate,immediate) # 0 # bnode->value = bnode->child[0]->value * bnode->child[1]->value;
+
+
+immediate:	zero						# 0 # bnode->value = 0;
+
+
+
+immediate:	OP_Number					# 0 #
+immediate:	OP_Zero						# 0 #
+immediate:	OP_One						# 0 #
 
 zero:	OP_NEG(zero)					# 0 #
 zero:	OP_Zero							# 0 #

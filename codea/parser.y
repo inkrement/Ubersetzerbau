@@ -256,7 +256,9 @@ OrExpr: Term T_OR Term
 	@}
 	| OrExpr T_OR Term
 	@{ 
-		@i @OrExpr.node@ = new_leaf(OP_NOP);
+
+		@i @OrExpr.0.node@ = new_node(OP_OR, @Term.node@, @OrExpr.1.node@);
+		@reg @Term.node@->reg = @OrExpr.0.node@->reg; @OrExpr.1.node@->reg = get_next_reg(@OrExpr.0.node@->reg, @OrExpr.node@->skip_reg);
 	@}
 	;
 
