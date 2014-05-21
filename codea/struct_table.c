@@ -6,22 +6,25 @@
 
 
 int get_field_offset(struct struct_table* structs, char *fieldname){
-	int offset = 0;
+	int offset = -1;
 	struct symbol_t* field;
 	struct struct_table* structure = get_struct_by_field(structs, fieldname);
 
 	if(structure != NO_STRUCT){
 		field = structure->fields;
 
+		while(field != EMPTY_TABLE && 0 != strcmp(field->name, fieldname))
+			field = field->next;
+		
+
 		while(field != EMPTY_TABLE){
-			if(0 == strcmp(field->name, fieldname)) return offset;
 			offset++;
 
 			field = field->next;
 		}
 	}
 
-	return -1;
+	return offset;
 }
 
 struct struct_table* get_struct_by_field(struct struct_table* structs, char *fieldname){
