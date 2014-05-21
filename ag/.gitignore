@@ -1,0 +1,7 @@
+oxout.l
+oxout.y
+parser.c
+scanner.c
+codea
+*.o
+log/*
