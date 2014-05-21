@@ -321,14 +321,14 @@ void greater(char *fst, char *snd, char *dst){
 }
 
 void greateri(long fst, char *snd, char *dst){
-	printf("\tcmp %d, %%%s\n", (int) fst, snd);
+	printf("\tcmp $%d, %%%s\n", (int) fst, snd);
 	printf("\tsetg %%%s\n", getByteRegister(dst));
 	printf("\tand $1, %%%s\n",dst);
 	printf("\tneg %%%s\n", dst);
 }
 
 void greateri2(char *fst, long snd, char *dst){
-	printf("\tcmp %%%s, %d\n", fst, (int) snd);
+  printf("\tcmp $%d, %%%s\n", (int) snd, fst);
 	printf("\tsetg %%%s\n", getByteRegister(dst));
 	printf("\tand $1, %%%s\n",dst);
 	printf("\tneg %%%s\n", dst);
