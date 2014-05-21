@@ -15,7 +15,7 @@
 
 stat:	ret								# 0 #
 
-ret:	OP_Return(expr)					# 2 # move(bnode->reg, "rax"); retrn();
+ret:	OP_Return(expr)					# 2 # move(bnode->reg, "rax"); ret();
 expr:	OP_ID							# 1 # if(bnode->param_index != -1) move(getParamRegister(bnode->param_index), bnode->reg);
 expr:	OP_Field(expr)					# 1 # move_offset(bnode->child[0]->reg, bnode->reg, bnode->offset);
 expr:	immediate						# 1 # movei(bnode->value, bnode->reg);
