@@ -40,7 +40,7 @@ Input: Program
     @{ 
     	@i @Program.structs@ = @Program.struct_gen@;
 
-    	@codegen @revorder(1) print_structs(@Program.structs@); printf("\t.text\n");
+    	@codegen @revorder(1) printf("\t.text\n");
     @}
 
 	;

@@ -2,6 +2,10 @@
 #include <string.h>
 #include "assembler.h"
 
+void ret(void) {
+  printf("\tret\n");
+}
+
 void functionStart(char *name) {
 	printf(".globl %s\n", name);
 	printf("\t.type %s, @function\n", name);
@@ -157,16 +161,6 @@ void address(char *src, char *dst){
 void addressi(long src, char *dst){
 	printf("\tmovq ($%li), %%%s\n", src, dst);
 }
-
-/*
-void loadfield(char *base_src, char *offset, char* dst){
-	printf("\tmovq (%%%s, %%%s, 8), %%%s\n", fieldname, offset, reg);
-}
-
-
-void setfield(char *base_src, char* offset, char* dst){
-	printf("\tmovq %%%s, %s+%d(%%rip)\n", reg, fieldname, offset);
-}*/
 
 void notequal(char *fst, char *snd, char *dst){
 	printf("\tcmp %%%s, %%%s\n", fst, snd);

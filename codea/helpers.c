@@ -25,18 +25,6 @@ int count(struct symbol_t* symbols){
   return i;
 }
 
-void print_structs(struct struct_table* structs){
-  int field_num;
-
-  while(structs != (struct struct_table*) NULL){
-    field_num = count(structs->fields);
-
-    /* .comm drei,16,16 */
-    printf("\t.comm %s,%d,%d\n", structs->name, field_num, field_num);
-
-    structs = structs->next;
-  }
-}
 
 void function_header(char *name, struct symbol_t *params) {
   int i;
@@ -104,134 +92,10 @@ char *get_next_reg(char *name, int skip_reg) {
   return reg_names[index];
 }
 
-char *get_8bit_reg(char* reg) {
-  if(strcmp(reg, "rax") == 0) {
-    return "al";
-  } else if(strcmp(reg, "r10") == 0) {
-    return "r10b";
-  } else if(strcmp(reg, "r11") == 0) {
-    return "r11b";
-  } else if(strcmp(reg, "r9") == 0) {
-    return "r9b";
-  } else if(strcmp(reg, "r8") == 0) {
-    return "r8b";
-  } else if(strcmp(reg, "rcx") == 0) {
-    return "cl";
-  } else if(strcmp(reg, "rdx") == 0) {
-    return "dl";
-  } else if(strcmp(reg, "rsi") == 0) {
-    return "sil";
-  } else if(strcmp(reg, "rdi") == 0) {
-    return "dil";
-  } else {
-    printf("unknown register %s", reg);
-    exit(4);
-  }
-  return "";
-}
-
-void ret(void) {
-  printf("\tret\n");
-}
-
 void imm_ret(void) {
   printf("\tmovq $0, %%rax\n\tret\n");
 }
 
-
-void print_label(char* prefix, char* name, char* postfix) {
-  printf("%s%s_%s%s", prefix, cur_function, name, postfix);
-}
-
-
-void freereg(char *reg) {
-  int i = 0;
-
-  while( strcmp(reg, regs[i]) != 0 ) {
-    ++i;
-  }
-
-  if( strcmp(reg, regs[i]) != 0) {
-    printf("unknown regigster: %s\n", reg);
-    exit(4);
-  }
-
-  reg_usage[i] -= 1;
-}
-
-void claimreg(char *reg) {
-  int i = 0;
-
-  while( strcmp(reg, regs[i]) != 0 ) {
-    ++i;
-  }
-
-  if( strcmp(reg, regs[i]) != 0) {
-    printf("unknown regigster: %s\n", reg);
-    exit(4);
-  }
-
-  reg_usage[i] += 1;
-}
-
-char* newreg() {
-  int i = 0;
-
-  while(i < 9 && reg_usage[i] != 0) {
-    ++i;
-  }
-
-  if(reg_usage[i] != 0) {
-    printf("not enough registers!\n");
-    exit(4);
-  }
-
-  reg_usage[i] += 1;
-  return regs[i];
-}
-
-void dump_usage() {
-  int i = 0;
-
-  printf("---- Register usage ----");
-  for(i = 0; i < 9; ++i) {
-    printf("%s: %d\n", regs[i], reg_usage[i]);
-  }
-}
-
-char* reg_for_var(char* name) {
-  var_usage *cur_var = vars;
-  var_usage *prev;
-
-  while(cur_var != NULL && strcmp(cur_var->name, name) != 0) {
-    prev = cur_var;
-    cur_var = cur_var->next;
-  }
-
-  if(cur_var == NULL) {
-    printf("var not found: %s\n", name);
-    exit(4);
-  } 
-  else {
-    return cur_var->reg;
-  }
-}
-
-
-int get_reg_usage(char *reg) {
-  int i = 0;
-
-  while( strcmp(reg, regs[i]) != 0 ) {
-    ++i;
-  }
-
-  if( strcmp(reg, regs[i]) != 0) {
-    printf("unknown regigster: %s\n", reg);
-    exit(4);
-  }
-
-  return reg_usage[i];
-}
 
 /* called once for each time a variable is seen */
 void record_var_usage(char* name) {
@@ -261,25 +125,6 @@ void record_var_usage(char* name) {
 
 }
 
-char *get_param_reg(long number) {
-#ifdef DEBUG_ME
-  if(number == 0) {
-    printf("trying to acces negative param reg: %d\n", number);
-  }
-#endif
-
-  char *reg_names[]={"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
-  return reg_names[number-1];
-}
-
-void free_childs_alloc_reg(treenode* node) {
-  /* only free if they have regs - immediates don't */
-  if(node->child[0]->reg != NULL)
-    freereg(node->child[0]->reg);
-  if(node->child[1]->reg != NULL)
-    freereg(node->child[1]->reg);
-  node->reg = newreg();
-}
 
 void init_reg_usage() {
   var_usage *cur_var = vars;
