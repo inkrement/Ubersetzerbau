@@ -1,7 +1,7 @@
-all: codea
+all: codeb
 
-codea: parser.o scanner.o symbol_table.o struct_table.o assembler.o tree.o code.o
-	gcc -g -ansi -pedantic scanner.o parser.o symbol_table.o assembler.o struct_table.o tree.o code.o -lfl -o codea
+codeb: parser.o scanner.o symbol_table.o struct_table.o assembler.o tree.o code.o
+	gcc -g -ansi -pedantic scanner.o parser.o symbol_table.o assembler.o struct_table.o tree.o code.o -lfl -o codeb
 
 oxout.y oxout.l: parser.y scanner.l
 	ox parser.y scanner.l
@@ -38,4 +38,4 @@ code.c: code.bfe
 	bfe < code.bfe | iburg > code.c
 
 clean:
-	rm -f scanner.c codea *.o *.output *.tab.h parser.c oxout.* code.c core
+	rm -f scanner.c codeb *.o *.output *.tab.h parser.c oxout.* code.c core
