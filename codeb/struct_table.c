@@ -133,7 +133,7 @@ void assert_exists(struct struct_table *struct_table, struct symbol_t *visible_s
 		structs = structs->next;
 	}
 
-	printf("Fail exists\n" );
+	printf("assertion failed. No symbol with name %s\n", name);
 	exit(3);
 }
 
