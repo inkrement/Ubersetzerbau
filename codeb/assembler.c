@@ -103,33 +103,41 @@ void function_header(char *name, struct symbol_t *params) {
   strcpy(cur_function, name);
 }
 
-char *get_next_reg(char *name, int skip_reg) {
-  char *reg_names[]={"rax", "r10", "r11", "r9", "r8", "rcx", "rdx", "rsi", "rdi"};
-  int index, a;
 
-  if(name==(char *)NULL) {
-    index=0;
-  }
-  else {
-    for(a=0;a<9;a++) {
-      if(!strcmp(name,reg_names[a])) {
-        index=a+1;
-        break;
-      }
-    }
-  }
-  if(skip_reg) {
-    index++;
+/* register functions */
+void freereg(char *reg) {
+  int i = 0;
+
+  while( strcmp(reg, regs[i]) != 0 ) {
+    ++i;
   }
 
+  if( strcmp(reg, regs[i]) != 0) {
+    printf("unknown regigster: %s\n", reg);
+    exit(4);
+  }
 
-
-  #ifdef DEBUG_ME
-    printf("get_next_reg: %s\n",reg_names[index]);
-  #endif
-
-  return reg_names[index];
+  reg_usage[i] -= 1;
 }
+
+
+char* newreg() {
+  int i = 0;
+
+  while(i < 9 && reg_usage[i] != 0) {
+    ++i;
+  }
+
+  if(reg_usage[i] != 0) {
+    printf("not enough registers!\n");
+    exit(4);
+  }
+
+  reg_usage[i] = 1;
+  return regs[i];
+}
+
+
 
 void imm_ret(void) {
   printf("\tmovq $0, %%rax\n\tret\n");

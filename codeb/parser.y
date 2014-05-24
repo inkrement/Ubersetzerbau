@@ -112,7 +112,9 @@ LetRec:
 	@{
 		@i @LetRec.0.vars@ = add_symbol(@LetRec.1.vars@, @T_ID.name@, UNIQUE, -1);
 
-		@i @LetRec.node@ = @Expr.node@;
+		@i @LetRec.0.node@ = new_node(OP_Assign, @Expr.node@, (treenode*) NULL);
+
+		@reg @LetRec.node@->reg = newreg(); @Expr.node@->reg = @LetRec.node@->reg;
 	@}
 	;
 
@@ -126,7 +128,7 @@ Stat: T_RETURN Expr
 	@{ 
 		@i @Stat.node@ = new_node(OP_Return, @Expr.node@, (treenode*) NULL);
 
-		@reg @Stat.node@->reg = get_next_reg((char *)NULL, 0); @Expr.node@->reg = @Stat.node@->reg;
+		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg;
 	@}
 	| T_COND CondRec T_END
 	@{ @i @Stat.node@ = NULL; @}
@@ -217,12 +219,12 @@ Expr: Term
 	| Term T_GREATER Term
 	@{
 		@i @Expr.node@ = new_node(OP_GREATER, @Term.0.node@, @Term.1.node@);
-		@reg @Term.0.node@->reg = @Expr.node@->reg; @Term.1.node@->reg = get_next_reg(@Expr.node@->reg, @Expr.node@->skip_reg);
+		@reg @Term.0.node@->reg = @Expr.node@->reg; @Term.1.node@->reg = newreg();
 	@}
 	| Term T_NOT_EQUAL Term
 	@{
 		@i @Expr.node@ = new_node(OP_NEQ, @Term.0.node@, @Term.1.node@);
-		@reg @Term.0.node@->reg = @Expr.node@->reg; @Term.1.node@->reg = get_next_reg(@Expr.node@->reg, @Expr.node@->skip_reg);
+		@reg @Term.0.node@->reg = @Expr.node@->reg; @Term.1.node@->reg = newreg();
 	@}
 	;
 
@@ -230,25 +232,25 @@ PlusExpr: Term T_PLUS Term
 	@{ 
 		@i @PlusExpr.node@ = new_node(OP_ADD, @Term.0.node@, @Term.1.node@);
 
-		@reg @Term.0.node@->reg = @PlusExpr.node@->reg; @Term.1.node@->reg = get_next_reg(@PlusExpr.node@->reg, @PlusExpr.node@->skip_reg);
+		@reg @Term.0.node@->reg = @PlusExpr.node@->reg; @Term.1.node@->reg = newreg();
 	@}
 	| PlusExpr T_PLUS Term
 	@{ 
 		@i @PlusExpr.0.node@ = new_node(OP_ADD, @Term.node@,@PlusExpr.1.node@);
 
-        @reg @Term.node@->reg = @PlusExpr.0.node@->reg; @PlusExpr.1.node@->reg = get_next_reg(@PlusExpr.0.node@->reg, @PlusExpr.node@->skip_reg);
+        @reg @Term.node@->reg = @PlusExpr.0.node@->reg; @PlusExpr.1.node@->reg = newreg();
 	@}
 	;
 
 MultExpr: Term T_MUL Term 
 	@{
 		@i @MultExpr.node@ = new_node(OP_MUL, @Term.0.node@, @Term.1.node@);
-		@reg @Term.0.node@->reg = @MultExpr.node@->reg; @Term.1.node@->reg = get_next_reg(@MultExpr.node@->reg, @MultExpr.node@->skip_reg);
+		@reg @Term.0.node@->reg = @MultExpr.node@->reg; @Term.1.node@->reg = newreg();
 	@}
 	| MultExpr T_MUL Term
 	@{
 		@i @MultExpr.0.node@ = new_node(OP_MUL, @Term.node@, @MultExpr.1.node@);
-		@reg @Term.node@->reg = @MultExpr.0.node@->reg; @MultExpr.1.node@->reg = get_next_reg(@MultExpr.0.node@->reg, @MultExpr.node@->skip_reg);
+		@reg @Term.node@->reg = @MultExpr.0.node@->reg; @MultExpr.1.node@->reg = newreg();
 	@}
 	;
 
@@ -256,13 +258,13 @@ OrExpr: Term T_OR Term
 	@{ 
 		@i @OrExpr.node@ = new_node(OP_OR, @Term.0.node@, @Term.1.node@);
 		
-		@reg @Term.node@->reg = @OrExpr.node@->reg; @Term.1.node@->reg = get_next_reg(@OrExpr.node@->reg);
+		@reg @Term.node@->reg = @OrExpr.node@->reg; @Term.1.node@->reg = newreg();
 	@}
 	| OrExpr T_OR Term
 	@{ 
 
 		@i @OrExpr.0.node@ = new_node(OP_OR, @Term.node@, @OrExpr.1.node@);
-		@reg @Term.node@->reg = @OrExpr.0.node@->reg; @OrExpr.1.node@->reg = get_next_reg(@OrExpr.0.node@->reg, @OrExpr.node@->skip_reg);
+		@reg @Term.node@->reg = @OrExpr.0.node@->reg; @OrExpr.1.node@->reg = newreg();
 	@}
 	;
 

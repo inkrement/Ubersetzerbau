@@ -10,7 +10,7 @@
 %}
 
 %start stat
-%term OP_NOT=1 OP_OR=2 OP_NEQ=3 OP_ADD=4 OP_MUL=5 OP_NEG=6 OP_ID=7 OP_Number=8 OP_Field=9 OP_Return=10 OP_Zero=11 OP_One=12 OP_Args=13 OP_NOP=14 OP_GREATER=15 OP_LEXPR=16
+%term OP_NOT=1 OP_OR=2 OP_NEQ=3 OP_ADD=4 OP_MUL=5 OP_NEG=6 OP_ID=7 OP_Number=8 OP_Field=9 OP_Return=10 OP_Zero=11 OP_One=12 OP_Args=13 OP_NOP=14 OP_GREATER=15 OP_LEXPR=16 OP_Assign=17
 %%
 
 stat:	ret								# 0 #
