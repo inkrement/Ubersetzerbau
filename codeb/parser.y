@@ -82,7 +82,7 @@ Params:
 	@}
 	| Params T_ID
 	@{
-		@i @Params.0.syms_gen@ = add_symbol(@Params.1.syms_gen@, @T_ID.name@, UNIQUE, @Params.index@);
+		@i @Params.0.syms_gen@ = add_param(@Params.1.syms_gen@, @T_ID.name@, @Params.index@);
 		@i @Params.0.index@ = @Params.1.index@ + 1;
 	@}
 	;
@@ -90,7 +90,7 @@ Params:
 Felder:
 	@{ @i @Felder.syms_gen@ = EMPTY_TABLE; @}
 	| Felder T_ID
-	@{ @i @Felder.0.syms_gen@ = add_symbol(@Felder.1.syms_gen@, @T_ID.name@, UNIQUE, -1); @}
+	@{ @i @Felder.0.syms_gen@ = add_field(@Felder.1.syms_gen@, @T_ID.name@); @}
 	;
 
 Stats: 
@@ -110,9 +110,9 @@ LetRec:
 	@}
 	| LetRec T_ID T_EQUAL Expr T_SEMICOLON
 	@{
-		@i @LetRec.0.vars@ = add_symbol(@LetRec.1.vars@, @T_ID.name@, UNIQUE, -1);
+		@i @LetRec.0.vars@ = add_var(@LetRec.1.vars@, @T_ID.name@);
 
-		@i @LetRec.0.node@ = new_node(OP_Assign, @Expr.node@, (treenode*) NULL);
+		@i @LetRec.0.node@ = new_node(OP_Assign, @LetRec.1.node@, @Expr.node@);
 
 		@reg @LetRec.node@->reg = newreg(); @Expr.node@->reg = @LetRec.node@->reg;
 	@}
@@ -135,7 +135,7 @@ Stat: T_RETURN Expr
 	| T_LET LetRec T_IN Stats T_END
 	@{
 		@i @Stats.symbols@ = table_merge(@Stat.symbols@, @LetRec.vars@);
-		@i @Stat.node@ = NULL;
+		@i @Stat.node@ = @LetRec.node@;
 	@}
 	| T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 	@{
