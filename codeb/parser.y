@@ -1,6 +1,6 @@
 @autoinh structs visible_structs symbols
 @attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs;}  Stats
-@attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;}   Stat Lexpr Term Expr CondRec PlusExpr MultExpr OrExpr ExprList SignExpr
+@attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;} Stat Lexpr Term Expr CondRec PlusExpr MultExpr OrExpr ExprList SignExpr
 @attributes { struct symbol_t* symbols; struct symbol_t* vars; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;} LetRec
 
 @attributes { struct symbol_t* felder; char *name; } Structdef
@@ -143,16 +143,21 @@ Stat: T_RETURN Expr
 		@i @Stat.node@ = NULL;
 	@}
 	| Lexpr T_EQUAL Expr
-	@{ @i @Stat.node@ = NULL; @}
+	@{
+		@i @Stat.node@ = new_node(OP_LEXPR, @Expr.node@, @Lexpr.node@);
+	@}
 	| Term
-	@{ @i @Stat.node@ = NULL; @}
+	@{
+		@i @Stat.node@ = NULL;
+	@}
 	;
 
 Lexpr: T_ID
 	@{
 		@t assert_exists(@Lexpr.structs@, @Lexpr.visible_structs@, @Lexpr.symbols@, @T_ID.name@);
+		
+		@i @Lexpr.node@ = new_id_leaf(OP_ID, @T_ID.name@ , (table_lookup(@Lexpr.symbols@, @T_ID.name@) == EMPTY_TABLE )?0:table_lookup(@Lexpr.symbols@, @T_ID.name@)->param_index);
 
-		@i @Lexpr.node@ = NULL;
 	@}
 	| Term T_POINT T_ID
 	@{

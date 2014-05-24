@@ -10,7 +10,7 @@
 %}
 
 %start stat
-%term OP_NOT=1 OP_OR=2 OP_NEQ=3 OP_ADD=4 OP_MUL=5 OP_NEG=6 OP_ID=7 OP_Number=8 OP_Field=9 OP_Return=10 OP_Zero=11 OP_One=12 OP_Args=13 OP_NOP=14 OP_GREATER=15
+%term OP_NOT=1 OP_OR=2 OP_NEQ=3 OP_ADD=4 OP_MUL=5 OP_NEG=6 OP_ID=7 OP_Number=8 OP_Field=9 OP_Return=10 OP_Zero=11 OP_One=12 OP_Args=13 OP_NOP=14 OP_GREATER=15 OP_LEXPR=16
 %%
 
 stat:	ret								# 0 #
@@ -35,6 +35,14 @@ expr:	OP_Field(expr)					# 1 # move_offset(bnode->child[0]->reg, bnode->reg, bno
 expr:	OP_GREATER(expr,expr)			# 2 # greater(bnode->child[1]->reg, bnode->child[0]->reg, bnode->reg);
 expr: 	OP_GREATER(immediate,expr)		# 2 # greateri(bnode->child[1]->value,bnode->child[0]->reg, bnode->reg);
 expr: 	OP_GREATER(expr,immediate)		# 2 # greateri2(bnode->child[1]->reg,bnode->child[0]->value, bnode->reg);
+
+expr:	OP_LEXPR(expr, expr)			# 2 #
+expr:	OP_LEXPR(expr, OP_ID)			# 2 #
+expr:	OP_LEXPR(OP_ID, expr)			# 2 #
+expr:	OP_LEXPR(OP_ID, immediate)		# 2 #
+expr:	OP_LEXPR(immediate, OP_ID)		# 2 #
+expr:	OP_LEXPR(OP_ID, OP_ID)			# 2 #
+
 
 expr:	immediate						# 1 # movei(bnode->value, bnode->reg);
 
