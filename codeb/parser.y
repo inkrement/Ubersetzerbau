@@ -42,7 +42,6 @@ Input: Program
 
     	@codegen @revorder(1) printf("\t.text\n");
     @}
-
 	;
 
 Program:
