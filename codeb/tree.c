@@ -176,7 +176,7 @@ treenode *new_number_leaf(long value) {
   PARAM
 */
 
-treenode * new_id_leaf(int op, struct symbol_t* symbols, char * name){
+treenode * new_id_leaf(struct symbol_t* symbols, char * name){
   treenode *new=(treenode *)malloc(sizeof(treenode));
 
   struct symbol_t* id = table_lookup(symbols, name);
@@ -188,9 +188,9 @@ treenode * new_id_leaf(int op, struct symbol_t* symbols, char * name){
   
   new->child[0]=(treenode *)NULL;
   new->child[1]=(treenode *)NULL;
-  new->op=op;
+  new->op=OP_ID;
   new->name=name;
-  new->param_index=param_index;
+  new->param_index=id->param_index;
 
   return new;
 }

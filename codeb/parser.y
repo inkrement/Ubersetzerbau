@@ -157,7 +157,7 @@ Lexpr: T_ID
 	@{
 		@t assert_exists(@Lexpr.structs@, @Lexpr.visible_structs@, @Lexpr.symbols@, @T_ID.name@);
 		
-		@i @Lexpr.node@ = new_id_leaf(OP_ID, @T_ID.name@ , (table_lookup(@Lexpr.symbols@, @T_ID.name@) == EMPTY_TABLE )?0:table_lookup(@Lexpr.symbols@, @T_ID.name@)->param_index);
+		@i @Lexpr.node@ = new_id_leaf(@Lexpr.symbols@, @T_ID.name@);
 
 	@}
 	| Term T_POINT T_ID
@@ -280,7 +280,7 @@ Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
 	@{
 		@t assert_exists_feldkontext(@Term.structs@, @Term.symbols@, @T_ID.name@); 
 		
-		@i @Term.0.node@ = new_field_leaf(OP_Field, @T_ID.name@, @Term.1.node@, get_field_offset(@Term.structs@, @T_ID.name@));
+		@i @Term.0.node@ = new_field_leaf(@T_ID.name@, @Term.1.node@, get_field_offset(@Term.structs@, @T_ID.name@));
 
 		@reg @Term.1.node@->reg = @Term.0.node@->reg;
 	@}
@@ -288,7 +288,7 @@ Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
 	@{
 		@t assert_exists(@Term.structs@, @Term.visible_structs@, @Term.symbols@, @T_ID.name@);
 
-		@i @Term.node@ = new_id_leaf(OP_ID, @T_ID.name@ , (table_lookup(@Term.symbols@, @T_ID.name@) == EMPTY_TABLE )?0:table_lookup(@Term.symbols@, @T_ID.name@)->param_index);
+		@i @Term.node@ = new_id_leaf(@Term.symbols@, @T_ID.name@);
 
 		@codegen record_var_usage(@T_ID.name@);
 	@}

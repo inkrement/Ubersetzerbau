@@ -1,6 +1,8 @@
 #ifndef __TREE_H_
 #define __TREE_H_
 
+#include "symbol_table.h"
+
 #define DEBUG_ME
 
 #ifndef CODE
@@ -100,7 +102,7 @@ treenode *new_number_leaf(long);
 treenode *new_named_leaf(int , char *);
 treenode *new_named_leaf_value(int , char *, long);
 treenode *new_named_node(int, treenode *, treenode *, char *);
-treenode *new_id_leaf(int, char *, int);
+treenode *new_id_leaf(struct symbol_t*, char*);
 treenode * new_field_leaf(char* ,treenode * ,int);
 
 void write_indent(int );

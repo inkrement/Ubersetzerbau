@@ -1,0 +1,14 @@
+struct a: x y z end;
+
+func some(a)
+/*
+let b=a+4; in
+	return a;
+end;
+*/
+
+with 0:a do
+	return x;
+end;
+
+end;
