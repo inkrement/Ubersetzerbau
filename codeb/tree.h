@@ -103,7 +103,7 @@ treenode *new_named_leaf(int , char *);
 treenode *new_named_leaf_value(int , char *, long);
 treenode *new_named_node(int, treenode *, treenode *, char *);
 treenode *new_id_leaf(struct symbol_t*, char*);
-treenode * new_field_leaf(char* ,treenode * ,int);
+treenode *new_field_leaf(char* ,treenode * ,int);
 
 void write_indent(int );
 void write_tree(treenode *, int);

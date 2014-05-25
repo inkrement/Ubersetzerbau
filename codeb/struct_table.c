@@ -172,9 +172,13 @@ void assert_single_occurence(struct struct_table *struct_table, struct symbol_t 
 }
 
 
-struct symbol_t * load_struct(struct struct_table* str_t, struct symbol_t* sym_t, char* struct_name){
-
+struct symbol_t * load_struct(struct struct_table* str_t, struct symbol_t* sym_t, char* struct_name, char* reg){
 	struct struct_table* s = str_t;
+	struct symbol_t* tmp;
+
+	#ifdef DEBUG_ME
+		printf("Load Struct: %s with start in %s\n", struct_name, reg);
+	#endif
 
 	debug_struct_table(str_t);
 
@@ -187,7 +191,14 @@ struct symbol_t * load_struct(struct struct_table* str_t, struct symbol_t* sym_t
 	if (s == (struct struct_table*) NULL){
 		printf("no such struct found!\n"); 
 		exit(3);
-	} 
+	}
+
+	tmp = s->fields;
+
+	while(tmp != EMPTY_TABLE){
+		tmp->reg = reg;
+		tmp = tmp->next;
+	}
 
 	return table_merge(sym_t, s->fields);
 }

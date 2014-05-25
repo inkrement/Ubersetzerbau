@@ -11,8 +11,8 @@
 @attributes { char *name;} T_ID
 @attributes { char *val; } T_NUM
 
-@traversal @postorder t
 @traversal @preorder reg
+@traversal @postorder t
 @traversal @postorder codegen
 
 %{
@@ -96,7 +96,7 @@ Felder:
 Stats: 
 	| Stats Stat T_SEMICOLON
 	@{
-		 @codegen burm_label(@Stat.node@); burm_reduce(@Stat.node@, 1);
+		 
 
 		 @t debug_tree(@Stat.node@);
 	@}
@@ -129,6 +129,8 @@ Stat: T_RETURN Expr
 		@i @Stat.node@ = new_node(OP_Return, @Expr.node@, (treenode*) NULL);
 
 		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg;
+
+		@codegen burm_label(@Stat.node@); burm_reduce(@Stat.node@, 1);
 	@}
 	| T_COND CondRec T_END
 	@{ @i @Stat.node@ = NULL; @}
@@ -140,8 +142,12 @@ Stat: T_RETURN Expr
 	| T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 	@{
 		@t assert_struct_exists(@Stat.structs@, @T_ID.name@);
-		@i @Stats.symbols@ = load_struct(@Stat.structs@,@Stat.symbols@, @T_ID.name@);
-		@i @Stat.node@ = NULL;
+		@i @Stats.symbols@ = load_struct(@Stat.structs@,@Stat.symbols@, @T_ID.name@, @Expr.node@->reg);
+		@i @Stat.node@ = new_node(OP_With, NULL, NULL);
+
+		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg; 
+
+		@codegen @revorder(1) burm_label(@Stat.node@); burm_reduce(@Stat.node@, 1);
 	@}
 	| Lexpr T_EQUAL Expr
 	@{

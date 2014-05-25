@@ -1,6 +1,8 @@
 #ifndef STRUCT_TABLE_H
 #define STRUCT_TABLE_H
 
+#define DEBUG_ME
+
 #include "symbol_table.h"
 #define NO_STRUCT (struct struct_table*) NULL
 
@@ -16,7 +18,7 @@ struct struct_table* add_struct(struct struct_table*, char*, struct symbol_t*);
 
 void check_struct_exists(struct struct_table *, char *);
 void debug_struct_table(struct struct_table *);
-struct symbol_t * load_struct(struct struct_table* , struct symbol_t* , char* );
+struct symbol_t * load_struct(struct struct_table* , struct symbol_t* , char* , char*);
 void assert_exists_feldkontext(struct struct_table *, struct symbol_t *, char* );
 void assert_single_occurence(struct struct_table *, struct symbol_t *, struct symbol_t *);
 void assert_exists(struct struct_table *, struct symbol_t *, struct symbol_t *, char* );
