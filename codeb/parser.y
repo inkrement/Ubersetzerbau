@@ -7,12 +7,12 @@
 @attributes { struct struct_table* structs; }  Funcdef
 @attributes { struct struct_table* struct_gen; struct struct_table* structs; } Program 
 @attributes { struct symbol_t* syms_gen; int index; }  Params
-@attributes { struct symbol_t* syms_gen; }  Felder 
+@attributes { struct symbol_t* syms_gen; int offset; }  Felder 
 @attributes { char *name;} T_ID
 @attributes { char *val; } T_NUM
 
-@traversal @preorder reg
 @traversal @postorder t
+@traversal @preorder reg
 @traversal @postorder codegen
 
 %{
@@ -88,17 +88,24 @@ Params:
 	;
 
 Felder:
-	@{ @i @Felder.syms_gen@ = EMPTY_TABLE; @}
+	@{ 
+		@i @Felder.syms_gen@ = EMPTY_TABLE;
+		@i @Felder.offset@ = -1;
+	@}
 	| Felder T_ID
-	@{ @i @Felder.0.syms_gen@ = add_field(@Felder.1.syms_gen@, @T_ID.name@); @}
+	@{ 
+		@i @Felder.0.syms_gen@ = add_field(@Felder.1.syms_gen@, @T_ID.name@, @Felder.offset@);
+		@i @Felder.0.offset@ = @Felder.1.offset@ + 1;
+	@}
+
 	;
 
 Stats: 
 	| Stats Stat T_SEMICOLON
 	@{
-		 
-
 		 @t debug_tree(@Stat.node@);
+
+		 @codegen @revorder(1) printf("bool: %d\n", @Stat.node@ == NULL);  burm_label(@Stat.node@); burm_reduce(@Stat.node@, 1);
 	@}
 	;
 
@@ -130,7 +137,6 @@ Stat: T_RETURN Expr
 
 		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg;
 
-		@codegen burm_label(@Stat.node@); burm_reduce(@Stat.node@, 1);
 	@}
 	| T_COND CondRec T_END
 	@{ @i @Stat.node@ = NULL; @}
@@ -142,12 +148,11 @@ Stat: T_RETURN Expr
 	| T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
 	@{
 		@t assert_struct_exists(@Stat.structs@, @T_ID.name@);
-		@i @Stats.symbols@ = load_struct(@Stat.structs@,@Stat.symbols@, @T_ID.name@, @Expr.node@->reg);
-		@i @Stat.node@ = new_node(OP_With, NULL, NULL);
 
-		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg; 
+		@i @Stats.symbols@ = load_struct(@Stat.structs@, @Stat.symbols@, @T_ID.name@, newreg());
+		@i @Stat.node@ = new_node(OP_With, @Expr.node@, (treenode*) NULL);
 
-		@codegen @revorder(1) burm_label(@Stat.node@); burm_reduce(@Stat.node@, 1);
+		@reg @Stat.node@->reg = getvarreg(@Stat.symbols@, @T_ID.name@); @Expr.node@->reg = @Stat.node@->reg; 
 	@}
 	| Lexpr T_EQUAL Expr
 	@{

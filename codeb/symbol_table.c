@@ -28,7 +28,7 @@ struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
 
 	while(i != EMPTY_TABLE){
 		if(0 ==  strcmp(i->name, identifier))
-			result = add_symbol(result, i->name, NOT_UNIQUE, i->param_index, i->type, i->reg);
+			result = add_symbol(result, i->name, NOT_UNIQUE, i->param_index, i->type, i->reg, i->offset);
 
 		i = i->next;
 	}
@@ -45,7 +45,7 @@ struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_
 	result = table_one;
 
 	while(i != EMPTY_TABLE ){
-		result = add_symbol(result, i->name, UNIQUE, i->param_index, i->type, i->reg);
+		result = add_symbol(result, i->name, UNIQUE, i->param_index, i->type, i->reg, i->offset);
 		i = i->next;
 	}
 
@@ -53,7 +53,7 @@ struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_
 }
 
 
-struct symbol_t* add_symbol(struct symbol_t *table, char *name, short unique, int index, int type, char* reg) {
+struct symbol_t* add_symbol(struct symbol_t *table, char *name, short unique, int index, int type, char* reg, int offset) {
 	struct symbol_t* item;
 
 	#ifdef DEBUG_ME
@@ -67,6 +67,7 @@ struct symbol_t* add_symbol(struct symbol_t *table, char *name, short unique, in
 	item->name = name;
 	item->type = type;
 	item->param_index = index;
+	item->offset = offset;
 	item->reg = reg;
 
 	return item;
@@ -75,16 +76,16 @@ struct symbol_t* add_symbol(struct symbol_t *table, char *name, short unique, in
 
 
 struct symbol_t* add_var(struct symbol_t *table, char *name, char* reg) {
-	return add_symbol(table, name, UNIQUE, -1, TYPE_VAR, reg);
+	return add_symbol(table, name, UNIQUE, -1, TYPE_VAR, reg, 0);
 }
 
 
-struct symbol_t* add_field(struct symbol_t *table, char *name) {
-	return add_symbol(table, name, UNIQUE, -1, TYPE_FIELD, NULL);
+struct symbol_t* add_field(struct symbol_t *table, char *name, int offset) {
+	return add_symbol(table, name, UNIQUE, -1, TYPE_FIELD, NULL, offset);
 }
 
 struct symbol_t* add_param(struct symbol_t *table, char *name, int index) {
-	return add_symbol(table, name, UNIQUE, index, TYPE_PARAM, NULL);
+	return add_symbol(table, name, UNIQUE, index, TYPE_PARAM, NULL, 0);
 }
 
 
@@ -103,4 +104,16 @@ struct symbol_t *table_clone(struct symbol_t *table) {
 		item->next = table_clone(table->next);
 
 	return item;
+}
+
+
+char * getvarreg(struct symbol_t *table, char* name){
+	struct symbol_t * sym = table_lookup(table, name);
+
+	if(sym == EMPTY_TABLE){
+		printf("Could not find %s in symbol table\n", name);
+		exit(4);
+	}
+
+	return sym->reg;
 }

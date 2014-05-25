@@ -181,16 +181,31 @@ treenode * new_id_leaf(struct symbol_t* symbols, char * name){
 
   struct symbol_t* id = table_lookup(symbols, name);
 
+  #ifdef DEBUG_ME
+    printf("new id leaf for %s\n", name);
+  #endif
+
   if(id == EMPTY_TABLE){
     printf("Error: could not create new id-leaf. no symbol named %s found!\n", name);
     exit(4);
   }
-  
+
+  new->name=name;
   new->child[0]=(treenode *)NULL;
   new->child[1]=(treenode *)NULL;
-  new->op=OP_ID;
-  new->name=name;
-  new->param_index=id->param_index;
+
+  if(id->type == TYPE_FIELD){
+    printf("FELD es sein! reg: %s\n", id->reg);
+
+    new->offset = id->offset;
+    new->op = OP_Field;
+  }else {
+    printf("VAR es sein!\n");
+    new->op=OP_ID;
+    new->param_index=id->param_index;
+  }
+  
+  
 
   return new;
 }

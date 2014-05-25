@@ -13,7 +13,7 @@ struct symbol_t {
 	char *name;
 	struct symbol_t *next;
 	short type;
-	int stack_offset;
+	int offset;
 	int usage_count;
 	int param_index;
 	char* reg;
@@ -21,9 +21,9 @@ struct symbol_t {
 
 void debug_symbol_table(struct symbol_t *);
 struct symbol_t *table_lookup(struct symbol_t*, char*);
-struct symbol_t* add_symbol(struct symbol_t *, char *, short , int , int , char* );
+struct symbol_t* add_symbol(struct symbol_t *, char *, short , int , int , char*, int );
 struct symbol_t* add_var(struct symbol_t *, char *, char* );
-struct symbol_t* add_field(struct symbol_t *, char *);
+struct symbol_t* add_field(struct symbol_t *, char *, int);
 struct symbol_t* add_param(struct symbol_t *, char *, int );
 
 #endif
