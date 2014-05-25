@@ -31,7 +31,9 @@ enum {
   OP_NOP,
   OP_GREATER,
   OP_LEXPR,
-  OP_Assign
+  OP_Assign,
+  OP_With,
+  OP_Stats
 };
 
 static char rule_names[100][100]={
@@ -59,7 +61,9 @@ static char rule_names[100][100]={
   "OP_NOP",
   "OP_GREATER",
   "OP_LEXPR",
-  "OP_Assign"
+  "OP_Assign",
+  "OP_With",
+  "OP_Stats"
 };
     
 
@@ -97,7 +101,7 @@ treenode *new_named_leaf(int , char *);
 treenode *new_named_leaf_value(int , char *, long);
 treenode *new_named_node(int, treenode *, treenode *, char *);
 treenode *new_id_leaf(int, char *, int);
-treenode * new_field_leaf(int ,char* ,treenode * ,int);
+treenode * new_field_leaf(char* ,treenode * ,int);
 
 void write_indent(int );
 void write_tree(treenode *, int);

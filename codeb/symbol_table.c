@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include "symbol_table.h"
 
+#define DEBUG_ME
+
 void debug_symbol_table(struct symbol_t *table){
 	int i=0;
 	struct symbol_t *node = table;
@@ -54,11 +56,16 @@ struct symbol_t *table_merge(struct symbol_t *table_one, struct symbol_t *table_
 struct symbol_t* add_symbol(struct symbol_t *table, char *name, short unique, int index, int type, char* reg) {
 	struct symbol_t* item;
 
+	#ifdef DEBUG_ME
+		printf("Add Symbol - type(%d) name(%s) param_index(%d) reg(%s)\n", type, name, index, reg);
+	#endif
+
 	if (unique == 1 && (table_lookup(table, name) != EMPTY_TABLE)) {printf("Fail add_symbol %s\n", name ); exit(3); }
 
 	item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
 	item->next = table;
 	item->name = name;
+	item->type = type;
 	item->param_index = index;
 	item->reg = reg;
 

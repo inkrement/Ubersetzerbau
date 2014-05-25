@@ -2,6 +2,8 @@
 #define __ASSEMBLER_H__
 #include "symbol_table.h"
 
+#define DEBUG_ME
+
 struct var_usage {
   char *name;
   char *reg;

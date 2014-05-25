@@ -171,9 +171,20 @@ treenode *new_number_leaf(long value) {
   return node;
 }
 
+/*
+  FIELD or
+  PARAM
+*/
 
-treenode * new_id_leaf(int op, char * name, int param_index){
+treenode * new_id_leaf(int op, struct symbol_t* symbols, char * name){
   treenode *new=(treenode *)malloc(sizeof(treenode));
+
+  struct symbol_t* id = table_lookup(symbols, name);
+
+  if(id == EMPTY_TABLE){
+    printf("Error: could not create new id-leaf. no symbol named %s found!\n", name);
+    exit(4);
+  }
   
   new->child[0]=(treenode *)NULL;
   new->child[1]=(treenode *)NULL;
@@ -185,12 +196,12 @@ treenode * new_id_leaf(int op, char * name, int param_index){
 }
 
 
-treenode * new_field_leaf(int op, char* name, treenode * address_term, int offset){
+treenode * new_field_leaf(char* name, treenode * address_term, int offset){
   treenode *new=(treenode *)malloc(sizeof(treenode));
   
   new->child[0]=address_term;
   new->child[1]=(treenode *)NULL;
-  new->op=op;
+  new->op=OP_Field;
   new->name=name;
   new->param_index=-1;
   new->offset = offset;

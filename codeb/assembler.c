@@ -8,7 +8,7 @@ char cur_function[100];
 char *regs[]= {"rax", "r10", "r11", "r9", "r8", "rcx", "rdx", "rsi", "rdi"};
 int reg_usage[] = {0,     0,     0,    0,    0,     0,     0,     0,     0};
 char *param_regs[]={"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
-var_usage *vars;
+var_usage *vars = (var_usage *) NULL;
 
 void ret(void) {
   printf("\tret\n");
@@ -40,9 +40,15 @@ char *getByteRegister(char *name){
 
 char *getParamRegister(int index) {
 	char *registers[]={"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
-	#ifdef DEBUG_ME
-	    printf("get param register with index: %d (%s)\n", index, registers[index]);
-	#endif
+
+  if(index > 5){
+    printf("getParamRegister. Not able to get register for index: %d\n", index);
+    exit(4);
+  }
+
+  #ifdef DEBUG_ME
+      printf("get param register with index: %d (%s)\n", index, registers[index]);
+  #endif
 
 	return registers[index];
 }
@@ -177,7 +183,8 @@ void init_reg_usage() {
   var_usage *cur_var = vars;
   int i;
 
-  while(cur_var != NULL) {
+  /*
+  while(cur_var != (var_usage *) NULL) {
     i = 0;
 
     if(cur_var->reg == NULL) {
@@ -190,7 +197,7 @@ void init_reg_usage() {
 
     reg_usage[i] = cur_var->usage_count;
     cur_var = cur_var->next;
-  }
+  }*/
 }
 
 void retrn(void) {
