@@ -105,7 +105,7 @@ Stats:
 	@{
 		 @t debug_tree(@Stat.node@);
 
-		 @codegen @revorder(1) printf("bool: %d\n", @Stat.node@ == NULL);  burm_label(@Stat.node@); burm_reduce(@Stat.node@, 1);
+		 @codegen @revorder(1) burm_label(@Stat.node@); burm_reduce(@Stat.node@, 1);
 	@}
 	;
 

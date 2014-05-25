@@ -198,7 +198,7 @@ treenode * new_id_leaf(struct symbol_t* symbols, char * name){
     printf("FELD es sein! reg: %s\n", id->reg);
 
     new->offset = id->offset;
-    new->op = OP_Field;
+    new->op = OP_Fieldvariable;
   }else {
     printf("VAR es sein!\n");
     new->op=OP_ID;
