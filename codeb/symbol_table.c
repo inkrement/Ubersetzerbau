@@ -76,7 +76,7 @@ struct symbol_t* add_symbol(struct symbol_t *table, char *name, short unique, in
 }
 
 
-
+/* for let */
 struct symbol_t* add_var(struct symbol_t *table, char *name, char* reg) {
 	return add_symbol(table, name, UNIQUE, -1, TYPE_VAR, reg, 0);
 }
