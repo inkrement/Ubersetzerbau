@@ -3,12 +3,67 @@
 #include <stdlib.h>
 #include "assembler.h"
 
-
 char cur_function[100];
 char *regs[]= {"rax", "r10", "r11", "r9", "r8", "rcx", "rdx", "rsi", "rdi"};
 int reg_usage[] = {0,     0,     0,    0,    0,     0,     0,     0,     0};
 char *param_regs[]={"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 var_usage *vars = (var_usage *) NULL;
+
+
+char *getRegister(char* symbol){
+  var_usage *loop = vars;
+
+  #ifdef DEBUG_ME
+    printf("get register for %s\n", symbol);
+  #endif
+
+    while(loop != NULL){
+      if(0 == strcmp(loop->name, symbol)) {
+
+        #ifdef DEBUG_ME
+          printf("found register %s for %s\n",loop->reg, symbol);
+        #endif
+
+        return loop->reg;
+      }
+      loop = loop->next;
+    }
+
+    printf("could not find register for symbol %s\n", symbol);
+    exit(4);
+}
+
+void setRegister(char* symbol, char* reg){
+  var_usage *var = vars;
+
+  #ifdef DEBUG_ME
+    printf("set register %s for symbol %s\n", reg, symbol);
+  #endif
+
+  /*find register*/
+  while(var != NULL){
+    if(0==strcmp(var->name, symbol)){
+      var->reg=reg;
+      return;
+    }
+    var= var->next;
+  }
+
+  var = (var_usage *) malloc(sizeof(var_usage));
+  var->next = vars;
+  var->name = symbol;
+  var->reg = reg;
+  vars = var;
+}
+
+
+void debug_reg_usage(var_usage* usage){
+  var_usage *loop = vars;
+  while(loop != NULL){
+    printf("%s: %s\n", loop->name, loop->reg);
+    loop = loop->next;
+  }
+}
 
 void ret(void) {
   printf("\tret\n");
@@ -80,7 +135,7 @@ void function_header(char *name, struct symbol_t *params) {
   for(i = 0; i < 9; ++i)
     reg_usage[i] = 0;  
 
-  /* init params */
+  /* init params 
   vars = NULL;
 
   i = 0;
@@ -102,7 +157,7 @@ void function_header(char *name, struct symbol_t *params) {
     cur_parm = cur_parm->next;
   }
 
-  init_reg_usage();
+  init_reg_usage();*/
   printf("\n\t.globl %s\n\t.type %s, @function\n%s:\n", name, name, name);
 
   /* store name of current function to prefix jump labels */

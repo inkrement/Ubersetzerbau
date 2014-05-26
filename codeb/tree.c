@@ -198,7 +198,7 @@ treenode * new_id_leaf(struct symbol_t* symbols, char * name){
   new->child[1]=(treenode *)NULL;
 
   if(id->type == TYPE_FIELD){
-    printf("FELD es sein! reg: %s\n", id->reg);
+    printf("FELD es sein! reg: %s\n");
     new->offset = id->offset;
     new->op = OP_Fieldvariable;
   }else if(id->type == TYPE_VAR) {

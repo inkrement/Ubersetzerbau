@@ -3,7 +3,7 @@
 #include "string.h"
 #include "struct_table.h"
 #include "symbol_table.h"
-
+#include "assembler.h"
 
 int get_field_offset(struct struct_table* structs, char *fieldname){
 	int offset = -1;
@@ -50,25 +50,26 @@ struct struct_table* get_struct_by_field(struct struct_table* structs, char *fie
 void setfieldreg(struct struct_table* structs, struct symbol_t* symbols, char* name, char* reg){
 	struct struct_table* str = get_struct_by_name(structs, name);
 
+	#ifdef DEBUG_ME
+		printf("setfieldreg %s for %s\n",reg, name);
+	#endif
+
 	if(str == (struct struct_table*) NULL){
 		printf("Could not find struct with name %s\n", name);
 		exit(4);
 	}
 
 	while(symbols != EMPTY_TABLE){
-		if(symboltable_includes(str->fields, symbols->name)) symbols->reg = reg;
+
+		if(table_lookup(str->fields, symbols->name) != EMPTY_TABLE) {
+			setRegister(symbols->name, reg);
+		}
 
 		symbols = symbols->next;
 	}
 
 
 }
-
-
-
-
-
-
 
 
 struct struct_table* get_struct_by_name(struct struct_table* structs, char *structname){

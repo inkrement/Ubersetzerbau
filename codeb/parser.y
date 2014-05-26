@@ -12,8 +12,9 @@
 @attributes { char *name;} T_ID
 @attributes { char *val; } T_NUM
 
-@traversal @postorder t
 @traversal @preorder reg
+@traversal @postorder t
+
 @traversal @preorder codegen
 
 %{
@@ -106,7 +107,7 @@ Stats:
 	@{
 		 @t debug_tree(@Stat.node@);
 
-		 @codegen @revorder(1) burm_label(@Stat.node@); burm_reduce(@Stat.node@, 1);
+		 @codegen @revorder(@Stat.node@->op == OP_Return) burm_label(@Stat.node@); burm_reduce(@Stat.node@, 1);
 	@}
 	;
 
@@ -152,7 +153,8 @@ Stat: T_RETURN Expr
 		@i @Stats.symbols@ = load_struct(@Stat.structs@, @Stat.symbols@, @T_ID.name@);
 		@i @Stat.node@ = new_node(OP_With, @Expr.node@, (treenode*) NULL);
 
-		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg; setfieldreg(@Stat.structs@, @Stat.symbols@, @T_ID.name@, @Stat.node@->reg);
+		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg;
+		@reg setfieldreg(@Stat.structs@, @Stats.symbols@, @T_ID.name@, @Stat.node@->reg);
 	@}
 	| Lexpr T_EQUAL Expr
 	@{

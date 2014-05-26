@@ -107,9 +107,3 @@ struct symbol_t *table_clone(struct symbol_t *table) {
 
 	return item;
 }
-
-int symboltable_includes(struct symbol_t *table, char *name){
-	if(table_lookup(table, name) == EMPTY_TABLE) return FALSE;
-
-	return TRUE;
-}
