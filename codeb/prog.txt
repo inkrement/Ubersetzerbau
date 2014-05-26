@@ -1,13 +1,18 @@
 struct a: x y z end;
 
-func some(a)
+func some(b)
 /*
 let b=a+4; in
 	return a;
 end;
 */
 
+/*
+b = 5;
+*/
+
 with 0:a do
+	x = 6;
 	return y;
 end;
 

@@ -47,6 +47,30 @@ struct struct_table* get_struct_by_field(struct struct_table* structs, char *fie
 	return structs;
 }
 
+void setfieldreg(struct struct_table* structs, struct symbol_t* symbols, char* name, char* reg){
+	struct struct_table* str = get_struct_by_name(structs, name);
+
+	if(str == (struct struct_table*) NULL){
+		printf("Could not find struct with name %s\n", name);
+		exit(4);
+	}
+
+	while(symbols != EMPTY_TABLE){
+		if(symboltable_includes(str->fields, symbols->name)) symbols->reg = reg;
+
+		symbols = symbols->next;
+	}
+
+
+}
+
+
+
+
+
+
+
+
 struct struct_table* get_struct_by_name(struct struct_table* structs, char *structname){
 	while(structs != NO_STRUCT){
 		if(0 == strcmp(structs->name, structname)) return structs;
@@ -111,26 +135,12 @@ void debug_struct_table(struct struct_table *table){
 
 
 
-void assert_exists(struct struct_table *struct_table, struct symbol_t *visible_structs, struct symbol_t *symbols, char* name){
-	struct symbol_t *sym = symbols, *tmp;
-	struct struct_table *structs = struct_table;
+void assert_exists(struct symbol_t *symbols, char* name){
 
 	/* search in lookuptable */
-	while(sym != (struct symbol_t *) NULL){
-		if(0 == strcmp(sym->name, name)) return;
-		sym = sym->next;
-	}
-
-	while(structs != (struct struct_table *) NULL){
-		/* if visible */
-		if(table_lookup(visible_structs, structs->name) != EMPTY_TABLE) {
-			tmp = structs->fields;
-			while(tmp != EMPTY_TABLE){
-				if(0 == strcmp(tmp->name, name)) return;
-				tmp = tmp->next;
-			}
-		}
-		structs = structs->next;
+	while(symbols != EMPTY_TABLE){
+		if(0 == strcmp(symbols->name, name)) return;
+		symbols = symbols->next;
 	}
 
 	printf("assertion failed. No symbol with name %s\n", name);
@@ -172,15 +182,13 @@ void assert_single_occurence(struct struct_table *struct_table, struct symbol_t 
 }
 
 
-struct symbol_t * load_struct(struct struct_table* str_t, struct symbol_t* sym_t, char* struct_name, char* reg){
+struct symbol_t * load_struct(struct struct_table* str_t, struct symbol_t* sym_t, char* struct_name){
 	struct struct_table* s = str_t;
-	struct symbol_t* tmp;
 
 	#ifdef DEBUG_ME
-		printf("Load Struct: %s with start in %s\n", struct_name, reg);
+		printf("Load Struct: %s\n", struct_name);
+		debug_struct_table(str_t);
 	#endif
-
-	debug_struct_table(str_t);
 
 
 	while(s != (struct struct_table*) NULL){
@@ -193,12 +201,5 @@ struct symbol_t * load_struct(struct struct_table* str_t, struct symbol_t* sym_t
 		exit(3);
 	}
 
-	tmp = s->fields;
-
-	while(tmp != EMPTY_TABLE){
-		tmp->reg = reg;
-		tmp = tmp->next;
-	}
-
-	return table_merge(sym_t, s->fields);
+	return table_merge(s->fields, sym_t);
 }

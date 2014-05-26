@@ -1,4 +1,5 @@
 @autoinh structs visible_structs symbols
+
 @attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs;}  Stats
 @attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;} Stat Lexpr Term Expr CondRec PlusExpr MultExpr OrExpr ExprList SignExpr
 @attributes { struct symbol_t* symbols; struct symbol_t* vars; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;} LetRec
@@ -149,14 +150,16 @@ Stat: T_RETURN Expr
 	@{
 		@t assert_struct_exists(@Stat.structs@, @T_ID.name@);
 
-		@i @Stats.symbols@ = load_struct(@Stat.structs@, @Stat.symbols@, @T_ID.name@, newreg());
+		@i @Stats.symbols@ = load_struct(@Stat.structs@, @Stat.symbols@, @T_ID.name@);
 		@i @Stat.node@ = new_node(OP_With, @Expr.node@, (treenode*) NULL);
 
-		@reg @Stat.node@->reg = getvarreg(@Stat.symbols@, @T_ID.name@); @Expr.node@->reg = @Stat.node@->reg; 
+		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg; setfieldreg(@Stat.structs@, @Stat.symbols@, @T_ID.name@, @Stat.node@->reg);
 	@}
 	| Lexpr T_EQUAL Expr
 	@{
 		@i @Stat.node@ = new_node(OP_LEXPR, @Expr.node@, @Lexpr.node@);
+
+		@codegen printf("buha");
 	@}
 	| Term
 	@{
@@ -166,10 +169,9 @@ Stat: T_RETURN Expr
 
 Lexpr: T_ID
 	@{
-		@t assert_exists(@Lexpr.structs@, @Lexpr.visible_structs@, @Lexpr.symbols@, @T_ID.name@);
+		@t assert_exists(@Lexpr.symbols@, @T_ID.name@);
 		
 		@i @Lexpr.node@ = new_id_leaf(@Lexpr.symbols@, @T_ID.name@);
-
 	@}
 	| Term T_POINT T_ID
 	@{
@@ -297,7 +299,7 @@ Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
 	@}
 	| T_ID
 	@{
-		@t assert_exists(@Term.structs@, @Term.visible_structs@, @Term.symbols@, @T_ID.name@);
+		@t assert_exists(@Term.symbols@, @T_ID.name@);
 
 		@i @Term.node@ = new_id_leaf(@Term.symbols@, @T_ID.name@);
 

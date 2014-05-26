@@ -2,6 +2,8 @@
 #define SYMBOL_TABLE_H
 
 #define EMPTY_TABLE (struct symbol_t *) NULL
+#define TRUE 1
+#define FALSE 0
 #define UNIQUE 1
 #define NOT_UNIQUE 0
 
@@ -14,7 +16,6 @@ struct symbol_t {
 	struct symbol_t *next;
 	short type;
 	int offset;
-	int usage_count;
 	int param_index;
 	char* reg;
 };

@@ -183,6 +183,7 @@ treenode * new_id_leaf(struct symbol_t* symbols, char * name){
 
   #ifdef DEBUG_ME
     printf("new id leaf for %s\n", name);
+    debug_symbol_table(symbols);
   #endif
 
   if(id == EMPTY_TABLE){

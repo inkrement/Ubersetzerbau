@@ -24,6 +24,10 @@ struct symbol_t *table_lookup(struct symbol_t *table, char *identifier) {
 	struct symbol_t* i = table;
 	struct symbol_t *result = EMPTY_TABLE;
 
+	#ifdef DEBUG_ME
+		debug_symbol_table(table);
+	#endif
+
 	if(identifier == (char *) NULL){ return EMPTY_TABLE; }
 
 	while(i != EMPTY_TABLE){
@@ -60,7 +64,7 @@ struct symbol_t* add_symbol(struct symbol_t *table, char *name, short unique, in
 		printf("Add Symbol - type(%d) name(%s) param_index(%d) reg(%s)\n", type, name, index, reg);
 	#endif
 
-	if (unique == 1 && (table_lookup(table, name) != EMPTY_TABLE)) {printf("Fail add_symbol %s\n", name ); exit(3); }
+	if (unique == 1 && (table_lookup(table, name) != EMPTY_TABLE)) { printf("Fail add_symbol %s\n", name ); exit(3); }
 
 	item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
 	item->next = table;
@@ -81,11 +85,11 @@ struct symbol_t* add_var(struct symbol_t *table, char *name, char* reg) {
 
 
 struct symbol_t* add_field(struct symbol_t *table, char *name, int offset) {
-	return add_symbol(table, name, UNIQUE, -1, TYPE_FIELD, NULL, offset);
+	return add_symbol(table, name, UNIQUE, -1, TYPE_FIELD, (char*) NULL, offset);
 }
 
 struct symbol_t* add_param(struct symbol_t *table, char *name, int index) {
-	return add_symbol(table, name, UNIQUE, index, TYPE_PARAM, NULL, 0);
+	return add_symbol(table, name, UNIQUE, index, TYPE_PARAM, (char*) NULL, 0);
 }
 
 
@@ -106,14 +110,8 @@ struct symbol_t *table_clone(struct symbol_t *table) {
 	return item;
 }
 
+int symboltable_includes(struct symbol_t *table, char *name){
+	if(table_lookup(table, name) == EMPTY_TABLE) return FALSE;
 
-char * getvarreg(struct symbol_t *table, char* name){
-	struct symbol_t * sym = table_lookup(table, name);
-
-	if(sym == EMPTY_TABLE){
-		printf("Could not find %s in symbol table\n", name);
-		exit(4);
-	}
-
-	return sym->reg;
+	return TRUE;
 }
