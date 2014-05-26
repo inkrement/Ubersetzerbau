@@ -16,7 +16,8 @@
 stat:	ret								# 0 #
 stat:	OP_With							# 0 #
 
-stat:	OP_LEXPR(expr, expr)			# 2 # printf("\ttodo: lexpr\n");
+stat:	OP_LEXPR(expr, expr)			# 2 # printf("\ttodo: lexpr expr\n");
+stat:	OP_LEXPR(expr, immediate)		# 2 # printf("\ttodo: lexpr imm\n"); movei(bnode->child[1]->value, bnode->reg);
 
 expr:	OP_NOT(expr)					# 1 # not(bnode->reg);
 expr:	OP_OR(immediate,expr)			# 2 # ori(bnode->child[0]->value,bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);

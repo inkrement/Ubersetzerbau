@@ -13,7 +13,7 @@ b = 5;
 
 with 0:a do
 	/* x = 6; */
-	x = b;
+	x = 4;
 	return x;
 end;
 
