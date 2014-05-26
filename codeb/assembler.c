@@ -180,10 +180,12 @@ void record_var_usage(char* name) {
 
 
 void init_reg_usage() {
+  /*
   var_usage *cur_var = vars;
+
   int i;
 
-  /*
+  
   while(cur_var != (var_usage *) NULL) {
     i = 0;
 
@@ -207,7 +209,7 @@ void retrn(void) {
 void move(char *src, char *dst) {
 #ifdef DEBUG_ME
   if(src == NULL || dst == NULL) {
-    printf("null register! src: %d, dst: %d\n", src, dst);
+    printf("null register! src: %s, dst: %s\n", src, dst);
   }
 #endif
 
@@ -226,7 +228,7 @@ void move(char *src, char *dst) {
 void move_offset(char *src, char *dst, int offset) {
 #ifdef DEBUG_ME
   if(src == NULL || dst == NULL) {
-    printf("null register! src: %d, dst: %d\n", src, dst);
+    printf("null register! src: %s, dst: %s\n", src, dst);
   }
 #endif
     printf("\tmovq %d(%%%s), %%%s\n", offset*8, src, dst);
