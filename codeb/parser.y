@@ -154,7 +154,7 @@ Stat: T_RETURN Expr
 		@i @Stat.node@ = new_node(OP_With, @Expr.node@, (treenode*) NULL);
 
 		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg;
-		@reg setfieldreg(@Stat.structs@, @Stats.symbols@, @T_ID.name@, @Stat.node@->reg);
+		@codegen setfieldreg(@Stat.structs@, @Stats.symbols@, @T_ID.name@, @Stat.node@->reg);
 	@}
 	| Lexpr T_EQUAL Expr
 	@{

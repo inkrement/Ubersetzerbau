@@ -135,7 +135,7 @@ void function_header(char *name, struct symbol_t *params) {
   for(i = 0; i < 9; ++i)
     reg_usage[i] = 0;  
 
-  /* init params 
+  /* init params */
   vars = NULL;
 
   i = 0;
@@ -157,7 +157,7 @@ void function_header(char *name, struct symbol_t *params) {
     cur_parm = cur_parm->next;
   }
 
-  init_reg_usage();*/
+  init_reg_usage();
   printf("\n\t.globl %s\n\t.type %s, @function\n%s:\n", name, name, name);
 
   /* store name of current function to prefix jump labels */
