@@ -14,7 +14,7 @@
 
 @traversal @postorder t
 @traversal @preorder reg
-@traversal @postorder codegen
+@traversal @preorder codegen
 
 %{
 #include <stdlib.h>
@@ -41,7 +41,7 @@ Input: Program
     @{ 
     	@i @Program.structs@ = @Program.struct_gen@;
 
-    	@codegen @revorder(1) printf("\t.text\n");
+    	@codegen printf("\t.text\n");
     @}
 	;
 
@@ -65,7 +65,7 @@ Funcdef: T_FUNC T_ID T_BRACKET_LEFT Params T_BRACKET_RIGHT Stats T_END
 		@i @Stats.symbols@ = @Params.syms_gen@;
 		@i @Stats.visible_structs@ = NULL;
 
-		@codegen @revorder(1) function_header(@T_ID.name@, @Params.syms_gen@);
+		@codegen function_header(@T_ID.name@, @Params.syms_gen@);
 	@}
 	;
 
@@ -137,7 +137,6 @@ Stat: T_RETURN Expr
 		@i @Stat.node@ = new_node(OP_Return, @Expr.node@, (treenode*) NULL);
 
 		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg;
-
 	@}
 	| T_COND CondRec T_END
 	@{ @i @Stat.node@ = NULL; @}
@@ -157,9 +156,9 @@ Stat: T_RETURN Expr
 	@}
 	| Lexpr T_EQUAL Expr
 	@{
-		@i @Stat.node@ = new_node(OP_LEXPR, @Expr.node@, @Lexpr.node@);
+		@i @Stat.node@ = new_node(OP_LEXPR, @Lexpr.node@, @Expr.node@);
 
-		@codegen printf("buha");
+		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg;
 	@}
 	| Term
 	@{

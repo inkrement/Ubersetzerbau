@@ -3,8 +3,6 @@
 
 #include "symbol_table.h"
 
-#define DEBUG_ME
-
 #ifndef CODE
 typedef struct burm_state *STATEPTR_TYPE; 
 #endif

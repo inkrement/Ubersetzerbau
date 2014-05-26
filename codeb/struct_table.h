@@ -1,8 +1,6 @@
 #ifndef STRUCT_TABLE_H
 #define STRUCT_TABLE_H
 
-#define DEBUG_ME
-
 #include "symbol_table.h"
 #define NO_STRUCT (struct struct_table*) NULL
 

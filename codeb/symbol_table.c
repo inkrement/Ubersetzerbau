@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include "symbol_table.h"
 
-#define DEBUG_ME
-
 void debug_symbol_table(struct symbol_t *table){
 	int i=0;
 	struct symbol_t *node = table;

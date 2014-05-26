@@ -16,6 +16,13 @@
 stat:	ret								# 0 #
 stat:	OP_With							# 0 #
 
+stat:	OP_LEXPR(expr, expr)			# 2 # printf("\ttodo: lexpr\n");
+stat:	OP_LEXPR(expr, OP_ID)			# 2 # printf("\ttodo: lexpr\n");
+stat:	OP_LEXPR(OP_ID, expr)			# 2 # printf("\ttodo: lexpr\n");
+stat:	OP_LEXPR(OP_ID, immediate)		# 2 # printf("\ttodo: lexpr\n");
+stat:	OP_LEXPR(immediate, OP_ID)		# 2 # printf("\ttodo: lexpr\n");
+stat:	OP_LEXPR(OP_ID, OP_ID)			# 2 # printf("\ttodo: lexpr\n");
+
 expr:	OP_NOT(expr)					# 1 # not(bnode->reg);
 expr:	OP_OR(immediate,expr)			# 2 # ori(bnode->child[0]->value,bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
 expr:	OP_OR(expr,expr)				# 2 # or(bnode->child[0]->reg,bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
@@ -33,17 +40,10 @@ expr:	OP_MUL(expr,immediate)			# 1 # muli(bnode->child[1]->value, bnode->child[0
 expr:	OP_NEG(expr)					# 1 # neg(bnode->reg);
 expr:	OP_ID							# 1 # if(bnode->param_index != -1) move(getParamRegister(bnode->param_index), bnode->reg);
 expr:	OP_Field(expr)					# 1 # move_offset(bnode->child[0]->reg, bnode->reg, bnode->offset);
-expr: 	OP_Fieldvariable				# 1 # printf("\tTODO: lade inhalt von %s+offset (%d) nach: %s\n", bnode->reg, bnode->offset, bnode->reg); move_offset(bnode->reg, bnode->reg, bnode->offset);
+expr: 	OP_Fieldvariable				# 1 # printf("\ttodo: fieldvar\n"); move_offset(bnode->reg, bnode->reg, bnode->offset);
 expr:	OP_GREATER(expr,expr)			# 2 # greater(bnode->child[1]->reg, bnode->child[0]->reg, bnode->reg);
 expr: 	OP_GREATER(immediate,expr)		# 2 # greateri(bnode->child[1]->value,bnode->child[0]->reg, bnode->reg);
 expr: 	OP_GREATER(expr,immediate)		# 2 # greateri2(bnode->child[1]->reg,bnode->child[0]->value, bnode->reg);
-
-expr:	OP_LEXPR(expr, expr)			# 2 #
-expr:	OP_LEXPR(expr, OP_ID)			# 2 #
-expr:	OP_LEXPR(OP_ID, expr)			# 2 #
-expr:	OP_LEXPR(OP_ID, immediate)		# 2 #
-expr:	OP_LEXPR(immediate, OP_ID)		# 2 #
-expr:	OP_LEXPR(OP_ID, OP_ID)			# 2 #
 
 expr:	immediate						# 1 # movei(bnode->value, bnode->reg);
 
