@@ -12,8 +12,9 @@ b = 5;
 */
 
 with 0:a do
-	x = 6;
-	return y;
+	/* x = 6; */
+	x = b;
+	return x;
 end;
 
 end;
