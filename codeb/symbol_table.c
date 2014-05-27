@@ -87,7 +87,12 @@ struct symbol_t* add_field(struct symbol_t *table, char *name, int offset) {
 }
 
 struct symbol_t* add_param(struct symbol_t *table, char *name, int index) {
-	return add_symbol(table, name, UNIQUE, index, TYPE_PARAM, (char*) NULL, 0);
+	struct symbol_t* sym =  add_symbol(table, name, UNIQUE, index, TYPE_PARAM, (char*) NULL, 0);
+
+	sym->reg = getParamRegister(index);
+	setRegister(name, sym->reg);
+
+	return sym;
 }
 
 

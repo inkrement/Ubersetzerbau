@@ -173,6 +173,8 @@ Lexpr: T_ID
 		@t assert_exists(@Lexpr.symbols@, @T_ID.name@);
 		
 		@i @Lexpr.node@ = new_id_leaf(@Lexpr.symbols@, @T_ID.name@);
+
+		@reg @Lexpr.node@->reg = getRegister(@T_ID.name@);
 	@}
 	| Term T_POINT T_ID
 	@{
