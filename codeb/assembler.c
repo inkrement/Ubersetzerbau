@@ -4,9 +4,9 @@
 #include "assembler.h"
 
 char cur_function[100];
-char *regs[]= {"rax", "r10", "r11", "r9", "r8", "rcx", "rdx", "rsi", "rdi"};
+char *regs[]= {"%rax", "%r10", "%r11", "%r9", "%r8", "%rcx", "%rdx", "%rsi", "%rdi"};
 int reg_usage[] = {0,     0,     0,    0,    0,     0,     0,     0,     0};
-char *param_regs[]={"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+char *param_regs[]={"%rdi", "%rsi", "%rdx", "%rcx", "%r8", "%r9"};
 var_usage *vars = (var_usage *) NULL;
 
 
@@ -76,8 +76,8 @@ void functionStart(char *name) {
 }
 
 char *getByteRegister(char *name){
-	char *registers[]={"rax", "r11", "r10", "r9", "r8", "rcx", "rdx", "rsi", "rdi"};
-	char *byteRegisters[]={"al", "r11b", "r10b", "r9b", "r8b", "cl", "dl", "sil", "dil"};
+	char *registers[]={"%rax", "%r11", "%r10", "%r9", "%r8", "%rcx", "%rdx", "%rsi", "%rdi"};
+	char *byteRegisters[]={"%al", "%r11b", "%r10b", "%r9b", "%r8b", "%cl", "%dl", "%sil", "%dil"};
 	int index,i;
 	if(name==(char *)NULL){
 		index=0;
@@ -94,7 +94,7 @@ char *getByteRegister(char *name){
 }
 
 char *getParamRegister(int index) {
-	char *registers[]={"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+	char *registers[]={"%rdi", "%rsi", "%rdx", "%rcx", "%r8", "%r9"};
 
   if(index > 5){
     printf("getParamRegister. Not able to get register for index: %d\n", index);
@@ -200,11 +200,6 @@ char* newreg() {
 
 
 
-void imm_ret(void) {
-  printf("\tmovq $0, %%rax\n\tret\n");
-}
-
-
 /* called once for each time a variable is seen */
 void record_var_usage(char* name) {
   var_usage *cur_var = vars;
@@ -269,7 +264,7 @@ void move(char *src, char *dst) {
 #endif
 
   if(strcmp(src,dst)) {
-    printf("\tmovq %%%s, %%%s\n",src,dst);
+    printf("\tmovq %s, %s\n",src,dst);
   } 
 #ifdef DEBUG_ME 
   else {
@@ -286,122 +281,122 @@ void move_offset(char *src, char *dst, int offset) {
     printf("null register! src: %s, dst: %s\n", src, dst);
   }
 #endif
-    printf("\tmovq %d(%%%s), %%%s\n", offset*8, src, dst);
+    printf("\tmovq %d(%s), %s\n", offset*8, src, dst);
 }
 
 void movei(long value, char *reg){
-	printf("\tmovq $%d, %%%s\n", (int) value, reg);
+	printf("\tmovq $%d, %s\n", (int) value, reg);
 }
 
 void add(char *src, char *dst){
-	printf("\taddq %%%s, %%%s\n", src, dst);
+	printf("\taddq %s, %s\n", src, dst);
 }
 
 void addi(long value, char *dst){
 	if(value != 0)
-		printf("\taddq $%d, %%%s\n", (int) value, dst);
+		printf("\taddq $%d, %s\n", (int) value, dst);
 }
 
 void mul(char *src, char *dst){
-	printf("\timulq %%%s, %%%s\n", src, dst);
+	printf("\timulq %s, %s\n", src, dst);
 }
 
 void muli(long value, char *dst){
 	if(value != 1)
-		printf("\timulq $%d, %%%s\n",(int) value, dst);
+		printf("\timulq $%d, %s\n",(int) value, dst);
 }
 
 void and(char *fst, char *snd){
 	if(strcmp(fst,snd))
-		printf("\tand %%%s, %%%s\n",fst,snd);
+		printf("\tand %s, %s\n",fst,snd);
 }
 
 void andi(long fst, char *snd){
-	printf("\tand $%li, %%%s\n",fst, snd);
+	printf("\tand $%li, %s\n",fst, snd);
 }
 
 void or(char *fst, char *snd){
 	if(strcmp(fst,snd))
-		printf("\tor %%%s, %%%s\n",fst,snd);
+		printf("\tor %s, %s\n",fst,snd);
 }
 
 void ori(long fst, char *snd){
-	printf("\tor $%d, %%%s\n",(int) fst, snd);
+	printf("\tor $%d, %s\n",(int) fst, snd);
 }
 
 void neg(char *reg){
-	printf("\tnegq %%%s\n", reg);
+	printf("\tnegq %s\n", reg);
 }
 
 void not(char *reg){
-	printf("\tnotq %%%s\n", reg);
+	printf("\tnotq %s\n", reg);
 }
 
 void smallerequal(char *fst, char *snd, char* dst){
-	printf("\tcmp %%%s, %%%s\n", fst, snd);
-	printf("\tsetle %%%s\n",getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
+	printf("\tcmp %s, %s\n", fst, snd);
+	printf("\tsetle %s\n",getByteRegister(dst));
+	printf("\tand $1, %s\n",dst);
 }
 
 void smallerequali(long fst, char *snd, char *dst){
-	printf("\tcmp $%li, %%%s\n", fst, snd);
-	printf("\tsetle %%%s\n",getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
+	printf("\tcmp $%li, %s\n", fst, snd);
+	printf("\tsetle %s\n",getByteRegister(dst));
+	printf("\tand $1, %s\n",dst);
 }
 
 void smallerequali2(char *fst, long snd, char *dst){
-	printf("\tcmp $%li, %%%s\n", snd, fst);
-	printf("\tsetnle %%%s\n", getByteRegister(dst));
-	printf("\tand $1, %%%s\n", dst);
+	printf("\tcmp $%li, %s\n", snd, fst);
+	printf("\tsetnle %s\n", getByteRegister(dst));
+	printf("\tand $1, %s\n", dst);
 }
 
 void address(char *src, char *dst){
-	printf("\tmovq (%%%s), %%%s\n", src, dst);
+	printf("\tmovq (%s), %s\n", src, dst);
 }
 
 void addressi(long src, char *dst){
-	printf("\tmovq ($%li), %%%s\n", src, dst);
+	printf("\tmovq ($%li), %s\n", src, dst);
 }
 
 void notequal(char *fst, char *snd, char *dst){
-	printf("\tcmp %%%s, %%%s\n", fst, snd);
-	printf("\tsetne %%%s\n",getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-	printf("\tneg %%%s\n", dst);
+	printf("\tcmp %s, %s\n", fst, snd);
+	printf("\tsetne %s\n",getByteRegister(dst));
+	printf("\tand $1, %s\n",dst);
+	printf("\tneg %s\n", dst);
 }
 
 void notequali(long fst, char *snd, char *dst){
-	printf("\tcmpq $%d, %%%s\n", (int) fst, snd);
-	printf("\tsetne %%%s\n",getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-	printf("\tneg %%%s\n", dst);
+	printf("\tcmpq $%d, %s\n", (int) fst, snd);
+	printf("\tsetne %s\n",getByteRegister(dst));
+	printf("\tand $1, %s\n",dst);
+	printf("\tneg %s\n", dst);
 }
 
 void notequali2(char *fst, long snd, char *dst){
-	printf("\tcmpq $%s, %%%d\n", fst, (int) snd);
-	printf("\tsetne %%%s\n",getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-	printf("\tneg %%%s\n", dst);
+	printf("\tcmpq $%s, %d\n", fst, (int) snd);
+	printf("\tsetne %s\n",getByteRegister(dst));
+	printf("\tand $1, %s\n",dst);
+	printf("\tneg %s\n", dst);
 }
 
 
 void greater(char *fst, char *snd, char *dst){
-	printf("\tcmp %%%s, %%%s\n", fst, snd);
-	printf("\tsetg %%%s\n", getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-	printf("\tneg %%%s\n", dst);
+	printf("\tcmp %s, %s\n", fst, snd);
+	printf("\tsetg %s\n", getByteRegister(dst));
+	printf("\tand $1, %s\n",dst);
+	printf("\tneg %s\n", dst);
 }
 
 void greateri(long fst, char *snd, char *dst){
-	printf("\tcmp $%d, %%%s\n", (int) fst, snd);
-	printf("\tsetg %%%s\n", getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-	printf("\tneg %%%s\n", dst);
+	printf("\tcmp $%d, %s\n", (int) fst, snd);
+	printf("\tsetg %s\n", getByteRegister(dst));
+	printf("\tand $1, %s\n",dst);
+	printf("\tneg %s\n", dst);
 }
 
 void greateri2(char *fst, long snd, char *dst){
-  printf("\tcmp $%d, %%%s\n", (int) snd, fst);
-	printf("\tsetg %%%s\n", getByteRegister(dst));
-	printf("\tand $1, %%%s\n",dst);
-	printf("\tneg %%%s\n", dst);
+  printf("\tcmp $%d, %s\n", (int) snd, fst);
+	printf("\tsetg %s\n", getByteRegister(dst));
+	printf("\tand $1, %s\n",dst);
+	printf("\tneg %s\n", dst);
 }

@@ -27,7 +27,7 @@ expr:	OP_OR(expr,immediate)			# 2 # ori(bnode->child[1]->value,bnode->child[0]->
 expr:	OP_NEQ(expr,expr)				# 3 # notequal(bnode->child[0]->reg, bnode->child[1]->reg, bnode->reg);
 expr:	OP_NEQ(immediate,expr)			# 3 # notequali(bnode->child[0]->value, bnode->child[1]->reg, bnode->reg);
 expr:	OP_NEQ(expr,immediate)			# 3 # notequali(bnode->child[1]->value, bnode->child[0]->reg, bnode->reg);
-ret:	OP_Return(expr)					# 2 # move(bnode->reg, "rax"); ret();
+ret:	OP_Return(expr)					# 2 # move(bnode->reg, "%rax"); ret();
 expr:	OP_ADD(expr,expr)				# 1 # add(bnode->child[1]->reg, bnode->child[0]->reg);
 expr:	OP_ADD(immediate,expr)			# 1 # addi(bnode->child[0]->value, bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
 expr:	OP_ADD(expr,immediate)			# 1 # addi(bnode->child[1]->value, bnode->child[0]->reg);
