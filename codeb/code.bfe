@@ -16,10 +16,10 @@
 stat:	ret								# 0 #
 stat:	OP_With(immediate)				# 0 # printf("\ttodo width imm: reg %s\n", bnode->reg);movei(bnode->child[0]->value, bnode->reg);
 stat:	OP_With(expr)					# 0 # printf("\ttodo width expr: reg %s\n", bnode->reg);move(bnode->child[0]->reg, bnode->reg);
-
-stat:	OP_LEXPR(expr, expr)			# 2 # printf("\ttodo: lexpr expr\n"); move(bnode->child[1]->reg, bnode->reg);
-stat:	OP_LEXPR(expr, immediate)		# 2 # printf("\ttodo: lexpr imm\n"); movei(bnode->child[1]->value, bnode->reg);
+stat:	OP_LEXPR(OP_ID, expr)			# 2 # move(bnode->child[1]->reg, bnode->child[0]->reg);
 stat:	OP_LEXPR(OP_ID, immediate)		# 2 # movei(bnode->child[1]->value, bnode->child[0]->reg);
+stat:	OP_LEXPR(OP_Fieldvariable, expr)			# 2 # printf("expr"); move(bnode->child[1]->reg, bnode->child[0]->reg);
+stat:	OP_LEXPR(OP_Fieldvariable, immediate)		# 2 # printf("expr"); movei(bnode->child[1]->value, bnode->child[0]->reg);
 
 expr:	OP_NOT(expr)					# 1 # not(bnode->reg);
 expr:	OP_OR(immediate,expr)			# 2 # ori(bnode->child[0]->value,bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
