@@ -15,6 +15,7 @@ char *getRegister(char* symbol){
 
   #ifdef DEBUG_ME
     printf("get register for %s\n", symbol);
+    debug_reg_usage(vars);
   #endif
 
     while(loop != NULL){
@@ -59,6 +60,7 @@ void setRegister(char* symbol, char* reg){
 
 void debug_reg_usage(var_usage* usage){
   var_usage *loop = vars;
+  printf("REGISTER usage:\n");
   while(loop != NULL){
     printf("%s: %s\n", loop->name, loop->reg);
     loop = loop->next;
@@ -67,6 +69,7 @@ void debug_reg_usage(var_usage* usage){
 
 void ret(void) {
   printf("\tret\n");
+  vars = (var_usage *) NULL;
 }
 
 void functionStart(char *name) {
@@ -135,7 +138,7 @@ void function_header(char *name, struct symbol_t *params) {
   for(i = 0; i < 9; ++i)
     reg_usage[i] = 0;  
 
-  /* init params */
+  /* init params 
   vars = NULL;
 
   i = 0;
@@ -157,7 +160,7 @@ void function_header(char *name, struct symbol_t *params) {
     cur_parm = cur_parm->next;
   }
 
-  init_reg_usage();
+  init_reg_usage();*/
   printf("\n\t.globl %s\n\t.type %s, @function\n%s:\n", name, name, name);
 
   /* store name of current function to prefix jump labels */

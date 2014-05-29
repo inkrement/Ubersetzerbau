@@ -114,16 +114,14 @@ Stats:
 LetRec:
 	@{ 
 		@i @LetRec.vars@ = EMPTY_TABLE;
-
-		@i @LetRec.node@ = NULL;
+		@i @LetRec.node@ = new_leaf(OP_NOP);
 	@}
 	| LetRec T_ID T_EQUAL Expr T_SEMICOLON
 	@{
-		@i @LetRec.0.vars@ = add_var(@LetRec.1.vars@, @T_ID.name@, @LetRec.0.node@->reg);
+		@i @LetRec.0.vars@ = add_var(@LetRec.1.vars@, @T_ID.name@, newreg());
+		@i @LetRec.0.node@ = new_node(OP_Assign, @Expr.node@, @LetRec.1.node@);
 
-		@i @LetRec.0.node@ = new_node(OP_Assign, @LetRec.1.node@, @Expr.node@);
-
-		@reg @LetRec.0.node@->reg = newreg(); @Expr.node@->reg = @LetRec.0.node@->reg;
+		@reg @Expr.node@->reg = getRegister(@T_ID.name@);
 	@}
 	;
 
@@ -305,8 +303,6 @@ Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
 		@t assert_exists(@Term.symbols@, @T_ID.name@);
 
 		@i @Term.node@ = new_id_leaf(@Term.symbols@, @T_ID.name@);
-
-		@codegen record_var_usage(@T_ID.name@);
 	@}
 	| T_ID T_BRACKET_LEFT  T_BRACKET_RIGHT
 	@{ @i @Term.node@ = new_leaf(OP_NOP); @}

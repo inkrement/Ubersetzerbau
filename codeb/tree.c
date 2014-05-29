@@ -3,8 +3,6 @@
 
 #include "tree.h"
 
-#define DEBUG_ME
-
 /* new_node: create "standard node" with one or two children and
  * given operation
  */
@@ -198,15 +196,12 @@ treenode * new_id_leaf(struct symbol_t* symbols, char * name){
   new->child[1]=(treenode *)NULL;
 
   if(id->type == TYPE_FIELD){
-    printf("FELD es sein!\n");
     new->offset = id->offset;
     new->op = OP_Fieldvariable;
   }else if(id->type == TYPE_VAR) {
-    printf("PARAM es sein!\n");
     new->op=OP_ID;
     new->param_index=id->param_index;
   }else if(id->type == TYPE_PARAM) {
-    printf("PARAM es sein!\n");
     new->op=OP_ID;
     new->param_index=id->param_index;
   }else {

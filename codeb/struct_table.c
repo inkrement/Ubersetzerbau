@@ -5,8 +5,6 @@
 #include "symbol_table.h"
 #include "assembler.h"
 
-#define DEBUG_ME
-
 int get_field_offset(struct struct_table* structs, char *fieldname){
 	int offset = -1;
 	struct symbol_t* field;

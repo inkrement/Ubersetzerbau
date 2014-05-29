@@ -4,6 +4,7 @@
 #include "symbol_table.h"
 #include "assembler.h"
 
+
 void debug_symbol_table(struct symbol_t *table){
 	int i=0;
 	struct symbol_t *node = table;
@@ -11,7 +12,7 @@ void debug_symbol_table(struct symbol_t *table){
 	printf("tableinfo (%p): [", (void *) table);
 
 	for(;node != EMPTY_TABLE;node=node->next){
-		printf("%s(index: %d)", node->name, node->param_index);
+		printf("%s(index: %d) <%s>", node->name, node->param_index, node->reg);
 		i = i + 1;
 	}
 
@@ -63,7 +64,7 @@ struct symbol_t* add_symbol(struct symbol_t *table, char *name, short unique, in
 		printf("Add Symbol - type(%d) name(%s) param_index(%d) reg(%s)\n", type, name, index, reg);
 	#endif
 
-	if (unique == 1 && (table_lookup(table, name) != EMPTY_TABLE)) { printf("Fail add_symbol %s\n", name ); exit(3); }
+	if (unique == UNIQUE && (table_lookup(table, name) != EMPTY_TABLE)) { printf("Fail add_symbol %s\n", name ); exit(3); }
 
 	item = (struct symbol_t*) malloc(sizeof(struct symbol_t));
 	item->next = table;

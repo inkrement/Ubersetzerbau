@@ -20,6 +20,10 @@ stat:	OP_LEXPR(OP_ID, expr)			# 2 # move(bnode->child[1]->reg, bnode->child[0]->
 stat:	OP_LEXPR(OP_ID, immediate)		# 2 # movei(bnode->child[1]->value, bnode->child[0]->reg);
 stat:	OP_LEXPR(OP_Fieldvariable, expr)			# 2 # printf("expr"); move(bnode->child[1]->reg, bnode->child[0]->reg);
 stat:	OP_LEXPR(OP_Fieldvariable, immediate)		# 2 # printf("expr"); movei(bnode->child[1]->value, bnode->child[0]->reg);
+stat:	assign 							# 0 #
+
+assign:	OP_Assign(expr, assign)			# 2 # 
+assign:	OP_Assign(expr, OP_NOP)			# 2 # 
 
 expr:	OP_NOT(expr)					# 1 # not(bnode->reg);
 expr:	OP_OR(immediate,expr)			# 2 # ori(bnode->child[0]->value,bnode->child[1]->reg); move(bnode->child[1]->reg, bnode->reg);
@@ -36,7 +40,7 @@ expr:	OP_MUL(expr,expr)				# 1 # mul(bnode->child[1]->reg, bnode->child[0]->reg)
 expr:	OP_MUL(immediate,expr)			# 1 # muli(bnode->child[0]->value, bnode->child[1]->reg);
 expr:	OP_MUL(expr,immediate)			# 1 # muli(bnode->child[1]->value, bnode->child[0]->reg);
 expr:	OP_NEG(expr)					# 1 # neg(bnode->reg);
-expr:	OP_ID							# 1 # printf("load id\n"); if(bnode->param_index != -1) move(getParamRegister(bnode->param_index), bnode->reg);
+expr:	OP_ID							# 1 # move(getRegister(bnode->name), bnode->reg);
 expr:	OP_Field(expr)					# 1 # move_offset(bnode->child[0]->reg, bnode->reg, bnode->offset);
 expr: 	OP_Fieldvariable				# 1 # move(getRegister(bnode->name), bnode->reg);
 

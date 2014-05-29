@@ -3,6 +3,11 @@ struct a: x y z end;
 func some(b c)
 
 
+let a=b+4; d =5; in
+	return a;
+end;
+
+
 
 /*
 funktioniert
@@ -12,14 +17,13 @@ end;
 */
 
 
+
+
+
+
 /*
-let b=a+4; in
-	return a;
-end;
 
 b = 5;
-
-
 with 4:a do
 	x = 6; 
 	x = 4; 
