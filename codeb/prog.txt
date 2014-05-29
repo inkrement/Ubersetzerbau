@@ -2,11 +2,13 @@ struct a: x y z end;
 
 func some(b c)
 
-
+/*
+funktioniert
 let a=b+4; d =5; in
-	return a;
+	d = 8; 
+	return a + d;
 end;
-
+*/
 
 
 /*
