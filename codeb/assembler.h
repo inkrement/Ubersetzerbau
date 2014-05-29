@@ -16,6 +16,9 @@ void function_header(char *name, struct symbol_t *params);
 char *get_next_reg(char *name, int skip_reg);
 void record_var_usage(char* name);
 
+char *getRegister(char*);
+void setRegister(char*, char*);
+
 char *getParamRegister(int number);
 void ret(void);
 

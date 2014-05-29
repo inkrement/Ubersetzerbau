@@ -29,7 +29,7 @@ parser.o: parser.c
 	gcc -g -c -ansi -pedantic parser.c
 
 tree.o: tree.c tree.h
-	gcc -g -c -ansi -pedantic -Wall tree.c
+	gcc -g -c -ansi -pedantic -D_GNU_SOURCE -Wall tree.c
 
 code.o: code.c tree.h
 	gcc -g -c -ansi code.c

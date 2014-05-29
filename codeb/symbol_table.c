@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "symbol_table.h"
+#include "assembler.h"
 
 void debug_symbol_table(struct symbol_t *table){
 	int i=0;
@@ -78,7 +79,10 @@ struct symbol_t* add_symbol(struct symbol_t *table, char *name, short unique, in
 
 /* for let */
 struct symbol_t* add_var(struct symbol_t *table, char *name, char* reg) {
-	return add_symbol(table, name, UNIQUE, -1, TYPE_VAR, reg, 0);
+	struct symbol_t* sym = add_symbol(table, name, UNIQUE, -1, TYPE_VAR, reg, 0);
+	setRegister(name, sym->reg);
+
+	return sym;
 }
 
 
@@ -87,9 +91,7 @@ struct symbol_t* add_field(struct symbol_t *table, char *name, int offset) {
 }
 
 struct symbol_t* add_param(struct symbol_t *table, char *name, int index) {
-	struct symbol_t* sym =  add_symbol(table, name, UNIQUE, index, TYPE_PARAM, (char*) NULL, 0);
-
-	sym->reg = getParamRegister(index);
+	struct symbol_t* sym =  add_symbol(table, name, UNIQUE, index, TYPE_PARAM, getParamRegister(index), 0);
 	setRegister(name, sym->reg);
 
 	return sym;

@@ -38,7 +38,7 @@ expr:	OP_MUL(expr,immediate)			# 1 # muli(bnode->child[1]->value, bnode->child[0
 expr:	OP_NEG(expr)					# 1 # neg(bnode->reg);
 expr:	OP_ID							# 1 # printf("load id\n"); if(bnode->param_index != -1) move(getParamRegister(bnode->param_index), bnode->reg);
 expr:	OP_Field(expr)					# 1 # move_offset(bnode->child[0]->reg, bnode->reg, bnode->offset);
-expr: 	OP_Fieldvariable				# 1 # move_offset(getRegister(bnode->name), bnode->reg, bnode->offset);
+expr: 	OP_Fieldvariable				# 1 # move(getRegister(bnode->name), bnode->reg);
 
 expr:	OP_GREATER(expr,expr)			# 2 # greater(bnode->child[1]->reg, bnode->child[0]->reg, bnode->reg);
 expr: 	OP_GREATER(immediate,expr)		# 2 # greateri(bnode->child[1]->value,bnode->child[0]->reg, bnode->reg);

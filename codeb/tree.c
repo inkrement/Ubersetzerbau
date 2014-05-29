@@ -83,7 +83,7 @@ treenode *new_named_leaf_value(int op, char *name, long value) {
   treenode *new=(treenode *)malloc(sizeof(treenode));
   
 #ifdef DEBUG_ME
-  printf("new_named_leaf_value: %i (%s), %s, %li, param: %d\n",op,rule_names[op],name,value);
+  printf("new_named_leaf_value: %d (%s), %s, %li, param: %d\n",op,rule_names[op],name,value);
 #endif
 
   new->child[0]=(treenode *)NULL;
@@ -198,7 +198,7 @@ treenode * new_id_leaf(struct symbol_t* symbols, char * name){
   new->child[1]=(treenode *)NULL;
 
   if(id->type == TYPE_FIELD){
-    printf("FELD es sein! reg: %s\n");
+    printf("FELD es sein!\n");
     new->offset = id->offset;
     new->op = OP_Fieldvariable;
   }else if(id->type == TYPE_VAR) {

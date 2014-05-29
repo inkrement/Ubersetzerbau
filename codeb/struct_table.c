@@ -5,6 +5,8 @@
 #include "symbol_table.h"
 #include "assembler.h"
 
+#define DEBUG_ME
+
 int get_field_offset(struct struct_table* structs, char *fieldname){
 	int offset = -1;
 	struct symbol_t* field;
@@ -49,6 +51,8 @@ struct struct_table* get_struct_by_field(struct struct_table* structs, char *fie
 
 void setfieldreg(struct struct_table* structs, struct symbol_t* symbols, char* name, char* reg){
 	struct struct_table* str = get_struct_by_name(structs, name);
+	struct symbol_t* s;
+	char* indirect_address;
 
 	#ifdef DEBUG_ME
 		printf("setfieldreg %s for %s\n",reg, name);
@@ -60,9 +64,11 @@ void setfieldreg(struct struct_table* structs, struct symbol_t* symbols, char* n
 	}
 
 	while(symbols != EMPTY_TABLE){
+		s = table_lookup(str->fields, symbols->name);
 
-		if(table_lookup(str->fields, symbols->name) != EMPTY_TABLE) {
-			setRegister(symbols->name, reg);
+		if(s != EMPTY_TABLE) {
+			asprintf(&indirect_address, "%d(%s)", symbols->offset, reg);
+			setRegister(symbols->name, indirect_address);
 		}
 
 		symbols = symbols->next;

@@ -3,6 +3,15 @@ struct a: x y z end;
 func some(b c)
 
 
+
+/*
+funktioniert
+with 4:a do
+	return y;
+end;
+*/
+
+
 /*
 let b=a+4; in
 	return a;
@@ -19,11 +28,8 @@ with 4:a do
 	return x;
 end;
 
-*/
-
-
-
-
 c = b + 5;
+
+*/
 
 end;
