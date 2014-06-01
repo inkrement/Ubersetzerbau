@@ -34,7 +34,8 @@ enum {
   OP_Assign,
   OP_With,
   OP_Stats,
-  OP_Fieldvariable
+  OP_Fieldvariable,
+  OP_CONDREC
 };
 
 static char rule_names[100][100]={
@@ -65,7 +66,8 @@ static char rule_names[100][100]={
   "OP_Assign",
   "OP_With",
   "OP_Stats",
-  "OP_Fieldvariable"
+  "OP_Fieldvariable",
+  "OP_CONDREC"
 };
     
 

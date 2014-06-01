@@ -126,9 +126,19 @@ LetRec:
 	;
 
 CondRec:
-	@{ @i @CondRec.node@ = NULL;@}
+	@{
+		/*anscheinend keine expression < 0 also leeres Blatt ohne Operation*/
+		@i @CondRec.node@ = new_leaf(OP_NOP);
+	@}
 	| CondRec Expr T_THEN Stats T_END T_SEMICOLON
-	@{ @i @CondRec.node@ = NULL; @}
+	@{		
+		/*Wenn Expr < 0 then new Stat node und aus rekursion raus. Wie auf value von Expr zugreifen? Oder direkt im Assemblercode setzen*/
+		/*jmp richtig setzen*/
+		/*Bei erster Expression, die groesser 0 ist aus der rekursion raus.*/
+		
+
+		@i @CondRec.node@ = new_node(OP_CONDREC, @Expr.node@, (treenode *) NULL);
+	@}
 	;
 
 Stat: T_RETURN Expr
@@ -138,7 +148,9 @@ Stat: T_RETURN Expr
 		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg;
 	@}
 	| T_COND CondRec T_END
-	@{ @i @Stat.node@ = NULL; @}
+	@{
+		@i @Stat.node@ = @CondRec.node@;
+	@}
 	| T_LET LetRec T_IN Stats T_END
 	@{
 		@i @Stats.symbols@ = table_merge(@Stat.symbols@, @LetRec.vars@);
