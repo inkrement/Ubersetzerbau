@@ -1,0 +1,28 @@
+struct a: a b c end;
+
+func oder(a b c)
+	return (a or b) or c;
+end;
+
+func greater(a b)
+	return a > b;
+end;
+
+func neq(a b)
+	return a <> b;
+end;
+
+func neg(a)
+	return not - not a;
+end;
+
+func f(x y) 
+	return x + 4 + y;
+end;
+
+struct n : n0 n1 n2 n3 n4 n5 end;
+
+func f(a)
+	return (a.n0 * (a.n1 + 5)) + (a.n1 * (not a.n2)) + (a.n3 or a.n4) + (-a.n0);
+end;
+

@@ -1,3 +1,0 @@
-extern long f();
-
-RET(f()==15);

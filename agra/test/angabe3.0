@@ -1,3 +1,0 @@
-func f(c)  
-  let b=0; in b=0; /* Variable */ end;  
-end;

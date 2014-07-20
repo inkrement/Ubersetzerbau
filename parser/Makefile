@@ -1,15 +1,18 @@
-.PHONY: clean
+all: parser.o scanner.o 
+	gcc -o parser scanner.o parser.o -lfl
 
-all: parser
+scanner.c: scanner.l
+	flex -t --yylineno scanner.l > scanner.c
 
-parser.tab.c parser.tab.h:	parser.y
-	bison -d parser.y
+scanner.o: scanner.c
+	gcc -c scanner.c
 
-lex.yy.c: scanner.l parser.tab.h
-	flex scanner.l
+parser.c oxout.tab.h: parser.y
+	bison -d -t -v parser.y
+	mv parser.tab.c parser.c
 
-parser: lex.yy.c parser.tab.c parser.tab.h
-	gcc parser.tab.c lex.yy.c -lfl -o parser
+parser.o: parser.c
+	gcc -c parser.c
 
 clean:
-	rm parser parser.tab.c lex.yy.c parser.tab.h
+	rm -f scanner.c parser *.o *.output *.tab.h parser.c

@@ -1,0 +1,107 @@
+%{
+#define CODE
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+#include "tree.h"
+#include "assembler.h"
+
+
+%}
+
+%start stat
+%term OP_NOT=1 OP_OR=2 OP_NEQ=3 OP_ADD=4 OP_MUL=5 OP_NEG=6 OP_ID=7 OP_Number=8 OP_Field=9 OP_Return=10 OP_Zero=11 OP_One=12 OP_Args=13 OP_NOP=14 OP_GREATER=15 OP_LEXPR=16 OP_Assign=17 OP_With=18 OP_Fieldvariable=20 OP_Cond=21 OP_Call=22 OP_Param=23
+%%
+
+stat:	ret								# 0 #
+stat:	assign 							# 0 #
+stat:	OP_With(immediate)				# 0 # REG(bnode) = newreg(); movei(bnode->child[0]->value, REG(bnode));
+stat:	OP_With(expr)					# 0 # REG(bnode) = newreg(); move(LC_REG(bnode), REG(bnode)); freereg(LC_REG(bnode));
+stat:	OP_LEXPR(OP_ID, expr)			# 2 # move(RC_REG(bnode), getRegister(LEFT_CHILD(bnode)->name));
+stat:	OP_LEXPR(expr, OP_ID)			# 2 # move(getRegister(RIGHT_CHILD(bnode)->name), LC_REG(bnode));
+stat:	OP_LEXPR(OP_Field(fieldchain), expr)	# 1 # move_to_relative(RC_REG(bnode), LC_REG(LEFT_CHILD(bnode)), LEFT_CHILD(bnode)->offset);
+
+expr: call 								# 0 #
+
+call:    OP_Call(OP_ID, OP_NOP)         # 0 # save_regs(); REG(bnode) = newreg(); call_func(LEFT_CHILD(bnode)->name); move("%rax", REG(bnode)); freereg(REG(bnode)); restore_regs(); claimreg(bnode->reg);
+
+call:    OP_Call(OP_ID, exprs) 			# 0 # save_regs(); set_params(RIGHT_CHILD(bnode)); call_func(LEFT_CHILD(bnode)->name); REG(bnode) = newreg(); move("%rax", REG(bnode)); freereg(bnode->reg); restore_regs(); claimreg(REG(bnode)); free_params(RIGHT_CHILD(bnode));
+exprs:    expr 							# 0 #
+exprs:    OP_NOP 						# 0 #
+exprs:    OP_Args(exprs,exprs) 			# 0 #
+
+expr: fieldchain						# 0 # 
+fieldchain: OP_Field(fieldchain)		# 0 # REG(bnode) = newreg(); move_from_relative(LC_REG(bnode), REG(bnode), bnode->offset);
+fieldchain: expr						# 0 # 
+
+stat:	OP_LEXPR(expr, expr)			# 3 # REG(bnode) = newreg(); move(RC_REG(bnode), REG(bnode)); move(REG(bnode), LC_REG(bnode)); 
+
+ret:	OP_Return(expr)					# 2 # move(LC_REG(bnode), "%rax"); ret();
+ret:	OP_Return(immediate)			# 1 # movei(LEFT_CHILD(bnode)->value, "%rax"); ret();
+
+assign:	OP_Assign(expr, assign)			# 2 # move(LC_REG(bnode), REG(bnode) ); 
+assign:	OP_Assign(expr, OP_NOP)			# 2 # move(LC_REG(bnode), REG(bnode) ); 
+
+expr:	OP_ADD(immediate,expr)			# 1 # synth_reg(bnode, RIGHT_CHILD(bnode)); addi(LEFT_CHILD(bnode)->value, REG(bnode));
+expr:	OP_ADD(expr,expr)				# 1 # synth_reg(bnode, RIGHT_CHILD(bnode)); add(LC_REG(bnode), REG(bnode));
+expr:	OP_ADD(expr,immediate)			# 1 # synth_reg(bnode, LEFT_CHILD(bnode)); addi(RIGHT_CHILD(bnode)->value, REG(bnode));
+expr:	immediate						# 1 # REG(bnode) = newreg(); movei(bnode->value, REG(bnode));
+expr: 	OP_Fieldvariable				# 1 # REG(bnode) = getRegister(bnode->name);
+
+expr:	OP_NOT(expr)					# 1 # synth_reg(bnode, LEFT_CHILD(bnode)); not(bnode->reg); 
+expr:	OP_ID							# 1 # REG(bnode) = getRegister(bnode->name);
+expr:	OP_OR(immediate,expr)			# 2 # synth_reg(bnode, RIGHT_CHILD(bnode)); ori(LEFT_CHILD(bnode)->value, REG(bnode));
+expr:	OP_OR(expr,expr)				# 2 # synth_reg(bnode, RIGHT_CHILD(bnode)); or(LC_REG(bnode), REG(bnode));
+expr:	OP_OR(expr,immediate)			# 2 # synth_reg(bnode, LEFT_CHILD(bnode)); ori(RIGHT_CHILD(bnode)->value, REG(bnode));
+expr:	OP_NEQ(expr,expr)				# 2 # synth_reg(bnode, RIGHT_CHILD(bnode)); notequal(LC_REG(bnode), RC_REG(bnode), REG(bnode));
+expr:	OP_NEQ(expr,immediate)			# 2 # synth_reg(bnode, LEFT_CHILD(bnode)); notequali(RIGHT_CHILD(bnode)->value, LC_REG(bnode), REG(bnode));
+expr:	OP_NEQ(immediate,expr)			# 2 # synth_reg(bnode, RIGHT_CHILD(bnode)); notequali(LEFT_CHILD(bnode)->value, RC_REG(bnode), REG(bnode));
+expr:	OP_MUL(immediate,expr)			# 1 # synth_reg(bnode, RIGHT_CHILD(bnode)); muli(LEFT_CHILD(bnode)->value, REG(bnode));
+expr:	OP_MUL(expr,immediate)			# 1 # synth_reg(bnode, LEFT_CHILD(bnode)); muli(RIGHT_CHILD(bnode)->value, REG(bnode));
+expr:	OP_MUL(expr,expr)				# 1 # synth_reg(bnode, RIGHT_CHILD(bnode)); mul(LC_REG(bnode), REG(bnode));
+
+expr:	OP_GREATER(expr,expr)			# 2 # synth_reg(bnode, RIGHT_CHILD(bnode)); greater(LC_REG(bnode), RC_REG(bnode), REG(bnode));
+expr: 	OP_GREATER(immediate,expr)		# 2 # synth_reg(bnode, RIGHT_CHILD(bnode)); greateri(LEFT_CHILD(bnode)->value, RC_REG(bnode), REG(bnode));
+expr: 	OP_GREATER(expr,immediate)		# 2 # synth_reg(bnode, LEFT_CHILD(bnode)); greateri2(LC_REG(bnode), RIGHT_CHILD(bnode)->value,  REG(bnode));
+
+expr:	OP_NEG(expr)					# 1 # synth_reg(bnode, LEFT_CHILD(bnode)); neg(bnode->reg);
+
+immediate:	OP_ADD(immediate,immediate)	# 0 # bnode->value = LEFT_CHILD(bnode)->value + bnode->child[1]->value;
+immediate:	OP_NOT(immediate)			# 0 # bnode->value = ! LEFT_CHILD(bnode)->value;
+immediate:	OP_NEG(immediate)			# 0 # bnode->value = - LEFT_CHILD(bnode)->value;
+immediate:	OP_NEQ(immediate,immediate) # 0 # bnode->value = (LEFT_CHILD(bnode)->value != bnode->child[1]->value)? 1 : 0;
+immediate:	OP_MUL(immediate,immediate) # 0 # bnode->value = LEFT_CHILD(bnode)->value * bnode->child[1]->value;
+immediate:	zero						# 0 # bnode->value = 0;
+immediate:	OP_Number					# 0 # 
+immediate:	OP_Zero						# 0 #
+immediate:	OP_One						# 0 #
+
+zero:	OP_NEG(zero)					# 0 #
+zero:	OP_Zero							# 0 #
+zero:	OP_MUL(zeroexpr,zero) 			# 0 #
+zero:	OP_MUL(zero,zeroexpr) 			# 0 #
+
+zeroexpr:	zero						# 0 #
+zeroexpr:	immediate					# 0 #
+zeroexpr:	OP_NEG(zeroexpr)			# 0 #
+zeroexpr:	OP_ADD(zeroexpr,zeroexpr)	# 0 #
+zeroexpr:	OP_MUL(zeroexpr,zeroexpr)	# 0 #
+zeroexpr:	OP_NEQ(zeroexpr, zeroexpr)	# 0 #
+zeroexpr:	OP_GREATER(zeroexpr,zeroexpr)	# 0 # 
+
+
+
+
+stat:	cond
+
+cond: OP_Cond(expr, OP_NOP)			# 2 #	cond(LC_REG(bnode), bnode->value);
+cond: OP_Cond(expr, cond)			# 2 #	cond(LC_REG(bnode), bnode->value);
+
+
+
+
+
+%%
+
+

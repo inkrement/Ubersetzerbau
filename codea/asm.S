@@ -1,12 +1,13 @@
 	.text
 
-	.globl f
-	.type f, @function
-f:
-	movq %rdi, %rax
-	movq %rsi, %r10
-	cmp %rax, %r10
-	setne %al
-	and $1, %rax
-	neg %rax
+	.globl funf
+	.type funf, @function
+funf:
+	movq $5, %rax
+	ret
+
+	.globl zwei
+	.type zwei, @function
+zwei:
+	movq $2, %rax
 	ret

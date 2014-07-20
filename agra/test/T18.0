@@ -1,3 +1,0 @@
-func f(x y)
-  let a=x; b=y; in end;
-end;

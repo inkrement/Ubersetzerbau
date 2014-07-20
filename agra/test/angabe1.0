@@ -1,4 +1,0 @@
-struct a: b end;  
-func f(c)
-  with 0:a do b=0; /* Feld     */ end;  
-end;

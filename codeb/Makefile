@@ -1,3 +1,5 @@
+.PHONY: upload test clean
+
 all: codeb
 
 codeb: parser.o scanner.o symbol_table.o struct_table.o assembler.o tree.o code.o
@@ -39,3 +41,9 @@ code.c: code.bfe
 
 clean:
 	rm -f scanner.c codeb *.o *.output *.tab.h parser.c oxout.* code.c core
+
+upload: clean
+	scp * u0929002@g0.complang.tuwien.ac.at:/home/ublu14/u0929002/abgabe/codeb
+
+test:
+	/usr/ftp/pub/ubvl/test/codeb/test

@@ -1,0 +1,5 @@
+load structs
+struct_table (0x2505160): [a] has 1 elements
+load structs
+struct_table (0x2505160): [a] has 1 elements
+Fail add_symbol b

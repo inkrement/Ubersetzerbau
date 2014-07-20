@@ -1,4 +1,0 @@
-func x(x)
-  /* Schreibender var zugriff auf vorh. var */
-  x = 3;
-end;

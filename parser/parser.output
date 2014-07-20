@@ -1,0 +1,1095 @@
+Grammar
+
+    0 $accept: Program $end
+
+    1 Program: /* empty */
+    2        | Program Structdef T_SEMICOLON
+    3        | Program Funcdef T_SEMICOLON
+
+    4 Funcdef: T_FUNC T_ID T_BRACKET_LEFT IdList T_BRACKET_RIGHT Stats T_END
+
+    5 Structdef: T_STRUCT T_ID T_DOUBLE_POINT IdList T_END
+
+    6 IdList: /* empty */
+    7       | IdList T_ID
+
+    8 Stats: /* empty */
+    9      | Stats Stat T_SEMICOLON
+
+   10 LetRec: /* empty */
+   11       | LetRec T_ID T_EQUAL Expr T_SEMICOLON
+
+   12 CondRec: /* empty */
+   13        | CondRec Expr T_THEN Stats T_END T_SEMICOLON
+
+   14 Stat: T_RETURN Expr
+   15     | T_COND CondRec T_END
+   16     | T_LET LetRec T_IN Stats T_END
+   17     | T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
+   18     | Lexpr T_EQUAL Expr
+   19     | Term
+
+   20 Lexpr: T_ID
+   21      | Term T_POINT T_ID
+
+   22 Expr: Term
+   23     | Sign Term
+   24     | PlusExpr
+   25     | MultExpr
+   26     | OrExpr
+   27     | Term T_GREATER Term
+   28     | Term T_NOT_EQUAL Term
+
+   29 PlusExpr: Term T_PLUS Term
+   30         | PlusExpr T_PLUS Term
+
+   31 MultExpr: Term T_MUL Term
+   32         | MultExpr T_MUL Term
+
+   33 OrExpr: Term T_OR Term
+   34       | OrExpr T_OR Term
+
+   35 Sign: T_NOT
+   36     | T_MINUS
+   37     | Sign T_NOT
+   38     | Sign T_MINUS
+
+   39 Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
+   40     | T_NUM
+   41     | Term T_POINT T_ID
+   42     | T_ID
+   43     | T_ID T_BRACKET_LEFT T_BRACKET_RIGHT
+   44     | T_ID T_BRACKET_LEFT ExprList T_BRACKET_RIGHT
+   45     | T_ID T_BRACKET_LEFT ExprList T_COLON T_BRACKET_RIGHT
+
+   46 ExprList: Expr
+   47         | ExprList T_COLON Expr
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+T_WITH (258) 17
+T_STRUCT (259) 5
+T_RETURN (260) 14
+T_NUM (261) 40
+T_COND (262) 15
+T_END (263) 4 5 13 15 16 17
+T_ID (264) 4 5 7 11 17 20 21 41 42 43 44 45
+T_LET (265) 16
+T_IN (266) 16
+T_FUNC (267) 4
+T_OR (268) 33 34
+T_NOT (269) 35 37
+T_DO (270) 17
+T_THEN (271) 13
+T_BRACKET_LEFT (272) 4 39 43 44 45
+T_BRACKET_RIGHT (273) 4 39 43 44 45
+T_DOUBLE_POINT (274) 5 17
+T_SEMICOLON (275) 2 3 9 11 13
+T_EQUAL (276) 11 18
+T_POINT (277) 21 41
+T_MINUS (278) 36 38
+T_PLUS (279) 29 30
+T_MUL (280) 31 32
+T_GREATER (281) 27
+T_NOT_EQUAL (282) 28
+T_COLON (283) 45 47
+
+
+Nonterminals, with rules where they appear
+
+$accept (29)
+    on left: 0
+Program (30)
+    on left: 1 2 3, on right: 0 2 3
+Funcdef (31)
+    on left: 4, on right: 3
+Structdef (32)
+    on left: 5, on right: 2
+IdList (33)
+    on left: 6 7, on right: 4 5 7
+Stats (34)
+    on left: 8 9, on right: 4 9 13 16 17
+LetRec (35)
+    on left: 10 11, on right: 11 16
+CondRec (36)
+    on left: 12 13, on right: 13 15
+Stat (37)
+    on left: 14 15 16 17 18 19, on right: 9
+Lexpr (38)
+    on left: 20 21, on right: 18
+Expr (39)
+    on left: 22 23 24 25 26 27 28, on right: 11 13 14 17 18 39 46 47
+PlusExpr (40)
+    on left: 29 30, on right: 24 30
+MultExpr (41)
+    on left: 31 32, on right: 25 32
+OrExpr (42)
+    on left: 33 34, on right: 26 34
+Sign (43)
+    on left: 35 36 37 38, on right: 23 37 38
+Term (44)
+    on left: 39 40 41 42 43 44 45, on right: 19 21 22 23 27 28 29 30
+    31 32 33 34 41
+ExprList (45)
+    on left: 46 47, on right: 44 45 47
+
+
+state 0
+
+    0 $accept: . Program $end
+
+    $default  reduce using rule 1 (Program)
+
+    Program  go to state 1
+
+
+state 1
+
+    0 $accept: Program . $end
+    2 Program: Program . Structdef T_SEMICOLON
+    3        | Program . Funcdef T_SEMICOLON
+
+    $end      shift, and go to state 2
+    T_STRUCT  shift, and go to state 3
+    T_FUNC    shift, and go to state 4
+
+    Funcdef    go to state 5
+    Structdef  go to state 6
+
+
+state 2
+
+    0 $accept: Program $end .
+
+    $default  accept
+
+
+state 3
+
+    5 Structdef: T_STRUCT . T_ID T_DOUBLE_POINT IdList T_END
+
+    T_ID  shift, and go to state 7
+
+
+state 4
+
+    4 Funcdef: T_FUNC . T_ID T_BRACKET_LEFT IdList T_BRACKET_RIGHT Stats T_END
+
+    T_ID  shift, and go to state 8
+
+
+state 5
+
+    3 Program: Program Funcdef . T_SEMICOLON
+
+    T_SEMICOLON  shift, and go to state 9
+
+
+state 6
+
+    2 Program: Program Structdef . T_SEMICOLON
+
+    T_SEMICOLON  shift, and go to state 10
+
+
+state 7
+
+    5 Structdef: T_STRUCT T_ID . T_DOUBLE_POINT IdList T_END
+
+    T_DOUBLE_POINT  shift, and go to state 11
+
+
+state 8
+
+    4 Funcdef: T_FUNC T_ID . T_BRACKET_LEFT IdList T_BRACKET_RIGHT Stats T_END
+
+    T_BRACKET_LEFT  shift, and go to state 12
+
+
+state 9
+
+    3 Program: Program Funcdef T_SEMICOLON .
+
+    $default  reduce using rule 3 (Program)
+
+
+state 10
+
+    2 Program: Program Structdef T_SEMICOLON .
+
+    $default  reduce using rule 2 (Program)
+
+
+state 11
+
+    5 Structdef: T_STRUCT T_ID T_DOUBLE_POINT . IdList T_END
+
+    $default  reduce using rule 6 (IdList)
+
+    IdList  go to state 13
+
+
+state 12
+
+    4 Funcdef: T_FUNC T_ID T_BRACKET_LEFT . IdList T_BRACKET_RIGHT Stats T_END
+
+    $default  reduce using rule 6 (IdList)
+
+    IdList  go to state 14
+
+
+state 13
+
+    5 Structdef: T_STRUCT T_ID T_DOUBLE_POINT IdList . T_END
+    7 IdList: IdList . T_ID
+
+    T_END  shift, and go to state 15
+    T_ID   shift, and go to state 16
+
+
+state 14
+
+    4 Funcdef: T_FUNC T_ID T_BRACKET_LEFT IdList . T_BRACKET_RIGHT Stats T_END
+    7 IdList: IdList . T_ID
+
+    T_ID             shift, and go to state 16
+    T_BRACKET_RIGHT  shift, and go to state 17
+
+
+state 15
+
+    5 Structdef: T_STRUCT T_ID T_DOUBLE_POINT IdList T_END .
+
+    $default  reduce using rule 5 (Structdef)
+
+
+state 16
+
+    7 IdList: IdList T_ID .
+
+    $default  reduce using rule 7 (IdList)
+
+
+state 17
+
+    4 Funcdef: T_FUNC T_ID T_BRACKET_LEFT IdList T_BRACKET_RIGHT . Stats T_END
+
+    $default  reduce using rule 8 (Stats)
+
+    Stats  go to state 18
+
+
+state 18
+
+    4 Funcdef: T_FUNC T_ID T_BRACKET_LEFT IdList T_BRACKET_RIGHT Stats . T_END
+    9 Stats: Stats . Stat T_SEMICOLON
+
+    T_WITH          shift, and go to state 19
+    T_RETURN        shift, and go to state 20
+    T_NUM           shift, and go to state 21
+    T_COND          shift, and go to state 22
+    T_END           shift, and go to state 23
+    T_ID            shift, and go to state 24
+    T_LET           shift, and go to state 25
+    T_BRACKET_LEFT  shift, and go to state 26
+
+    Stat   go to state 27
+    Lexpr  go to state 28
+    Term   go to state 29
+
+
+state 19
+
+   17 Stat: T_WITH . Expr T_DOUBLE_POINT T_ID T_DO Stats T_END
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_NOT           shift, and go to state 31
+    T_BRACKET_LEFT  shift, and go to state 26
+    T_MINUS         shift, and go to state 32
+
+    Expr      go to state 33
+    PlusExpr  go to state 34
+    MultExpr  go to state 35
+    OrExpr    go to state 36
+    Sign      go to state 37
+    Term      go to state 38
+
+
+state 20
+
+   14 Stat: T_RETURN . Expr
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_NOT           shift, and go to state 31
+    T_BRACKET_LEFT  shift, and go to state 26
+    T_MINUS         shift, and go to state 32
+
+    Expr      go to state 39
+    PlusExpr  go to state 34
+    MultExpr  go to state 35
+    OrExpr    go to state 36
+    Sign      go to state 37
+    Term      go to state 38
+
+
+state 21
+
+   40 Term: T_NUM .
+
+    $default  reduce using rule 40 (Term)
+
+
+state 22
+
+   15 Stat: T_COND . CondRec T_END
+
+    $default  reduce using rule 12 (CondRec)
+
+    CondRec  go to state 40
+
+
+state 23
+
+    4 Funcdef: T_FUNC T_ID T_BRACKET_LEFT IdList T_BRACKET_RIGHT Stats T_END .
+
+    $default  reduce using rule 4 (Funcdef)
+
+
+state 24
+
+   20 Lexpr: T_ID .
+   42 Term: T_ID .
+   43     | T_ID . T_BRACKET_LEFT T_BRACKET_RIGHT
+   44     | T_ID . T_BRACKET_LEFT ExprList T_BRACKET_RIGHT
+   45     | T_ID . T_BRACKET_LEFT ExprList T_COLON T_BRACKET_RIGHT
+
+    T_BRACKET_LEFT  shift, and go to state 41
+
+    T_EQUAL   reduce using rule 20 (Lexpr)
+    $default  reduce using rule 42 (Term)
+
+
+state 25
+
+   16 Stat: T_LET . LetRec T_IN Stats T_END
+
+    $default  reduce using rule 10 (LetRec)
+
+    LetRec  go to state 42
+
+
+state 26
+
+   39 Term: T_BRACKET_LEFT . Expr T_BRACKET_RIGHT
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_NOT           shift, and go to state 31
+    T_BRACKET_LEFT  shift, and go to state 26
+    T_MINUS         shift, and go to state 32
+
+    Expr      go to state 43
+    PlusExpr  go to state 34
+    MultExpr  go to state 35
+    OrExpr    go to state 36
+    Sign      go to state 37
+    Term      go to state 38
+
+
+state 27
+
+    9 Stats: Stats Stat . T_SEMICOLON
+
+    T_SEMICOLON  shift, and go to state 44
+
+
+state 28
+
+   18 Stat: Lexpr . T_EQUAL Expr
+
+    T_EQUAL  shift, and go to state 45
+
+
+state 29
+
+   19 Stat: Term .
+   21 Lexpr: Term . T_POINT T_ID
+   41 Term: Term . T_POINT T_ID
+
+    T_POINT  shift, and go to state 46
+
+    $default  reduce using rule 19 (Stat)
+
+
+state 30
+
+   42 Term: T_ID .
+   43     | T_ID . T_BRACKET_LEFT T_BRACKET_RIGHT
+   44     | T_ID . T_BRACKET_LEFT ExprList T_BRACKET_RIGHT
+   45     | T_ID . T_BRACKET_LEFT ExprList T_COLON T_BRACKET_RIGHT
+
+    T_BRACKET_LEFT  shift, and go to state 41
+
+    $default  reduce using rule 42 (Term)
+
+
+state 31
+
+   35 Sign: T_NOT .
+
+    $default  reduce using rule 35 (Sign)
+
+
+state 32
+
+   36 Sign: T_MINUS .
+
+    $default  reduce using rule 36 (Sign)
+
+
+state 33
+
+   17 Stat: T_WITH Expr . T_DOUBLE_POINT T_ID T_DO Stats T_END
+
+    T_DOUBLE_POINT  shift, and go to state 47
+
+
+state 34
+
+   24 Expr: PlusExpr .
+   30 PlusExpr: PlusExpr . T_PLUS Term
+
+    T_PLUS  shift, and go to state 48
+
+    $default  reduce using rule 24 (Expr)
+
+
+state 35
+
+   25 Expr: MultExpr .
+   32 MultExpr: MultExpr . T_MUL Term
+
+    T_MUL  shift, and go to state 49
+
+    $default  reduce using rule 25 (Expr)
+
+
+state 36
+
+   26 Expr: OrExpr .
+   34 OrExpr: OrExpr . T_OR Term
+
+    T_OR  shift, and go to state 50
+
+    $default  reduce using rule 26 (Expr)
+
+
+state 37
+
+   23 Expr: Sign . Term
+   37 Sign: Sign . T_NOT
+   38     | Sign . T_MINUS
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_NOT           shift, and go to state 51
+    T_BRACKET_LEFT  shift, and go to state 26
+    T_MINUS         shift, and go to state 52
+
+    Term  go to state 53
+
+
+state 38
+
+   22 Expr: Term .
+   27     | Term . T_GREATER Term
+   28     | Term . T_NOT_EQUAL Term
+   29 PlusExpr: Term . T_PLUS Term
+   31 MultExpr: Term . T_MUL Term
+   33 OrExpr: Term . T_OR Term
+   41 Term: Term . T_POINT T_ID
+
+    T_OR         shift, and go to state 54
+    T_POINT      shift, and go to state 55
+    T_PLUS       shift, and go to state 56
+    T_MUL        shift, and go to state 57
+    T_GREATER    shift, and go to state 58
+    T_NOT_EQUAL  shift, and go to state 59
+
+    $default  reduce using rule 22 (Expr)
+
+
+state 39
+
+   14 Stat: T_RETURN Expr .
+
+    $default  reduce using rule 14 (Stat)
+
+
+state 40
+
+   13 CondRec: CondRec . Expr T_THEN Stats T_END T_SEMICOLON
+   15 Stat: T_COND CondRec . T_END
+
+    T_NUM           shift, and go to state 21
+    T_END           shift, and go to state 60
+    T_ID            shift, and go to state 30
+    T_NOT           shift, and go to state 31
+    T_BRACKET_LEFT  shift, and go to state 26
+    T_MINUS         shift, and go to state 32
+
+    Expr      go to state 61
+    PlusExpr  go to state 34
+    MultExpr  go to state 35
+    OrExpr    go to state 36
+    Sign      go to state 37
+    Term      go to state 38
+
+
+state 41
+
+   43 Term: T_ID T_BRACKET_LEFT . T_BRACKET_RIGHT
+   44     | T_ID T_BRACKET_LEFT . ExprList T_BRACKET_RIGHT
+   45     | T_ID T_BRACKET_LEFT . ExprList T_COLON T_BRACKET_RIGHT
+
+    T_NUM            shift, and go to state 21
+    T_ID             shift, and go to state 30
+    T_NOT            shift, and go to state 31
+    T_BRACKET_LEFT   shift, and go to state 26
+    T_BRACKET_RIGHT  shift, and go to state 62
+    T_MINUS          shift, and go to state 32
+
+    Expr      go to state 63
+    PlusExpr  go to state 34
+    MultExpr  go to state 35
+    OrExpr    go to state 36
+    Sign      go to state 37
+    Term      go to state 38
+    ExprList  go to state 64
+
+
+state 42
+
+   11 LetRec: LetRec . T_ID T_EQUAL Expr T_SEMICOLON
+   16 Stat: T_LET LetRec . T_IN Stats T_END
+
+    T_ID  shift, and go to state 65
+    T_IN  shift, and go to state 66
+
+
+state 43
+
+   39 Term: T_BRACKET_LEFT Expr . T_BRACKET_RIGHT
+
+    T_BRACKET_RIGHT  shift, and go to state 67
+
+
+state 44
+
+    9 Stats: Stats Stat T_SEMICOLON .
+
+    $default  reduce using rule 9 (Stats)
+
+
+state 45
+
+   18 Stat: Lexpr T_EQUAL . Expr
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_NOT           shift, and go to state 31
+    T_BRACKET_LEFT  shift, and go to state 26
+    T_MINUS         shift, and go to state 32
+
+    Expr      go to state 68
+    PlusExpr  go to state 34
+    MultExpr  go to state 35
+    OrExpr    go to state 36
+    Sign      go to state 37
+    Term      go to state 38
+
+
+state 46
+
+   21 Lexpr: Term T_POINT . T_ID
+   41 Term: Term T_POINT . T_ID
+
+    T_ID  shift, and go to state 69
+
+
+state 47
+
+   17 Stat: T_WITH Expr T_DOUBLE_POINT . T_ID T_DO Stats T_END
+
+    T_ID  shift, and go to state 70
+
+
+state 48
+
+   30 PlusExpr: PlusExpr T_PLUS . Term
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_BRACKET_LEFT  shift, and go to state 26
+
+    Term  go to state 71
+
+
+state 49
+
+   32 MultExpr: MultExpr T_MUL . Term
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_BRACKET_LEFT  shift, and go to state 26
+
+    Term  go to state 72
+
+
+state 50
+
+   34 OrExpr: OrExpr T_OR . Term
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_BRACKET_LEFT  shift, and go to state 26
+
+    Term  go to state 73
+
+
+state 51
+
+   37 Sign: Sign T_NOT .
+
+    $default  reduce using rule 37 (Sign)
+
+
+state 52
+
+   38 Sign: Sign T_MINUS .
+
+    $default  reduce using rule 38 (Sign)
+
+
+state 53
+
+   23 Expr: Sign Term .
+   41 Term: Term . T_POINT T_ID
+
+    T_POINT  shift, and go to state 55
+
+    $default  reduce using rule 23 (Expr)
+
+
+state 54
+
+   33 OrExpr: Term T_OR . Term
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_BRACKET_LEFT  shift, and go to state 26
+
+    Term  go to state 74
+
+
+state 55
+
+   41 Term: Term T_POINT . T_ID
+
+    T_ID  shift, and go to state 75
+
+
+state 56
+
+   29 PlusExpr: Term T_PLUS . Term
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_BRACKET_LEFT  shift, and go to state 26
+
+    Term  go to state 76
+
+
+state 57
+
+   31 MultExpr: Term T_MUL . Term
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_BRACKET_LEFT  shift, and go to state 26
+
+    Term  go to state 77
+
+
+state 58
+
+   27 Expr: Term T_GREATER . Term
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_BRACKET_LEFT  shift, and go to state 26
+
+    Term  go to state 78
+
+
+state 59
+
+   28 Expr: Term T_NOT_EQUAL . Term
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_BRACKET_LEFT  shift, and go to state 26
+
+    Term  go to state 79
+
+
+state 60
+
+   15 Stat: T_COND CondRec T_END .
+
+    $default  reduce using rule 15 (Stat)
+
+
+state 61
+
+   13 CondRec: CondRec Expr . T_THEN Stats T_END T_SEMICOLON
+
+    T_THEN  shift, and go to state 80
+
+
+state 62
+
+   43 Term: T_ID T_BRACKET_LEFT T_BRACKET_RIGHT .
+
+    $default  reduce using rule 43 (Term)
+
+
+state 63
+
+   46 ExprList: Expr .
+
+    $default  reduce using rule 46 (ExprList)
+
+
+state 64
+
+   44 Term: T_ID T_BRACKET_LEFT ExprList . T_BRACKET_RIGHT
+   45     | T_ID T_BRACKET_LEFT ExprList . T_COLON T_BRACKET_RIGHT
+   47 ExprList: ExprList . T_COLON Expr
+
+    T_BRACKET_RIGHT  shift, and go to state 81
+    T_COLON          shift, and go to state 82
+
+
+state 65
+
+   11 LetRec: LetRec T_ID . T_EQUAL Expr T_SEMICOLON
+
+    T_EQUAL  shift, and go to state 83
+
+
+state 66
+
+   16 Stat: T_LET LetRec T_IN . Stats T_END
+
+    $default  reduce using rule 8 (Stats)
+
+    Stats  go to state 84
+
+
+state 67
+
+   39 Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT .
+
+    $default  reduce using rule 39 (Term)
+
+
+state 68
+
+   18 Stat: Lexpr T_EQUAL Expr .
+
+    $default  reduce using rule 18 (Stat)
+
+
+state 69
+
+   21 Lexpr: Term T_POINT T_ID .
+   41 Term: Term T_POINT T_ID .
+
+    T_EQUAL   reduce using rule 21 (Lexpr)
+    $default  reduce using rule 41 (Term)
+
+
+state 70
+
+   17 Stat: T_WITH Expr T_DOUBLE_POINT T_ID . T_DO Stats T_END
+
+    T_DO  shift, and go to state 85
+
+
+state 71
+
+   30 PlusExpr: PlusExpr T_PLUS Term .
+   41 Term: Term . T_POINT T_ID
+
+    T_POINT  shift, and go to state 55
+
+    $default  reduce using rule 30 (PlusExpr)
+
+
+state 72
+
+   32 MultExpr: MultExpr T_MUL Term .
+   41 Term: Term . T_POINT T_ID
+
+    T_POINT  shift, and go to state 55
+
+    $default  reduce using rule 32 (MultExpr)
+
+
+state 73
+
+   34 OrExpr: OrExpr T_OR Term .
+   41 Term: Term . T_POINT T_ID
+
+    T_POINT  shift, and go to state 55
+
+    $default  reduce using rule 34 (OrExpr)
+
+
+state 74
+
+   33 OrExpr: Term T_OR Term .
+   41 Term: Term . T_POINT T_ID
+
+    T_POINT  shift, and go to state 55
+
+    $default  reduce using rule 33 (OrExpr)
+
+
+state 75
+
+   41 Term: Term T_POINT T_ID .
+
+    $default  reduce using rule 41 (Term)
+
+
+state 76
+
+   29 PlusExpr: Term T_PLUS Term .
+   41 Term: Term . T_POINT T_ID
+
+    T_POINT  shift, and go to state 55
+
+    $default  reduce using rule 29 (PlusExpr)
+
+
+state 77
+
+   31 MultExpr: Term T_MUL Term .
+   41 Term: Term . T_POINT T_ID
+
+    T_POINT  shift, and go to state 55
+
+    $default  reduce using rule 31 (MultExpr)
+
+
+state 78
+
+   27 Expr: Term T_GREATER Term .
+   41 Term: Term . T_POINT T_ID
+
+    T_POINT  shift, and go to state 55
+
+    $default  reduce using rule 27 (Expr)
+
+
+state 79
+
+   28 Expr: Term T_NOT_EQUAL Term .
+   41 Term: Term . T_POINT T_ID
+
+    T_POINT  shift, and go to state 55
+
+    $default  reduce using rule 28 (Expr)
+
+
+state 80
+
+   13 CondRec: CondRec Expr T_THEN . Stats T_END T_SEMICOLON
+
+    $default  reduce using rule 8 (Stats)
+
+    Stats  go to state 86
+
+
+state 81
+
+   44 Term: T_ID T_BRACKET_LEFT ExprList T_BRACKET_RIGHT .
+
+    $default  reduce using rule 44 (Term)
+
+
+state 82
+
+   45 Term: T_ID T_BRACKET_LEFT ExprList T_COLON . T_BRACKET_RIGHT
+   47 ExprList: ExprList T_COLON . Expr
+
+    T_NUM            shift, and go to state 21
+    T_ID             shift, and go to state 30
+    T_NOT            shift, and go to state 31
+    T_BRACKET_LEFT   shift, and go to state 26
+    T_BRACKET_RIGHT  shift, and go to state 87
+    T_MINUS          shift, and go to state 32
+
+    Expr      go to state 88
+    PlusExpr  go to state 34
+    MultExpr  go to state 35
+    OrExpr    go to state 36
+    Sign      go to state 37
+    Term      go to state 38
+
+
+state 83
+
+   11 LetRec: LetRec T_ID T_EQUAL . Expr T_SEMICOLON
+
+    T_NUM           shift, and go to state 21
+    T_ID            shift, and go to state 30
+    T_NOT           shift, and go to state 31
+    T_BRACKET_LEFT  shift, and go to state 26
+    T_MINUS         shift, and go to state 32
+
+    Expr      go to state 89
+    PlusExpr  go to state 34
+    MultExpr  go to state 35
+    OrExpr    go to state 36
+    Sign      go to state 37
+    Term      go to state 38
+
+
+state 84
+
+    9 Stats: Stats . Stat T_SEMICOLON
+   16 Stat: T_LET LetRec T_IN Stats . T_END
+
+    T_WITH          shift, and go to state 19
+    T_RETURN        shift, and go to state 20
+    T_NUM           shift, and go to state 21
+    T_COND          shift, and go to state 22
+    T_END           shift, and go to state 90
+    T_ID            shift, and go to state 24
+    T_LET           shift, and go to state 25
+    T_BRACKET_LEFT  shift, and go to state 26
+
+    Stat   go to state 27
+    Lexpr  go to state 28
+    Term   go to state 29
+
+
+state 85
+
+   17 Stat: T_WITH Expr T_DOUBLE_POINT T_ID T_DO . Stats T_END
+
+    $default  reduce using rule 8 (Stats)
+
+    Stats  go to state 91
+
+
+state 86
+
+    9 Stats: Stats . Stat T_SEMICOLON
+   13 CondRec: CondRec Expr T_THEN Stats . T_END T_SEMICOLON
+
+    T_WITH          shift, and go to state 19
+    T_RETURN        shift, and go to state 20
+    T_NUM           shift, and go to state 21
+    T_COND          shift, and go to state 22
+    T_END           shift, and go to state 92
+    T_ID            shift, and go to state 24
+    T_LET           shift, and go to state 25
+    T_BRACKET_LEFT  shift, and go to state 26
+
+    Stat   go to state 27
+    Lexpr  go to state 28
+    Term   go to state 29
+
+
+state 87
+
+   45 Term: T_ID T_BRACKET_LEFT ExprList T_COLON T_BRACKET_RIGHT .
+
+    $default  reduce using rule 45 (Term)
+
+
+state 88
+
+   47 ExprList: ExprList T_COLON Expr .
+
+    $default  reduce using rule 47 (ExprList)
+
+
+state 89
+
+   11 LetRec: LetRec T_ID T_EQUAL Expr . T_SEMICOLON
+
+    T_SEMICOLON  shift, and go to state 93
+
+
+state 90
+
+   16 Stat: T_LET LetRec T_IN Stats T_END .
+
+    $default  reduce using rule 16 (Stat)
+
+
+state 91
+
+    9 Stats: Stats . Stat T_SEMICOLON
+   17 Stat: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats . T_END
+
+    T_WITH          shift, and go to state 19
+    T_RETURN        shift, and go to state 20
+    T_NUM           shift, and go to state 21
+    T_COND          shift, and go to state 22
+    T_END           shift, and go to state 94
+    T_ID            shift, and go to state 24
+    T_LET           shift, and go to state 25
+    T_BRACKET_LEFT  shift, and go to state 26
+
+    Stat   go to state 27
+    Lexpr  go to state 28
+    Term   go to state 29
+
+
+state 92
+
+   13 CondRec: CondRec Expr T_THEN Stats T_END . T_SEMICOLON
+
+    T_SEMICOLON  shift, and go to state 95
+
+
+state 93
+
+   11 LetRec: LetRec T_ID T_EQUAL Expr T_SEMICOLON .
+
+    $default  reduce using rule 11 (LetRec)
+
+
+state 94
+
+   17 Stat: T_WITH Expr T_DOUBLE_POINT T_ID T_DO Stats T_END .
+
+    $default  reduce using rule 17 (Stat)
+
+
+state 95
+
+   13 CondRec: CondRec Expr T_THEN Stats T_END T_SEMICOLON .
+
+    $default  reduce using rule 13 (CondRec)

@@ -1,0 +1,7 @@
+func mysgn(x)
+  cond
+    x>0 then return 1; end;
+    0>x then return -1; end;
+  end;
+  return 0;
+end;

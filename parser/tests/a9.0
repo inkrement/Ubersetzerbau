@@ -1,0 +1,6 @@
+func x() 
+  cond 
+    x then cond end; cond end; end;
+    x then end;
+  end;
+end;

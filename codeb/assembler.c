@@ -9,6 +9,82 @@ int reg_usage[] = {0,     0,     0,    0,    0,     0,     0,     0,     0};
 char *param_regs[]={"%rdi", "%rsi", "%rdx", "%rcx", "%r8", "%r9"};
 var_usage *vars = (var_usage *) NULL;
 
+long id = 0;
+long if_id = 0;
+
+long get_if_id() {
+  return ++if_id;
+}
+
+void print_cond_label(int val){
+  printf("\tjmp cond_%li\n", if_id + 1);
+  printf("cond_%li:\n", val + 1);
+}
+
+
+
+long get_id() {
+  return ++id;
+}
+/*
+  returns 1 if reg is used
+  retunns 0 if not
+*/
+short isUsed(char* reg){
+  var_usage *i = vars;
+
+  while(i != NULL){
+    if(0 == strcmp(i->reg, reg)) return 1;
+    i=i->next;
+  }
+
+    return 0;
+}
+
+void setRegister(char* symbol, char* reg){
+  var_usage *var = vars;
+  int i;
+
+  #ifdef DEBUG_ME
+    printf("set register %s for symbol %s\n", reg, symbol);
+  #endif
+
+  /*find register*/
+  while(var != NULL){
+    if (var->symbol_name == NULL) {
+      var= var->next;
+      continue;
+    }
+    if(0==strcmp(var->symbol_name, symbol)){
+      var->reg=reg;
+      return;
+    }
+    var= var->next;
+  }
+
+  /* st reg_usage*/
+  for(i=0;i<10;i++){
+    if(i==9){
+      /*printf("This should never happen! register %s does not exist!\n", reg);
+      exit(4);*/
+      break;
+    }
+    if(0 == strcmp(regs[i], reg)) break;
+  }
+
+  
+  if(i<9){
+    reg_usage[i]=1;
+  }
+
+  var = (var_usage *) malloc(sizeof(var_usage));
+  var->next = vars;
+  var->symbol_name = symbol;
+  var->reg = reg;
+  var->tmp = 0;
+  vars = var;
+}
+
 
 char *getRegister(char* symbol){
   var_usage *loop = vars;
@@ -19,7 +95,11 @@ char *getRegister(char* symbol){
   #endif
 
     while(loop != NULL){
-      if(0 == strcmp(loop->name, symbol)) {
+      if(loop->symbol_name == (char*) NULL){
+        loop = loop->next;
+        continue;
+      }
+      if(0 == strcmp(loop->symbol_name, symbol)) {
 
         #ifdef DEBUG_ME
           printf("found register %s for %s\n",loop->reg, symbol);
@@ -34,27 +114,27 @@ char *getRegister(char* symbol){
     exit(4);
 }
 
-void setRegister(char* symbol, char* reg){
-  var_usage *var = vars;
+short isTmpReg(char *regname){
+  var_usage *loop = vars;
 
   #ifdef DEBUG_ME
-    printf("set register %s for symbol %s\n", reg, symbol);
+    printf("test if register is only a temporary one for %s\n", regname);
+    debug_reg_usage(vars);
   #endif
 
-  /*find register*/
-  while(var != NULL){
-    if(0==strcmp(var->name, symbol)){
-      var->reg=reg;
-      return;
-    }
-    var= var->next;
-  }
+    while(loop != NULL){
+      if(0 == strcmp(loop->reg, regname)) {
 
-  var = (var_usage *) malloc(sizeof(var_usage));
-  var->next = vars;
-  var->name = symbol;
-  var->reg = reg;
-  vars = var;
+        #ifdef DEBUG_ME
+          printf("found register-usage from %s\n", regname);
+        #endif
+
+        return loop->tmp;
+      }
+      loop = loop->next;
+    }
+
+    return 0;
 }
 
 
@@ -62,14 +142,13 @@ void debug_reg_usage(var_usage* usage){
   var_usage *loop = vars;
   printf("REGISTER usage:\n");
   while(loop != NULL){
-    printf("%s: %s\n", loop->name, loop->reg);
+    printf("%s: %s\n", loop->symbol_name, loop->reg);
     loop = loop->next;
   }
 }
 
 void ret(void) {
   printf("\tret\n");
-  vars = (var_usage *) NULL;
 }
 
 void functionStart(char *name) {
@@ -131,40 +210,12 @@ int count(struct symbol_t* symbols){
 
 void function_header(char *name, struct symbol_t *params) {
   int i;
-  var_usage *end;
-  struct symbol_t *cur_parm = params;
+  vars = (var_usage *) NULL;
 
-  /* clean regs */
   for(i = 0; i < 9; ++i)
-    reg_usage[i] = 0;  
+    reg_usage[i] = 0; 
 
-  /* init params 
-  vars = NULL;
-
-  i = 0;
-  
-  while(cur_parm != EMPTY_TABLE) {
-    var_usage *var = (var_usage *) malloc(sizeof(var_usage));
-    var->name = strclone(cur_parm->name);
-    var->usage_count = 0;
-    var->reg = strclone( param_regs[i] );
-
-    if(vars == NULL) {
-      vars = var;
-      end = vars;
-    } else {
-      end->next = var;
-      end = end->next;
-    }
-
-    cur_parm = cur_parm->next;
-  }
-
-  init_reg_usage();*/
   printf("\n\t.globl %s\n\t.type %s, @function\n%s:\n", name, name, name);
-
-  /* store name of current function to prefix jump labels */
-  strcpy(cur_function, name);
 }
 
 
@@ -187,28 +238,50 @@ void freereg(char *reg) {
 
 char* newreg() {
   int i = 0;
+  var_usage *var;
 
-  while(i < 9 && reg_usage[i] != 0) {
+  /** TODO remove regusage and use ony vars */
+
+
+  while(i < 9 && isUsed(regs[i])) {
     ++i;
   }
 
-  if(reg_usage[i] != 0) {
+  if(isUsed(regs[i])) {
     printf("not enough registers!\n");
     exit(4);
   }
 
-  reg_usage[i] = 1;
+  var = (var_usage *)malloc(sizeof(var_usage));
+  var->symbol_name = (char*) NULL;
+  var->usage_count = 1;
+  var->next = vars;
+  var->tmp = 1;
+  var->reg = regs[i];
+  vars = var;
+
+  #ifdef DEBUG_ME
+    printf("new Register %s allocated\n", var->reg);
+  #endif
+
   return regs[i];
 }
 
-
+char* get_op_register(char* reg){
+  if(isTmpReg(reg)){
+    return reg;
+  }
+  else{
+    return newreg();
+  }
+}
 
 /* called once for each time a variable is seen */
 void record_var_usage(char* name) {
   var_usage *cur_var = vars;
   var_usage *prev;
 
-  while(cur_var != NULL && strcmp(cur_var->name, name) != 0) {
+  while(cur_var != NULL && strcmp(cur_var->symbol_name, name) != 0) {
     prev = cur_var;
     cur_var = cur_var->next;
   }
@@ -216,7 +289,7 @@ void record_var_usage(char* name) {
   if(cur_var == NULL) {
     /* var is not in our list yet */
     var_usage *var = (var_usage *)malloc(sizeof(var_usage));
-    var->name = strclone(name);
+    var->symbol_name = strclone(name);
     var->usage_count = 1;
 
     if(vars == NULL) {
@@ -271,20 +344,29 @@ void move(char *src, char *dst) {
   } 
 #ifdef DEBUG_ME 
   else {
-    printf("didn't move %s to %s", src, dst);
+    printf("didn't move %s to %s\n", src, dst);
   }
 #endif
 
 }
 
 
-void move_offset(char *src, char *dst, int offset) {
+void move_from_relative(char *src, char *dst, int offset) {
 #ifdef DEBUG_ME
   if(src == NULL || dst == NULL) {
     printf("null register! src: %s, dst: %s\n", src, dst);
   }
 #endif
-    printf("\tmovq %d(%s), %s\n", offset*8, src, dst);
+    printf("\tmovq %d(%s), %s\n", offset * FIELD_OFFSET, src, dst);
+}
+
+void move_to_relative(char *src, char *dst, int offset) {
+#ifdef DEBUG_ME
+  if(src == NULL || dst == NULL) {
+    printf("null register! src: %s, dst: %s\n", src, dst);
+  }
+#endif
+    printf("\tmovq %s, %d(%s)\n", src, offset * FIELD_OFFSET, dst);
 }
 
 void movei(long value, char *reg){
@@ -382,24 +464,57 @@ void notequali2(char *fst, long snd, char *dst){
 	printf("\tneg %s\n", dst);
 }
 
-
+/**
+ * moves the greatest operand to dst
+ */
 void greater(char *fst, char *snd, char *dst){
+  char* tmp = newreg();
+  printf("\t# calculate greater one between %s and %s to %s (reg & reg)\n", fst, snd, dst);
+/*
+  printf("\tmov $0, %s\n", dst);
 	printf("\tcmp %s, %s\n", fst, snd);
-	printf("\tsetg %s\n", getByteRegister(dst));
-	printf("\tand $1, %s\n",dst);
+	printf("\tsetl %s\n", getByteRegister(dst));
 	printf("\tneg %s\n", dst);
+  */
+
+  printf("\tmovq $0, %s\n", dst);
+    /* save first on stack
+  printf("\tpushq %s\n", fst);*/
+  printf("\tmovq $-1, %s\n", tmp);
+
+  printf("\tcmpq %s, %s\n", snd, fst);
+  printf("\tcmovgq %s, %s\n", tmp, dst);
+
+  /* reconstruct first argument
+  printf("\tpopq %s\n", fst);*/
+  freereg(tmp);
 }
 
 void greateri(long fst, char *snd, char *dst){
+  char* tmp = newreg();
+  printf("\t# calculate greater one between %s and %d to %s (reg & imm)\n", snd, fst, dst);
+
+  /*
+  printf("\tmov $0, %s\n", dst);
 	printf("\tcmp $%d, %s\n", (int) fst, snd);
-	printf("\tsetg %s\n", getByteRegister(dst));
-	printf("\tand $1, %s\n",dst);
+	printf("\tsetl %s\n", getByteRegister(dst));
 	printf("\tneg %s\n", dst);
+  */
+  printf("\tmovq $0, %s\n", dst);
+    /* save snd on stack 
+  printf("\tpushq %s\n", snd);*/
+  printf("\tmovq $-1, %s\n", tmp);
+
+  printf("\tcmpq $%d, %s\n",fst, snd);
+  /* le instead of g because first operand has to be the imm*/
+  printf("\tcmovleq %s, %s\n", tmp, dst);
+  /* reconstruct snd argument 
+  printf("\tpopq %s\n", snd);*/
+  freereg(tmp);
 }
 
-void greateri2(char *fst, long snd, char *dst){
-  printf("\tcmp $%d, %s\n", (int) snd, fst);
-	printf("\tsetg %s\n", getByteRegister(dst));
-	printf("\tand $1, %s\n",dst);
-	printf("\tneg %s\n", dst);
+
+void cond(char* condition, int num){
+  printf("\tcmp $-1, %s\n", condition);
+  printf("\tjz cond_%li\n", num);
 }

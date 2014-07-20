@@ -1,41 +1,107 @@
-struct a: x y z end;
+/*
 
-func some(b c)
+==========> Eingabe von /usr/ftp/pub/ubvl/test/codeb/b6.0:
+*/
+
+func mysgn(x)
+  cond
+    x>0 then return 1; end;
+    0>x then return -1; end;
+  end;
+  return 0;
+end;
 
 /*
-funktioniert
-let a=b+4; d =5; in
-	d = 8; 
-	return a + d;
-end;
+�bersetzung: Status korrekt
+
+Ausgabe:
+    .text
+
+    .globl mysgn
+    .type mysgn, @function
+mysgn:
+    movq %rdi, %rax
+    # calculate greater one between %rdi and 0 to %rax (reg & imm)
+    movq $0, %rax
+    movq $-1, %r10
+    cmpq $0, %rdi
+    cmovleq %r10, %rax
+    movq %rdi, %r11
+    # calculate greater one between %rdi and 0 to %r11 (reg & imm)
+    movq $0, %r11
+    movq $-1, %r9
+    cmpq $0, %rdi
+    cmovleq %r9, %r11
+    cmp $-1, %r11
+    jz cond_1
+    cmp $-1, %rax
+    jz cond_2
+    jmp cond_3
+cond_1:
+    movq $1, %rax
+    ret
+    jmp cond_3
+cond_2:
+    movq $-1, %rax
+    ret
+    jmp cond_3
+cond_3:
+    movq $0, %rax
+    ret
+
+�bersetze und linke das Testprogramm:
+
+Rufe folgendes Codefragment auf:
+extern long mysgn(long);
+RET(mysgn(5)==1 && mysgn(0)==0 && mysgn(-2)==-1);
+
+[Error] Das Ergebnis des Aufrufs ist falsch.
 */
 
 
 /*
-funktioniert
-with 4:a do
-	return y;
+==========> Eingabe von /usr/ftp/pub/ubvl/test/codeb/b9.0:
+func mysgn(x)
+  cond
+    x then return -1; end;
+    -x then return 1; end;
+  end;
+  return 0;
 end;
+  
+
+�bersetzung: Status korrekt
+
+Ausgabe:
+    .text
+
+    .globl mysgn
+    .type mysgn, @function
+mysgn:
+    movq %rdi, %rax
+    negq %rax
+    cmp $-1, %rdi
+    jz cond_1
+    cmp $-1, %rax
+    jz cond_2
+    jmp cond_3
+cond_1:
+    movq $-1, %rax
+    ret
+    jmp cond_3
+cond_2:
+    movq $1, %rax
+    ret
+    jmp cond_3
+cond_3:
+    movq $0, %rax
+    ret
+
+�bersetze und linke das Testprogramm:
+
+Rufe folgendes Codefragment auf:
+extern long mysgn(long);
+RET(mysgn(5)==1 && mysgn(0)==0 && mysgn(-2)==-1);
+
+[Error] Das Ergebnis des Aufrufs ist falsch.
 */
-
-
-
-
-
-
-/*
-
-b = 5;
-with 4:a do
-	x = 6; 
-	x = 4; 
-	return x;
-
-	return x;
-end;
-
-c = b + 5;
-
-*/
-
-end;

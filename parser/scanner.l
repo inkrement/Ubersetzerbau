@@ -1,6 +1,8 @@
+%option yylineno
 %{
 #include <stdio.h>
 #include "parser.tab.h"
+
 %}
 
 WHITESPACE   [ \t\n]
@@ -37,10 +39,7 @@ WHITESPACE   [ \t\n]
 ","			return T_COLON;
 
 [0-9]+		return T_NUM;
-
 [0-9][A-Fa-f0-9]*H 	return T_NUM;
-
-
 
 {WHITESPACE}+ {}
 

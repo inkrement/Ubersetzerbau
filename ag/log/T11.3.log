@@ -1,0 +1,4 @@
+assert exists feldkontext
+struct_table ((nil)): [] has 0 elements
+tableinfo ((nil)): [] has 0 elements
+Fail feldkontext

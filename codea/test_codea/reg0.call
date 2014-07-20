@@ -1,3 +1,0 @@
-extern long f(long);
-//RESULT f(x)=20x
-RET(f(1)==20&&f(0)==0&&f(3)==60);

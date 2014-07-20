@@ -1,4 +1,0 @@
-struct a : end;
-struct b : end;
-func c(d) end;
-struct e : end;

@@ -1,7 +1,7 @@
 all: codea
 
-codea: parser.o scanner.o symbol_table.o struct_table.o assembler.o tree.o code.o
-	gcc -g -ansi -pedantic scanner.o parser.o symbol_table.o assembler.o struct_table.o tree.o code.o -lfl -o codea
+codea: parser.o scanner.o symbol_table.o struct_table.o assembler.o helpers.o tree.o code.o
+	gcc -g -ansi -pedantic scanner.o parser.o symbol_table.o assembler.o struct_table.o helpers.o tree.o code.o -lfl -o codea
 
 oxout.y oxout.l: parser.y scanner.l
 	ox parser.y scanner.l
@@ -20,6 +20,9 @@ assembler.o: assembler.c assembler.h
 
 struct_table.o: symbol_table.o
 	gcc -g -c -ansi -pedantic -Wall symbol_table.o struct_table.c -D_GNU_SOURCE
+
+helpers.o: helpers.c helpers.h
+	gcc -g -c -ansi -pedantic -Wall helpers.c
 
 parser.c oxout.tab.h: oxout.y
 	bison -vd oxout.y

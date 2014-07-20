@@ -2,6 +2,8 @@
 #include <stdio.h>
 
 #include "tree.h"
+#include "assembler.h"
+
 
 /* new_node: create "standard node" with one or two children and
  * given operation
@@ -181,15 +183,15 @@ treenode * new_id_leaf(struct symbol_t* symbols, char * name){
 
   struct symbol_t* id = table_lookup(symbols, name);
 
-  #ifdef DEBUG_ME
-    printf("new id leaf for %s\n", name);
-    debug_symbol_table(symbols);
-  #endif
-
   if(id == EMPTY_TABLE){
     printf("Error: could not create new id-leaf. no symbol named %s found!\n", name);
-    exit(4);
+    exit(3);
   }
+
+  #ifdef DEBUG_ME
+    printf("new id leaf for %s reg %s\n", name, id->reg);
+    debug_symbol_table(symbols);
+  #endif
 
   new->name=name;
   new->child[0]=(treenode *)NULL;
@@ -198,10 +200,13 @@ treenode * new_id_leaf(struct symbol_t* symbols, char * name){
   if(id->type == TYPE_FIELD){
     new->offset = id->offset;
     new->op = OP_Fieldvariable;
+    new->reg = id->reg;
   }else if(id->type == TYPE_VAR) {
+   /* new->reg = getRegister(name); */
     new->op=OP_ID;
     new->param_index=id->param_index;
   }else if(id->type == TYPE_PARAM) {
+  /*  new->reg = getRegister(name); */
     new->op=OP_ID;
     new->param_index=id->param_index;
   }else {
@@ -227,3 +232,19 @@ treenode * new_field_leaf(char* name, treenode * address_term, int offset){
 
   return new;
 }
+
+treenode* new_cond_node(treenode* expr, treenode* condrec, long id) {
+  treenode* c = new_node(OP_Cond, expr, condrec);
+
+  c->value = id;
+  return c;
+}
+
+
+
+
+void synth_reg(treenode* bnode, treenode* child){
+  REG(bnode) = get_op_register(REG(child));
+  move(REG(child), REG(bnode)); 
+}
+

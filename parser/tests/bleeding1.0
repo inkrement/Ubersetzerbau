@@ -1,0 +1,56 @@
+struct strShort : var1 end;
+
+struct oneStruct_yea :
+	var
+end;
+
+struct mystruct :
+	var1
+	var2
+	var3
+end;
+
+func a() end;
+
+func a(x) end;
+
+func b(x y z) end;
+
+func s(a b)
+	cond end;
+	cond
+		a > b then a = a + 1; end;
+	end;
+	cond
+		b <> a then a = a + 1; end;
+		(not x) then b = b + (-1); end;
+	end;
+	x(a, b, c);
+
+	silly(a,);
+
+	let in end;
+	let in let in end; end;
+	let a = 4; x = 2; in end;
+	
+	with 4 + (-2) : xyz do end;
+	with a : b do return 2; end;
+	
+	x = 4;
+	y = 3;
+	a = 1 + (2 + (not y));
+	(1 + (2 + (2 * (3 <> a))));
+	(a);
+	((a > 3) <> (1 *2));
+
+	a1 = 3 + 3 + 3 + 3 + 3;
+	a2 = 3 * 2* 1* 0;
+	a3 = a or b or c or d;
+	a4 = (not not not --- not not a) * (3 + 2 + (3 or 2 or 1));
+
+
+	bleeding.bad = (a);
+	bleeding.dead = ((a > 3) <> (1 *2));
+
+	return z;
+end;

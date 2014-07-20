@@ -1,3 +1,0 @@
-func f(x)
-	return x or (-1) or x;
-end;

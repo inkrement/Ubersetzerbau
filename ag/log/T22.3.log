@@ -1,0 +1,4 @@
+load structs
+struct_table (0x8b8300): [ba] has 2 elements
+assert exists feldkontext
+Fail exists

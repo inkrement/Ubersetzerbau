@@ -10,7 +10,7 @@ void debug_symbol_table(struct symbol_t *table){
 	printf("tableinfo (%p): [", (void *) table);
 
 	for(;node != EMPTY_TABLE;node=node->next){
-		printf("%s(index: %d)", node->name, node->param_index);
+		printf("%s", node->name);
 		i = i + 1;
 	}
 

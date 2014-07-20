@@ -1,3 +1,0 @@
-struct a : a end;
-struct b : b1 b2 b end;
-struct c : c c1 c3 end;

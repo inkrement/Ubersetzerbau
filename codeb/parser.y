@@ -2,7 +2,7 @@
 
 @attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs;}  Stats
 @attributes { struct symbol_t* symbols; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;} Stat Lexpr Term Expr CondRec PlusExpr MultExpr OrExpr ExprList SignExpr
-@attributes { struct symbol_t* symbols; struct symbol_t* vars; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node;} LetRec
+@attributes { struct symbol_t* symbols; struct symbol_t* vars; struct struct_table* structs;  struct symbol_t* visible_structs; struct treenode* node; char* reg;} LetRec
 
 @attributes { struct symbol_t* felder; char *name; } Structdef
 @attributes { struct struct_table* structs; }  Funcdef
@@ -12,9 +12,7 @@
 @attributes { char *name;} T_ID
 @attributes { char *val; } T_NUM
 
-@traversal @preorder reg
 @traversal @postorder t
-
 @traversal @preorder codegen
 
 %{
@@ -86,6 +84,8 @@ Params:
 	@{
 		@i @Params.0.syms_gen@ = add_param(@Params.1.syms_gen@, @T_ID.name@, @Params.index@);
 		@i @Params.0.index@ = @Params.1.index@ + 1;
+
+		@codegen setRegister(@T_ID.name@, getParamRegister(@Params.index@));
 	@}
 	;
 
@@ -107,7 +107,7 @@ Stats:
 	@{
 		 @t debug_tree(@Stat.node@);
 
-		 @codegen @revorder(@Stat.node@->op == OP_Return) burm_label(@Stat.node@); burm_reduce(@Stat.node@, 1);
+		 @codegen @revorder(@Stat.node@->op == OP_Return) /* printf("%d\n", get_id());*/ burm_label(@Stat.node@); burm_reduce(@Stat.node@, 1);
 	@}
 	;
 
@@ -115,42 +115,36 @@ LetRec:
 	@{ 
 		@i @LetRec.vars@ = EMPTY_TABLE;
 		@i @LetRec.node@ = new_leaf(OP_NOP);
+		@i @LetRec.reg@ = NULL;
 	@}
 	| LetRec T_ID T_EQUAL Expr T_SEMICOLON
 	@{
-		@i @LetRec.0.vars@ = add_var(@LetRec.1.vars@, @T_ID.name@, newreg());
-		@i @LetRec.0.node@ = new_node(OP_Assign, @Expr.node@, @LetRec.1.node@);
+		@i @LetRec.0.reg@ = newreg();
+		@i @LetRec.0.vars@ = add_var(@LetRec.1.vars@, @T_ID.name@, @LetRec.reg@);
+		@i @LetRec.0.node@ = new_node(OP_Assign, @Expr.node@, @LetRec.1.node@); @LetRec.0.node@->reg = @LetRec.reg@;
 
-		@reg @Expr.node@->reg = getRegister(@T_ID.name@);
+		@codegen setRegister(@T_ID.name@, @LetRec.0.reg@);
 	@}
 	;
 
 CondRec:
-	@{
-		/*anscheinend keine expression < 0 also leeres Blatt ohne Operation*/
+	@{ 
 		@i @CondRec.node@ = new_leaf(OP_NOP);
+		@codegen @revorder(1) print_cond_label(@CondRec.node@->value);
 	@}
 	| CondRec Expr T_THEN Stats T_END T_SEMICOLON
-	@{		
-		/*Wenn Expr < 0 then new Stat node und aus rekursion raus. Wie auf value von Expr zugreifen? Oder direkt im Assemblercode setzen*/
-		/*jmp richtig setzen*/
-		/*Bei erster Expression, die groesser 0 ist aus der rekursion raus.*/
-		
-
-		@i @CondRec.node@ = new_node(OP_CONDREC, @Expr.node@, (treenode *) NULL);
+	@{
+		@i @CondRec.node@ = new_cond_node(@Expr.node@, @CondRec.1.node@, get_if_id());
+		@codegen @revorder(1) print_cond_label(@CondRec.node@->value);
 	@}
 	;
 
 Stat: T_RETURN Expr
 	@{ 
 		@i @Stat.node@ = new_node(OP_Return, @Expr.node@, (treenode*) NULL);
-
-		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg;
 	@}
 	| T_COND CondRec T_END
-	@{
-		@i @Stat.node@ = @CondRec.node@;
-	@}
+	@{ @i @Stat.node@ = @CondRec.node@; @}
 	| T_LET LetRec T_IN Stats T_END
 	@{
 		@i @Stats.symbols@ = table_merge(@Stat.symbols@, @LetRec.vars@);
@@ -160,17 +154,14 @@ Stat: T_RETURN Expr
 	@{
 		@t assert_struct_exists(@Stat.structs@, @T_ID.name@);
 
+		@i @Stat.node@ = new_node(OP_With, @Expr.node@, (treenode*) NULL); 
 		@i @Stats.symbols@ = load_struct(@Stat.structs@, @Stat.symbols@, @T_ID.name@);
-		@i @Stat.node@ = new_node(OP_With, @Expr.node@, (treenode*) NULL);
-
-		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg;
+	
 		@codegen setfieldreg(@Stat.structs@, @Stats.symbols@, @T_ID.name@, @Stat.node@->reg);
 	@}
 	| Lexpr T_EQUAL Expr
 	@{
 		@i @Stat.node@ = new_node(OP_LEXPR, @Lexpr.node@, @Expr.node@);
-
-		@reg @Stat.node@->reg = newreg(); @Expr.node@->reg = @Stat.node@->reg;
 	@}
 	| Term
 	@{
@@ -183,114 +174,92 @@ Lexpr: T_ID
 		@t assert_exists(@Lexpr.symbols@, @T_ID.name@);
 		
 		@i @Lexpr.node@ = new_id_leaf(@Lexpr.symbols@, @T_ID.name@);
-
-		@reg @Lexpr.node@->reg = getRegister(@T_ID.name@);
 	@}
 	| Term T_POINT T_ID
 	@{
 		@t assert_exists_feldkontext(@Lexpr.structs@, @Lexpr.symbols@, @T_ID.name@);
-		@i @Lexpr.node@ = new_leaf(OP_NOP);
+		@i @Lexpr.node@ = new_field_leaf(OP_Field, @Term.node@, get_field_offset(@Lexpr.structs@, @T_ID.name@));
 	@}
 	;
 
 SignExpr: Term
 	@{
 		@i @SignExpr.node@ = @Term.node@;
-        @reg @Term.node@->reg = @SignExpr.node@->reg;
 	@}
 	|
 	T_MINUS SignExpr
 	@{
 		@i @SignExpr.0.node@ = new_node(OP_NEG, @SignExpr.1.node@, (treenode *) NULL);
-		@reg @SignExpr.1.node@->reg = @SignExpr.0.node@->reg;
 	@}
 	|
 	T_NOT SignExpr
 	@{
 		@i @SignExpr.0.node@ = new_node(OP_NOT, @SignExpr.1.node@, (treenode *) NULL);
-		@reg @SignExpr.1.node@->reg = @SignExpr.0.node@->reg;
 	@}
 	;
 
 Expr: Term
 	@{ 
 		@i @Expr.node@ = @Term.node@;
-		@reg @Term.node@->reg = @Expr.node@->reg; 
 	@}
 	| T_MINUS SignExpr
 	@{
 		@i @Expr.node@ = new_node(OP_NEG, @SignExpr.node@, (treenode *) NULL);
-		@reg @SignExpr.node@->reg = @Expr.node@->reg;
 	@}
 	| T_NOT SignExpr
 	@{
 		@i @Expr.node@ = new_node(OP_NOT, @SignExpr.node@, (treenode *) NULL);
-		@reg @SignExpr.node@->reg = @Expr.node@->reg;
 	@}
 	| PlusExpr
 	@{
 		@i @Expr.node@ = @PlusExpr.node@;
-		@reg @PlusExpr.node@->reg = @Expr.node@->reg;
 	@}
 	| MultExpr
 	@{
 		@i @Expr.node@ = @MultExpr.node@;
-		@reg @MultExpr.node@->reg = @Expr.node@->reg;
 	@}
 	| OrExpr
 	@{
 		@i @Expr.node@ = @OrExpr.node@;
-		@reg @OrExpr.node@->reg = @Expr.node@->reg;
 	@}
 	| Term T_GREATER Term
 	@{
 		@i @Expr.node@ = new_node(OP_GREATER, @Term.0.node@, @Term.1.node@);
-		@reg @Term.0.node@->reg = @Expr.node@->reg; @Term.1.node@->reg = newreg();
 	@}
 	| Term T_NOT_EQUAL Term
 	@{
 		@i @Expr.node@ = new_node(OP_NEQ, @Term.0.node@, @Term.1.node@);
-		@reg @Term.0.node@->reg = @Expr.node@->reg; @Term.1.node@->reg = newreg();
 	@}
 	;
 
 PlusExpr: Term T_PLUS Term
 	@{ 
 		@i @PlusExpr.node@ = new_node(OP_ADD, @Term.0.node@, @Term.1.node@);
-
-		@reg @Term.0.node@->reg = @PlusExpr.node@->reg; @Term.1.node@->reg = newreg();
 	@}
 	| PlusExpr T_PLUS Term
 	@{ 
 		@i @PlusExpr.0.node@ = new_node(OP_ADD, @Term.node@,@PlusExpr.1.node@);
-
-        @reg @Term.node@->reg = @PlusExpr.0.node@->reg; @PlusExpr.1.node@->reg = newreg();
 	@}
 	;
 
 MultExpr: Term T_MUL Term 
 	@{
 		@i @MultExpr.node@ = new_node(OP_MUL, @Term.0.node@, @Term.1.node@);
-		@reg @Term.0.node@->reg = @MultExpr.node@->reg; @Term.1.node@->reg = newreg();
 	@}
 	| MultExpr T_MUL Term
 	@{
 		@i @MultExpr.0.node@ = new_node(OP_MUL, @Term.node@, @MultExpr.1.node@);
-		@reg @Term.node@->reg = @MultExpr.0.node@->reg; @MultExpr.1.node@->reg = newreg();
 	@}
 	;
 
 OrExpr: Term T_OR Term
 	@{ 
 		@i @OrExpr.node@ = new_node(OP_OR, @Term.0.node@, @Term.1.node@);
-		
-		@reg @Term.node@->reg = @OrExpr.node@->reg; @Term.1.node@->reg = newreg();
 	@}
 	| OrExpr T_OR Term
 	@{ 
 
 		@i @OrExpr.0.node@ = new_node(OP_OR, @Term.node@, @OrExpr.1.node@);
-		@reg @Term.node@->reg = @OrExpr.0.node@->reg; @OrExpr.1.node@->reg = newreg();
 	@}
 	;
 
@@ -307,8 +276,6 @@ Term: T_BRACKET_LEFT Expr T_BRACKET_RIGHT
 		@t assert_exists_feldkontext(@Term.structs@, @Term.symbols@, @T_ID.name@); 
 		
 		@i @Term.0.node@ = new_field_leaf(@T_ID.name@, @Term.1.node@, get_field_offset(@Term.structs@, @T_ID.name@));
-
-		@reg @Term.1.node@->reg = @Term.0.node@->reg;
 	@}
 	| T_ID
 	@{

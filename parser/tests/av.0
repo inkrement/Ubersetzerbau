@@ -1,0 +1,12 @@
+func x()
+  cond
+   x<>(x+x) then
+    let x=x(0,x+1,x.x.x+x.x); x=(x.x); in
+      with x or x: x do
+        (x+x).x=x();
+        return not (x or x);
+      end;
+    end;
+   end;
+  end;
+end;

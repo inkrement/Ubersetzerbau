@@ -1,0 +1,1 @@
+func x() return x<>x; end;

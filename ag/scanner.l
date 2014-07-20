@@ -38,9 +38,9 @@ WHITESPACE   [ \t\n]
 "<>"		return T_NOT_EQUAL;
 ","			return T_COLON;
 
-[0-9]+		return (T_NUM);  @{ unsigned long dec = 0; sscanf(yytext, "%d", &dec); @T_NUM.val@ = dec; @}
+[0-9]+		return T_NUM; @{ @T_NUM.val@ = atoi(yytext+1); @}
 
-[0-9][A-Fa-f0-9]*H 	return (T_NUM);  @{ unsigned long hex = 0; sscanf(yytext, "%X", &hex); @T_NUM.val@ = hex; @}
+[0-9][A-Fa-f0-9]*H 	return T_NUM; @{ unsigned int hex = 0; sscanf(yytext, "%X", &hex); @T_NUM.val@ = hex; @}
 
 
 

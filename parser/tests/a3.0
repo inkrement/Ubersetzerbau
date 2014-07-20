@@ -1,0 +1,6 @@
+func x() end;
+struct x: end;
+struct x: end;
+func x() end;
+func x() end;
+struct x: end;

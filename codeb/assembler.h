@@ -2,14 +2,24 @@
 #define __ASSEMBLER_H__
 #include "symbol_table.h"
 
-struct var_usage {
-  char *name;
+#define FIELD_OFFSET 8
+#define LEFT_CHILD(p) ((p)->child[0])
+#define RIGHT_CHILD(p) ((p)->child[1])
+#define REG(p) ((p)->reg)
+#define LC_REG(p) ((p)->child[0]->reg)
+#define RC_REG(p) ((p)->child[1]->reg)
+
+struct reg_usage {
+  char *symbol_name;
   char *reg;
-  struct var_usage *next;
+  struct reg_usage *next;
   int usage_count;
+  short tmp;
 };
 
-typedef struct var_usage var_usage;
+typedef struct reg_usage var_usage;
+
+char *strclone(char*);
 
 void init_reg_usage();
 void function_header(char *name, struct symbol_t *params);

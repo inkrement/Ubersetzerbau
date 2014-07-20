@@ -1,0 +1,4 @@
+load structs
+struct_table (0x1801300): [ba] has 2 elements
+assert exists feldkontext
+Fail exists
